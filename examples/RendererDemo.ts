@@ -231,6 +231,7 @@ const loader = new GLTFLoader();
 function loadGLTFObject(url: string) {
   loader.load(url, function (gltf) {
     scene.add(gltf.scene);
+    render();
   });
 }
 
