@@ -23,17 +23,17 @@ export function projectPointNDC(
     point: Vector3,
     target: Vector2,
     camera: PerspectiveCamera
-  ): Vector2 {
+): Vector2 {
 
   _u.copy(point).project(camera);
   return target.set(_u.x, _u.y);
 }
 
 export function projectPointImage(
-  point: Vector3,
-  target: Vector2,
-  camera: PerspectiveCamera,
-  renderSize: Size): Vector2 {
+    point: Vector3,
+    target: Vector2,
+    camera: PerspectiveCamera,
+    renderSize: Size): Vector2 {
 
   projectPointNDC(point, target, camera);
   NDCPointToImage(target, renderSize);

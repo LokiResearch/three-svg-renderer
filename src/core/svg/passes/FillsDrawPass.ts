@@ -29,8 +29,8 @@ export class FillsDrawPass extends DrawPass {
   readonly fillStyle: FillData;
 
   constructor(
-    options: Partial<FillsDrawPassOptions> = {}, 
-    fillStyle: FillData = {}
+      options: Partial<FillsDrawPassOptions> = {}, 
+      fillStyle: FillData = {}
   ) {
     super();
 
@@ -68,11 +68,11 @@ export class FillsDrawPass extends DrawPass {
 }
 
 function drawPolygon(
-  parent: SVGElement, 
-  polygon: Polygon,
-  options: FillsDrawPassOptions,
-  strokeStyle: StrokeData = {},
-  fillStyle: FillData = {}
+    parent: SVGElement, 
+    polygon: Polygon,
+    options: FillsDrawPassOptions,
+    strokeStyle: StrokeData = {},
+    fillStyle: FillData = {}
 ) {
 
   // Make a copy of the style so we can modify it

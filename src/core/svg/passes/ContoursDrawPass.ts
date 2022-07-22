@@ -33,8 +33,8 @@ export abstract class ContoursDrawPass extends DrawPass {
   readonly strokeStyle: StrokeData;
 
   constructor(
-    options: Partial<ContoursDrawPassOptions> = {}, 
-    strokeStyle: StrokeData = {}
+      options: Partial<ContoursDrawPassOptions> = {}, 
+      strokeStyle: StrokeData = {}
   ) {
     super();
 
@@ -62,8 +62,8 @@ export abstract class ContoursDrawPass extends DrawPass {
 export class VisibleContoursDrawPass extends ContoursDrawPass {
 
   constructor(
-    options: Partial<ContoursDrawPassOptions> = {}, 
-    strokeStyle: StrokeData = {}
+      options: Partial<ContoursDrawPassOptions> = {}, 
+      strokeStyle: StrokeData = {}
   ) {
     super(options, strokeStyle);
   }
@@ -83,8 +83,8 @@ export class VisibleContoursDrawPass extends ContoursDrawPass {
 export class HiddenContoursDrawPass extends ContoursDrawPass {
 
   constructor(
-    options: Partial<ContoursDrawPassOptions> = {}, 
-    strokeStyle: StrokeData = {}
+      options: Partial<ContoursDrawPassOptions> = {}, 
+      strokeStyle: StrokeData = {}
   ) {
     super(options, {color: "#FF0000", dasharray: "2,2", ...strokeStyle});
   }
@@ -102,11 +102,11 @@ export class HiddenContoursDrawPass extends ContoursDrawPass {
 }
 
 function drawContours(
-  parent: SVGElement,
-  viewmap: Viewmap,
-  contours: Contour[],
-  options: ContoursDrawPassOptions,
-  strokeStyle: StrokeData = {},
+    parent: SVGElement,
+    viewmap: Viewmap,
+    contours: Contour[],
+    options: ContoursDrawPassOptions,
+    strokeStyle: StrokeData = {},
 ) {
 
 
@@ -136,10 +136,10 @@ function drawContours(
 }
 
 function drawContour(
-  parent: SVGElement, 
-  contour: Contour,
-  options: ContoursDrawPassOptions,
-  strokeStyle: StrokeData = {}
+    parent: SVGElement, 
+    contour: Contour,
+    options: ContoursDrawPassOptions,
+    strokeStyle: StrokeData = {}
 ) {
 
   if (options.useRandomColors) {

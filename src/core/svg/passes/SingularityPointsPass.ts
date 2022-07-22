@@ -39,7 +39,7 @@ export class SingularityPointsDrawPass extends DrawPass {
   readonly options: SingularityPointsDrawPassOptions;
 
   constructor(
-    options: Partial<SingularityPointsDrawPassOptions> = {}
+      options: Partial<SingularityPointsDrawPassOptions> = {}
   ) {
     super();
 
@@ -88,7 +88,7 @@ export class SingularityPointsDrawPass extends DrawPass {
       for (const singularity of PointSingularities) {
         
         const points = viewmap.singularityPoints
-            .filter(p => p.singularity === singularity && p.visible === visibility);
+          .filter(p => p.singularity === singularity && p.visible === visibility);
 
         const singularityGroup = new SVGGroup({id: singularity});
         visibilityGroup.add(singularityGroup);
@@ -103,7 +103,7 @@ export class SingularityPointsDrawPass extends DrawPass {
 
     if (this.options.drawLegend &&
       (this.options.drawVisiblePoints || this.options.drawHiddenPoints)) {
-        group.add(getLegend());
+      group.add(getLegend());
     }
   }
 }

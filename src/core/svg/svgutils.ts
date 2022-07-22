@@ -11,31 +11,31 @@
 // LICENCE: Licence.md 
 
 import {
-    Polygon as SVGPolygon,
-    Rect as SVGRect,
-    Circle as SVGCircle,
-    Ellipse as SVGEllipse,
-    Path as SVGPath,
-    PathArray as SVGPathArray,
-    PathCommand as SVGPathCommand,
-    Image as SVGImage,
-    Number as SVGNumber,
-    NumberAlias as SVGNumberAlias,
-    Text as SVGText,
-    StrokeData, 
-    FillData,
-    FontData
+  Polygon as SVGPolygon,
+  Rect as SVGRect,
+  Circle as SVGCircle,
+  Ellipse as SVGEllipse,
+  Path as SVGPath,
+  PathArray as SVGPathArray,
+  PathCommand as SVGPathCommand,
+  Image as SVGImage,
+  Number as SVGNumber,
+  NumberAlias as SVGNumberAlias,
+  Text as SVGText,
+  StrokeData, 
+  FillData,
+  FontData
 } from '@svgdotjs/svg.js';
 import {Point, Rect, round} from '../../utils/math';
 
 export function getSVGImage(url: string, rect: Rect) {
-    const svgImage = new SVGImage();
-    svgImage.load(url);
-    svgImage.x(rect.x);
-    svgImage.y(rect.y);
-    svgImage.width(rect.w);
-    svgImage.height(rect.h)
-    return svgImage;
+  const svgImage = new SVGImage();
+  svgImage.load(url);
+  svgImage.x(rect.x);
+  svgImage.y(rect.y);
+  svgImage.width(rect.w);
+  svgImage.height(rect.h)
+  return svgImage;
 }
 
 export function getSVGText(
@@ -46,14 +46,14 @@ export function getSVGText(
     strokeStyle: StrokeData = {},
     fillStyle: FillData = {},
 ): SVGText {
-    const svgText = new SVGText();
-    svgText.text(text);
-    svgText.x(x);
-    svgText.y(y);
-    svgText.font(fontStyle);
-    svgText.stroke(strokeStyle);
-    svgText.fill(fillStyle);
-    return svgText;
+  const svgText = new SVGText();
+  svgText.text(text);
+  svgText.x(x);
+  svgText.y(y);
+  svgText.font(fontStyle);
+  svgText.stroke(strokeStyle);
+  svgText.fill(fillStyle);
+  return svgText;
 }
 
 export function getSVGPath(
@@ -63,40 +63,40 @@ export function getSVGPath(
     strokeStyle?: StrokeData,
     fillStyle?: FillData
 ): SVGPath {
-    const path = new SVGPath();
-    let cmds = getSVGPathCommands(contour, closed);
-    for (const hole of holes) {
-        cmds = cmds.concat(getSVGPathCommands(hole, closed));
-    }
-    path.plot(new SVGPathArray(cmds));
-    if (strokeStyle) {
-        path.stroke(strokeStyle);
-    } else {
-        path.stroke('none');
-    }
-    if (fillStyle) {
-        path.fill({...fillStyle, rule: "evenodd"});
-    } else {
-        path.fill('none');
-    }
-    return path;
+  const path = new SVGPath();
+  let cmds = getSVGPathCommands(contour, closed);
+  for (const hole of holes) {
+    cmds = cmds.concat(getSVGPathCommands(hole, closed));
+  }
+  path.plot(new SVGPathArray(cmds));
+  if (strokeStyle) {
+    path.stroke(strokeStyle);
+  } else {
+    path.stroke('none');
+  }
+  if (fillStyle) {
+    path.fill({...fillStyle, rule: "evenodd"});
+  } else {
+    path.fill('none');
+  }
+  return path;
 }
     
 function getSVGPathCommands(points: Point[], closed = true): SVGPathCommand[] {
-    const cmds = new Array<SVGPathCommand>();
-    let p;
-    if (points.length > 0) {
-        p = points[0];
-        cmds.push(['M', round(p.x), round(p.y)])
-        for (let i=1; i<points.length; i++) {
-            p = points[i];
-            cmds.push(['L', round(p.x), round(p.y)]);
-        }
-        if (closed) {
-            cmds.push(['Z']);
-        }
+  const cmds = new Array<SVGPathCommand>();
+  let p;
+  if (points.length > 0) {
+    p = points[0];
+    cmds.push(['M', round(p.x), round(p.y)])
+    for (let i=1; i<points.length; i++) {
+      p = points[i];
+      cmds.push(['L', round(p.x), round(p.y)]);
     }
-    return cmds;
+    if (closed) {
+      cmds.push(['Z']);
+    }
+  }
+  return cmds;
 }
     
 export function getSVGCircle(
@@ -106,37 +106,37 @@ export function getSVGCircle(
     strokeStyle: StrokeData = {},
     fillStyle: FillData = {}
 ) {
-    const circle = new SVGCircle();
-    circle.center(cx, cy);
-    circle.radius(radius);
-    circle.stroke(strokeStyle);
-    circle.fill(fillStyle);
-    return circle;
+  const circle = new SVGCircle();
+  circle.center(cx, cy);
+  circle.radius(radius);
+  circle.stroke(strokeStyle);
+  circle.fill(fillStyle);
+  return circle;
 }
     
 const _ignoredAttributes = ["x","y","width","height","viewbox","cx","cy","rw","rx","points"];
 export function replaceShapeByPath(
-        shape: SVGPolygon | SVGRect | SVGEllipse | SVGCircle
+    shape: SVGPolygon | SVGRect | SVGEllipse | SVGCircle
 ): SVGPath {
     
-    const path = shape.toPath(true);
-    const attributes = shape.attr();
-    for(const attribute in attributes) {
-        if(!_ignoredAttributes.includes(attribute)) {
-            path.attr(attribute, attributes[attribute]);
-        }
+  const path = shape.toPath(true);
+  const attributes = shape.attr();
+  for(const attribute in attributes) {
+    if(!_ignoredAttributes.includes(attribute)) {
+      path.attr(attribute, attributes[attribute]);
     }
-    return path;
+  }
+  return path;
 }
         
 export function NumberAliasToNumber(n: SVGNumberAlias): number {
-    switch (typeof n) {
-        case "number":
-            return n as number;
-        case "string":
-            return Number(n);
-        case typeof SVGNumber:
-            return (n as SVGNumber).value;
-    }
-    return 0;
+  switch (typeof n) {
+  case "number":
+    return n as number;
+  case "string":
+    return Number(n);
+  case typeof SVGNumber:
+    return (n as SVGNumber).value;
+  }
+  return 0;
 }

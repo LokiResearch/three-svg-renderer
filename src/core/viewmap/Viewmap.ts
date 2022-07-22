@@ -90,7 +90,7 @@ export class Viewmap {
   singularityPoints = new Array<Point>();
   contours = new Array<Contour>();
   polygonsRaycastPoints = new Array<Vector2>();
-  polygons = new Array<Polygon>()
+  polygons = new Array<Polygon>();
 
   clear() {
     this.edges = new Set<Edge>();
@@ -145,7 +145,7 @@ export class Viewmap {
     const normalMatrix = new Matrix3();
     for (const mesh of this.meshes) {
 
-      normalMatrix.getNormalMatrix( mesh.matrixWorld );
+      normalMatrix.getNormalMatrix(mesh.matrixWorld);
 
       if (mesh.hes) {
         // Update vertices
@@ -300,9 +300,11 @@ export class Viewmap {
 
     // Put back the bvh raycast acceleration status
     for (const mesh of meshes) {
-      mesh.useBVHRaycast(bvhRaycastUseMap.get(mesh)!);
+      const oldValue = bvhRaycastUseMap.get(mesh);
+      if (oldValue !== undefined) {
+        mesh.useBVHRaycast(oldValue);
+      }
     }
-
 
     info.totalTime = Date.now() - buildStartTime;
 
@@ -324,9 +326,9 @@ export function createFaceEdges(mesh: SVGMesh, camera: PerspectiveCamera) {
 
     do {
 
-      let edge;
-      if (halfEdge.twin && processedHalfEdges.has(halfEdge.twin)) {
-        edge = processedHalfEdges.get(halfEdge.twin)!;
+      const twin = halfEdge.twin;
+      let edge = twin && processedHalfEdges.get(twin);
+      if (edge) {
         edge.faces.push(face);
       } else {
 
@@ -464,7 +466,7 @@ export function cutIntersectingFacesEdgesWithLine(
     meshB: SVGMesh,
     faceB: Face,
     line: Line3
-  ) {
+) {
 
   const points = [line.start, line.end];
   const faces = [faceA, faceB];
@@ -508,7 +510,7 @@ export function cutIntersectingFacesEdgesWithLine(
   removeEdgesBetweenVertices(interVertices[0], interVertices[1]);
 
   const interEdge = new Edge([meshA, meshB], [faceA, faceB],
-                             interVertices[0], interVertices[1]);
+    interVertices[0], interVertices[1]);
   interEdge.nature = EdgeNature.SurfaceIntersection;
 
   interVertices[0].edges.add(interEdge);
@@ -628,7 +630,7 @@ export function splitEdge2d(edge: Edge, position: Vector2, tolerance = 1e-10) {
 
 export function singularityForPoint(
     point: Point, camera: PerspectiveCamera
-  ) {
+) {
 
   const naturesFound = new Set<EdgeNature>();
   let concaveSilhouetteFound = false;
@@ -686,7 +688,7 @@ export function singularityForPoint(
 export function findSingularityPointsIn3D(
     points: Set<Point>,
     camera: PerspectiveCamera
-  ) {
+) {
 
   const array = new Array<Point>();
 
@@ -767,7 +769,7 @@ export function getIntersectingsEdges(edges: Set<Edge>) {
   const intersectionAlgorithm = bush([...edges], {});
   const intersections = intersectionAlgorithm.run();
 
-   for (const intersection of intersections) {
+  for (const intersection of intersections) {
 
     const interEdges = intersection.segments as Edge[];
     const pos = new Vector2(intersection.point.x, intersection.point.y);
@@ -787,7 +789,7 @@ export function getIntersectingsEdges(edges: Set<Edge>) {
 
 export function computeImageIntersections (
     edges: Set<Edge>)
-  {
+{
 
   const newPoints = new Array<Point>();
   const splitMap = new Map<Edge, Array<Edge>>();
@@ -802,11 +804,11 @@ export function computeImageIntersections (
 
     for (const edge of intersection.edges) {
 
-      if (!splitMap.has(edge)) {
-        splitMap.set(edge, [edge]);
+      let subEdges = splitMap.get(edge);
+      if (!subEdges) {
+        subEdges = [edge];
+        splitMap.set(edge, subEdges);
       }
-
-      const subEdges = splitMap.get(edge)!;
 
       let i = 0;
       let subEdge;
@@ -887,7 +889,7 @@ export function nextEdgeFromPoint(
 
 export function createChainedContours(
     edges: Set<Edge>
-  ) : Array<Contour> {
+) : Array<Contour> {
 
   const contours = new Array<Contour>();
 
@@ -932,7 +934,7 @@ export function computeContoursVisibility(
     contours: Array<Contour>,
     camera: PerspectiveCamera,
     meshes: Array<SVGMesh>,
-  ): ContoursVisibilityInfo {
+): ContoursVisibilityInfo {
 
   const info = {
     numberOfRaycasts: 0,
@@ -972,8 +974,8 @@ export function computeContoursVisibility(
     //   contour.visibility = ContourVisibility.Hidden;
     // } else {
 
-      contourVisibilityWithRaycasting(contour, camera, threeObjects);
-      info.numberOfRaycasts += 1;
+    contourVisibilityWithRaycasting(contour, camera, threeObjects);
+    info.numberOfRaycasts += 1;
     // }
   }
 
@@ -1010,7 +1012,7 @@ export function contourVisibilityWithRaycasting(
     camera: PerspectiveCamera,
     objects: Array<Mesh>,
     tolerance = 1e-10
-  ) {
+) {
 
   // Get the middle segment from the contour
   const edge = contour.middleEdge();
@@ -1056,7 +1058,7 @@ export function assignPolygons(
     camera: PerspectiveCamera,
     objects: SVGMesh[],
     defaultColor: ColorRepresentation = 0x333333,
-  ): AssignPolygonInfo {
+): AssignPolygonInfo {
 
   let assigned = 0;
 

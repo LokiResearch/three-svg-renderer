@@ -167,7 +167,7 @@ describe("Function computeSurfaceIntersections", () => {
 
   test("Check sizes", () => {
     expect(info.nbIntersections).toBe(8);
-    expect(info.intersectionEdges.length).toBe(8);
+    expect(info.intersectionEdges).toHaveLength(8);
   });
 
   test("Check the total number edges after intersection", () => {
@@ -176,7 +176,7 @@ describe("Function computeSurfaceIntersections", () => {
     // Furthermore, we should have 8 faces with 6 edges
 
     let nbFaceWith6Edges = 0;
-    let uniqueEdges = new Set<Edge>();
+    const uniqueEdges = new Set<Edge>();
     for (const face of cube.hes.faces) {
       if (face.edges.size === 6) {
         nbFaceWith6Edges += 1;

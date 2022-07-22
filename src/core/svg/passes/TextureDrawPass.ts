@@ -80,7 +80,7 @@ export class TextureDrawPass extends DrawPass {
   camera: PerspectiveCamera;
   tmeshes: SVGTexturedMesh[];
 
-    /**
+  /**
      * @param camera 
      * @param tmeshes 
      */
@@ -111,7 +111,7 @@ export class TextureDrawPass extends DrawPass {
     // Get the viewmap polygons for each mesh so they can be used as clipping
     // paths
     const meshPolygonsMap = new Map<SVGMesh, Polygon[]>();
-    for (const tmesh of this.tmeshes ) {
+    for (const tmesh of this.tmeshes) {
       meshPolygonsMap.set(tmesh, []);
     }
 
@@ -173,9 +173,9 @@ function getElligibleTMeshes(viewmap: Viewmap, tmeshes: SVGTexturedMesh[]) {
 
 
 async function getImageTexture(
-  camera: PerspectiveCamera,
-  renderSize: Size,
-  tmesh: SVGTexturedMesh
+    camera: PerspectiveCamera,
+    renderSize: Size,
+    tmesh: SVGTexturedMesh
 ) {
 
   const url = await loadFileAsDataURL(tmesh.texture);
@@ -216,9 +216,9 @@ async function getImageTexture(
 }
 
 async function getSVGTexture(
-  camera: PerspectiveCamera,
-  renderSize: Size,
-  tmesh: SVGTexturedMesh
+    camera: PerspectiveCamera,
+    renderSize: Size,
+    tmesh: SVGTexturedMesh
 ) {
 
   const content = await loadFileAsText(tmesh.texture);
@@ -260,7 +260,7 @@ function getCVTransformMatrix(
     renderSize: Size,
     srcRect: Rect,
     tmesh: SVGTexturedMesh,
-  ) {
+) {
 
   let minX = Infinity;
   let minY = Infinity;
@@ -313,47 +313,41 @@ function getCVTransformMatrix(
 
 
 function transformSVG(
-  element: SVGElement,
-  camera: PerspectiveCamera,
-  renderSize: Size,
-  tmesh: SVGTexturedMesh,
-  transformMatrix?: CVMat
+    element: SVGElement,
+    camera: PerspectiveCamera,
+    renderSize: Size,
+    tmesh: SVGTexturedMesh,
+    transformMatrix?: CVMat
 ){
-  switch(element.type) {
-    case "svg":
-      const svg = element as Svg;
-      let inRect: Rect = {
-        x: NumberAliasToNumber(svg.x()), y: NumberAliasToNumber(svg.y()),
-        w: NumberAliasToNumber(svg.width()), h: NumberAliasToNumber(svg.height())};
-      const viewBox = svg.viewbox();
-      if (viewBox.height !== 0 && viewBox.width !==0) {
-        inRect = {x: viewBox.x, y: viewBox.y, w: viewBox.width, h: viewBox.height};
-      }
+  if (element.type === "svg") {
+    const svg = element as Svg;
+    let inRect: Rect = {
+      x: NumberAliasToNumber(svg.x()), y: NumberAliasToNumber(svg.y()),
+      w: NumberAliasToNumber(svg.width()), h: NumberAliasToNumber(svg.height())};
+    const viewBox = svg.viewbox();
+    if (viewBox.height !== 0 && viewBox.width !==0) {
+      inRect = {x: viewBox.x, y: viewBox.y, w: viewBox.width, h: viewBox.height};
+    }
 
-      if (inRect.w === 0 || inRect.h === 0) {
-        throw("Embedded SVG has no visible dimension: i.e no width/height or viewbox properties.");
-      }
+    if (inRect.w === 0 || inRect.h === 0) {
+      throw("Embedded SVG has no visible dimension: i.e no width/height or viewbox properties.");
+    }
 
-      const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, inRect, tmesh);
-      svg.x(outRect.x);
-      svg.y(outRect.y);
-      svg.attr('viewBox', null);
-      transformMatrix = matrix;
-      break;
-    case "polygon":
-      element = replaceShapeByPath(element as SVGPolygon);
-    case "rect":
-      element = replaceShapeByPath(element as SVGRect);
-    case "ellipse":
-      element = replaceShapeByPath(element as SVGEllipse);
-    case "circle":
-      element = replaceShapeByPath(element as SVGCircle);
-    case "path":
-      break;
-    case "g":
-      break;
-    default:
-      console.error("Unknown SVG tag \""+element.type+"\", ignoring.", element);
+    const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, inRect, tmesh);
+    svg.x(outRect.x);
+    svg.y(outRect.y);
+    svg.attr('viewBox', null);
+    transformMatrix = matrix;
+  } else if (element.type === "polygon") {
+    element = replaceShapeByPath(element as SVGPolygon);
+  } else if (element.type === "rect") {
+    element = replaceShapeByPath(element as SVGRect);
+  } else if (element.type === "ellipse") {
+    element = replaceShapeByPath(element as SVGEllipse);
+  } else if (element.type === "circle") {
+    element = replaceShapeByPath(element as SVGCircle);
+  } else if (element.type !== "path" && element.type !== "g") {
+    console.error("Unknown SVG tag \""+element.type+"\", ignoring.", element);
   }
 
   if (element.type !== 'svg' && !transformMatrix) {
@@ -379,49 +373,49 @@ function transformSVG(
 function transformSVGPath(path: SVGPath, matrix: CVMat) {
   const array = path.array();
   const newCmds = new Array<SVGPathCommand>();
-  let lastP = {x: 0, y:0};
+  const lastP = {x: 0, y:0};
   let p: Point, p1: Point, p2: Point;
   for (let i=0; i<array.length; i++) {
     const cmd = array[i];
     const op = cmd[0];
     switch(op) {
-      // Horizontal line from the last point
-      case 'H':
-        p = transformCoords(cmd[1], lastP.y, matrix);
-        newCmds.push(['L', round(p.x), round(p.y)]);
-        lastP.x = cmd[1];
-        break;
+    // Horizontal line from the last point
+    case 'H':
+      p = transformCoords(cmd[1], lastP.y, matrix);
+      newCmds.push(['L', round(p.x), round(p.y)]);
+      lastP.x = cmd[1];
+      break;
       // vertical line from the last point
-      case 'V':
-        p = transformCoords(lastP.x, cmd[1], matrix);
-        newCmds.push(['L', round(p.x), round(p.y)]);
-        lastP.y = cmd[1];
-        break;
+    case 'V':
+      p = transformCoords(lastP.x, cmd[1], matrix);
+      newCmds.push(['L', round(p.x), round(p.y)]);
+      lastP.y = cmd[1];
+      break;
       // Move to | Line to
-      case 'M':
-      case 'L':
-        p = transformCoords(cmd[1], cmd[2], matrix);
-        newCmds.push([op, round(p.x), round(p.y)]);
-        lastP.x = cmd[1]
-        lastP.y = cmd[2];
-        break;
+    case 'M':
+    case 'L':
+      p = transformCoords(cmd[1], cmd[2], matrix);
+      newCmds.push([op, round(p.x), round(p.y)]);
+      lastP.x = cmd[1]
+      lastP.y = cmd[2];
+      break;
       // Curve to
-      case 'C':
-        p = transformCoords(cmd[1], cmd[2], matrix);
-        p1 = transformCoords(cmd[3], cmd[4], matrix);
-        p2 = transformCoords(cmd[5], cmd[6], matrix);
-        newCmds.push([op, round(p.x), round(p.y),
-          round(p1.x), round(p1.y), round(p2.x), round(p2.y)]);
-        lastP.x = cmd[5]
-        lastP.y = cmd[6];
-        break;
+    case 'C':
+      p = transformCoords(cmd[1], cmd[2], matrix);
+      p1 = transformCoords(cmd[3], cmd[4], matrix);
+      p2 = transformCoords(cmd[5], cmd[6], matrix);
+      newCmds.push([op, round(p.x), round(p.y),
+        round(p1.x), round(p1.y), round(p2.x), round(p2.y)]);
+      lastP.x = cmd[5]
+      lastP.y = cmd[6];
+      break;
       // Close path
-      case 'Z':
-        newCmds.push(['Z'])
-        break;
+    case 'Z':
+      newCmds.push(['Z'])
+      break;
 
-      default:
-        console.info("Unsupported SVG path command", op);
+    default:
+      console.info("Unsupported SVG path command", op);
     }
   }
   path.plot(new SVGPathArray(newCmds));

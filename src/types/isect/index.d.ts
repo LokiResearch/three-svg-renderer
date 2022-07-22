@@ -23,8 +23,8 @@ declare module 'isect' {
   }
 
   interface ISectResults {
-    run: Function,
-    step: Function
+    run: ()=>void;
+    step: ()=>void;
   }
 
   interface Intersection {

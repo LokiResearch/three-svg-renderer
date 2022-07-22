@@ -82,7 +82,7 @@ export async function computePolygons(contours: Array<Contour>) {
 
 export function convertContourList(
     vector: Arrangement2D.ContourList
-  ) : Array<Array<Vector2>> {
+) : Array<Array<Vector2>> {
 
   const array = new Array<Array<Vector2>>();
   for (let i=0; i<vector.size(); i++) {
@@ -93,7 +93,7 @@ export function convertContourList(
 
 export function convertContour(
     contour: Arrangement2D.Contour
-  ) : Array<Vector2> {
+) : Array<Vector2> {
   const array = new Array<Vector2>();
   for (let i=0; i<contour.size(); i++) {
     const p = contour.at(i);

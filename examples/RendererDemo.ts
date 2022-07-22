@@ -91,8 +91,8 @@ const gui = new GUI();
 gui.add(params, 'shape', possibleObjects).onChange(setupScene);
 let gui_root: GUI;
 let style_gui: GUI;
-let options_gui: GUI
-let options: any, style : any;
+let options_gui: GUI;
+let options, style;
 
 // Setup visible and hidden contours gui (same settings basically)
 const contours_gui_params = [
@@ -195,7 +195,6 @@ function updatePasses() {
   if (params.singularityPoints.draw) {
     svgRenderer.addDrawPass(singularityPass);
   }
-
 }
 
 
@@ -214,15 +213,15 @@ function setupScene() {
   scene.add(camera);
 
   switch (params.shape) {
-    case "torusknot":
-      scene.add(new Mesh(new THREE.TorusKnotGeometry(), meshMaterial));
-      break;
-    case "pig":
-      loadGLTFObject(window.location+"../../../../objects/pig.gltf")
-      break;
-    case "cube":
-    default:
-      scene.add(new Mesh(new THREE.BoxGeometry(), meshMaterial));
+  case "torusknot":
+    scene.add(new Mesh(new THREE.TorusKnotGeometry(), meshMaterial));
+    break;
+  case "pig":
+    loadGLTFObject(window.location+"../../../../objects/pig.gltf")
+    break;
+  case "cube":
+  default:
+    scene.add(new Mesh(new THREE.BoxGeometry(), meshMaterial));
   }
 
   render();
@@ -230,23 +229,20 @@ function setupScene() {
 
 const loader = new GLTFLoader();
 function loadGLTFObject(url: string) {
-  loader.load(url, function ( gltf ) {
+  loader.load(url, function (gltf) {
     scene.add(gltf.scene);
   });
 }
 
 function render() {
-
   gui.updateDisplay();
-
   renderer.render(scene, camera);
-
 }
 
 function generateSVG() {
 
   const svgMeshes = new Array<SVGMesh>();
-  scene.traverse( obj => {
+  scene.traverse(obj => {
     if ((obj as Mesh).isMesh) {
       svgMeshes.push(new SVGMesh(obj as Mesh));
     }
@@ -260,7 +256,6 @@ function generateSVG() {
       console.info(info);
     }
   });
-
 }
 
 function clearHTMLElement(e: HTMLElement) {

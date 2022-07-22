@@ -85,7 +85,7 @@ export class SVGMesh {
   colorForFaceIndex(faceIndex: number): null | Color {
 
     if (Array.isArray(this.material)) {
-      for (let group of this.morphGeometry.groups) {
+      for (const group of this.morphGeometry.groups) {
         if (group.start <= faceIndex &&
             faceIndex < (group.start + group.count) &&
             group.materialIndex != undefined &&

@@ -12,6 +12,8 @@ const lib_cfg = {
     "arrangement-2d-js",
     "isect",
     "@svgdotjs/svg.js",
+    "opencv-ts",
+    "fast-triangle-triangle-intersection"
   ],
   output: [
     {
@@ -25,7 +27,8 @@ const lib_cfg = {
         'three-mesh-halfedge':'ThreeMeshHalfEdge', 
         'arrangement-2d-js':'Arrangement2d',
         'isect':'isect',
-        '@svgdotjs/svg.js':'Svgdotjs'
+        '@svgdotjs/svg.js':'Svgdotjs',
+        'fast-triangle-triangle-intersection':"FastTriangleTriangleIntersection",
       }
     },
       {
