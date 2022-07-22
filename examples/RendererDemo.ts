@@ -5,6 +5,7 @@ import { FillsDrawPass, HiddenContoursDrawPass, SingularityPointsDrawPass, SVGMe
   SVGRenderer, VisibleContoursDrawPass, SVGRenderInfo} from '../src/index';
 import { Mesh } from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
+import {debounce} from 'throttle-debounce';
 
 const possibleObjects = {
   "cube": "cube",
@@ -22,6 +23,7 @@ const singularityPass = new SingularityPointsDrawPass();
 
 
 const params = {
+  autoRender: true,
   shape: "cube",
   fills: {
     draw: true,
@@ -148,6 +150,7 @@ options_gui.add(options, "pointSize", 0, 20, 0.5).onChange(updatePasses);
 options_gui.add(options, "drawVisiblePoints").onChange(updatePasses);
 options_gui.add(options, "drawHiddenPoints").onChange(updatePasses);
 
+gui.add(params, 'autoRender').onChange(autoRenderChanged);
 gui.add({'Render SVG':generateSVG}, 'Render SVG');
 gui.open();
 
@@ -174,6 +177,20 @@ window.addEventListener('resize', function () {
   render();
 
 }, false);
+
+function autoRenderChanged() {
+  if (params.autoRender) {
+    orbitControls.addEventListener('end', generateSVG);
+  } else {
+    orbitControls.removeEventListener('end', generateSVG);
+  }
+
+}
+
+//##############################################################################
+//                          Setup svg rendering
+//##############################################################################
+
 
 
 function updatePasses() {
@@ -232,6 +249,7 @@ function loadGLTFObject(url: string) {
   loader.load(url, function (gltf) {
     scene.add(gltf.scene);
     render();
+    params.autoRender && generateSVG();
   });
 }
 
@@ -240,8 +258,7 @@ function render() {
   renderer.render(scene, camera);
 }
 
-function generateSVG() {
-
+const debouncedGenerateSVG = debounce(500, () => {
   const svgMeshes = new Array<SVGMesh>();
   scene.traverse(obj => {
     if ((obj as Mesh).isMesh) {
@@ -257,6 +274,10 @@ function generateSVG() {
       console.info(info);
     }
   });
+});
+
+function generateSVG() {
+  debouncedGenerateSVG();
 }
 
 function clearHTMLElement(e: HTMLElement) {
@@ -267,6 +288,11 @@ function clearHTMLElement(e: HTMLElement) {
   }
 }
 
-
+autoRenderChanged();
 updatePasses();
 setupScene();
+params.autoRender && generateSVG();
+
+
+
+
