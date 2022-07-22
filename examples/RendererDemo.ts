@@ -24,7 +24,7 @@ const singularityPass = new SingularityPointsDrawPass();
 
 const params = {
   autoRender: true,
-  shape: "cube",
+  scene: "cube",
   fills: {
     draw: true,
     style: fillsPass.fillStyle,
@@ -90,7 +90,7 @@ scene.add(camera);
 //##############################################################################
 
 const gui = new GUI();
-gui.add(params, 'shape', possibleObjects).onChange(setupScene);
+gui.add(params, 'scene', possibleObjects).onChange(setupScene);
 let gui_root: GUI;
 let style_gui: GUI;
 let options_gui: GUI;
@@ -229,7 +229,7 @@ function setupScene() {
   scene.add(ambientLight)
   scene.add(camera);
 
-  switch (params.shape) {
+  switch (params.scene) {
   case "torusknot":
     scene.add(new Mesh(new THREE.TorusKnotGeometry(), meshMaterial));
     break;
