@@ -38,9 +38,7 @@ export interface SingularityPointsDrawPassOptions {
 export class SingularityPointsDrawPass extends DrawPass {
   readonly options: SingularityPointsDrawPassOptions;
 
-  constructor(
-      options: Partial<SingularityPointsDrawPassOptions> = {}
-  ) {
+  constructor(options: Partial<SingularityPointsDrawPassOptions> = {}) {
     super();
 
     this.options = {

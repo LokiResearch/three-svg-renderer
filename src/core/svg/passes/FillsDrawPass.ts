@@ -29,8 +29,8 @@ export class FillsDrawPass extends DrawPass {
   readonly fillStyle: FillData;
 
   constructor(
-      options: Partial<FillsDrawPassOptions> = {}, 
-      fillStyle: FillData = {}
+      fillStyle: FillData = {},
+      options: Partial<FillsDrawPassOptions> = {}
   ) {
     super();
 

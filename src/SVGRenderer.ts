@@ -35,6 +35,15 @@ export class SVGRenderer {
   readonly viewmap = new Viewmap ();
   readonly svgBuilder = new SVGBuilder();
 
+  /**
+   * Render a SVG file from the given meshes and returns it.
+   * @param meshes Mehses to render
+   * @param camera Camera used to compute the perspective
+   * @param size Size of the render (will be scaled by camera aspect ratio)
+   * @param options Options to customize the render
+   * @param info Object containing info (e.g. times) on the rendering process
+   * @returns SVG object from the Svgdotjs lib
+   */
   async generateSVG(
       meshes: Array<SVGMesh>,
       camera: PerspectiveCamera,

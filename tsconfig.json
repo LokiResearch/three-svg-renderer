@@ -6,7 +6,6 @@
     "noUnusedParameters": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "removeComments": true,
     "strictNullChecks":true,
     "strict": true,
     "target": "esnext",

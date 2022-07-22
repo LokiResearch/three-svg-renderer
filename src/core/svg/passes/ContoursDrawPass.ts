@@ -33,8 +33,8 @@ export abstract class ContoursDrawPass extends DrawPass {
   readonly strokeStyle: StrokeData;
 
   constructor(
+      strokeStyle: StrokeData = {},
       options: Partial<ContoursDrawPassOptions> = {}, 
-      strokeStyle: StrokeData = {}
   ) {
     super();
 
@@ -62,10 +62,10 @@ export abstract class ContoursDrawPass extends DrawPass {
 export class VisibleContoursDrawPass extends ContoursDrawPass {
 
   constructor(
+      strokeStyle: StrokeData = {},
       options: Partial<ContoursDrawPassOptions> = {}, 
-      strokeStyle: StrokeData = {}
   ) {
-    super(options, strokeStyle);
+    super(strokeStyle, options);
   }
 
   async draw(svg: Svg, viewmap: Viewmap) {
@@ -83,10 +83,10 @@ export class VisibleContoursDrawPass extends ContoursDrawPass {
 export class HiddenContoursDrawPass extends ContoursDrawPass {
 
   constructor(
+      strokeStyle: StrokeData = {},
       options: Partial<ContoursDrawPassOptions> = {}, 
-      strokeStyle: StrokeData = {}
   ) {
-    super(options, {color: "#FF0000", dasharray: "2,2", ...strokeStyle});
+    super({color: "#FF0000", dasharray: "2,2", ...strokeStyle}, options);
   }
 
   async draw(svg: Svg, viewmap: Viewmap) {
