@@ -585,7 +585,8 @@ export function splitEdge(edge: Edge, position: Vector3, tolerance = 1e-10) {
   // Check if the position cuts the edge in 2
   if (edge.contains3dPosition(position, tolerance)) {
 
-    const lerpNormal = edge.normalAtPosition(position, new Vector3());
+    const lerpNormal = new Vector3();
+    edge.normalAtPosition(position, lerpNormal);
 
     const vertex = new Vertex(-1, position.clone(), lerpNormal);
 
