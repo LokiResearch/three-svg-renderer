@@ -1,8 +1,9 @@
 {
-  "name": "three-npr-renderering",
+  "name": "three-svg-renderering",
   "description": "",
   "keywords": [
-    "npr rendering",
+    "svg",
+    "svg rendering",
     "three.js"
   ],
   "version": "0.1.0",
