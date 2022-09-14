@@ -7,12 +7,14 @@
 
 ### A **experimental** SVG renderer based on threejs to render 3D scenes as Vector Graphics.
 
-Instead of basically drawing all the objects triangles which produces a **HUGE** svg file (such as threejs embedded SVGRenderer), this renderer analyzes the geometry to compute visible and hidden contours to draw (e.g. such as Freestyle renderer in Blender). Feel free to test the demo!
+Instead of basically drawing all the objects triangles which produces a **HUGE** svg file (such as threejs embedded SVGRenderer), this renderer analyzes the geometry to compute visible and hidden contours to draw (e.g. such as Freestyle renderer in Blender). 
+
+Feel free to test the demo!
 
 ![A SVG rendering of a 3D pig](./images/pig_rendering.png)
 
 
-## Examples
+## Demo
 
 [Online SVG Renderer Demo](https://lokiresearch.github.io/three-svg-rendering/build/examples/RendererDemo.html)
 
