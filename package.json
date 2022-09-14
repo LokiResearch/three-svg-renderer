@@ -8,15 +8,19 @@
   ],
   "version": "0.0.1",
   "type": "module",
-  "main": "index.umd.js",
-  "module": "index.esm.js",
+  "main": "build/index.umd.js",
+  "module": "build/index.esm.js",
+  "types": "build/types/index.d.ts",
+  "files":[
+    "build"
+  ],
   "scripts": {
     "build": "rollup -c",
     "build-examples": "rollup -c --environment examples",
     "watch": "rollup -cw",
     "test": "jest",
     "lint": "eslint src examples",
-    "prepare": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
     "three": ">= 0.141.0"
