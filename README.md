@@ -5,7 +5,9 @@
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/LokiResearch/three-svg-rendering?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/minitoine/three-svg-rendering/context:javascript)
 [![License](https://img.shields.io/badge/License-MIT-green)](#license)
 
-A experimental SVG renderer based on threejs to render 3D scenes as Vector Graphics.
+### A **experimental** SVG renderer based on threejs to render 3D scenes as Vector Graphics.
+
+Instead of basically drawing all the objects triangles which produces a **HUGE** svg file (such as threejs embedded SVGRenderer), this renderer analyzes the geometry to compute visible and hidden contours to draw (e.g. such as Freestyle renderer in Blender). Feel free to test the demo!
 
 ![A SVG rendering of a 3D pig](./images/pig_rendering.png)
 
