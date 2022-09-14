@@ -1,12 +1,17 @@
 {
   "name": "three-svg-rendering",
-  "description": "",
+  "description": "A three.js SVG renderer to render 3D scenes as Vector Graphics.",
   "keywords": [
     "svg",
     "svg rendering",
     "three.js"
   ],
   "version": "0.0.1",
+  "author": {
+    "name": "Axel Antoine",
+    "email": "ax.antoine@gmail.com",
+    "url": "http://axantoine.com"
+  },
   "type": "module",
   "main": "build/index.umd.js",
   "module": "build/index.esm.js",
