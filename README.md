@@ -1,5 +1,6 @@
 # three-svg-rendering
 
+[![npm version](https://badge.fury.io/js/three-svg-rendering.svg)](https://badge.fury.io/js/three-svg-rendering)
 [![build](https://github.com/LokiResearch/three-svg-rendering/workflows/build/badge.svg)](https://github.com/LokiResearch/three-svg-rendering/actions?query=workflow:"build")
 [![GitHub release](https://img.shields.io/github/release/LokiResearch/three-svg-rendering?include_prereleases=&sort=semver&color=blue)](https://github.com/LokiResearch/three-svg-rendering/releases/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/LokiResearch/three-svg-rendering?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/minitoine/three-svg-rendering/context:javascript)
@@ -20,12 +21,9 @@ Feel free to test the demo!
 
 ## Install
 
-#### From GitHub
 ```bash
-npm i git+https://github.com/LokiResearch/three-svg-rendering.git
+npm i three-svg-rendering
 ```
-
-
 
 ## How to use
 
