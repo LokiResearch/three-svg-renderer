@@ -22,7 +22,7 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "three": "^0.141.0"
+    "three": ">= 0.141.0"
   },
   "dependencies": {
     "@svgdotjs/svg.js": "^3.1.2",
