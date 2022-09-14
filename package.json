@@ -10,16 +10,13 @@
   "type": "module",
   "main": "index.umd.js",
   "module": "index.esm.js",
-  "files":[
-    "build"
-  ],
   "scripts": {
     "build": "rollup -c",
     "build-examples": "rollup -c --environment examples",
     "watch": "rollup -cw",
     "test": "jest",
     "lint": "eslint src examples",
-    "prepublishOnly": "npm run build"
+    "prepare": "npm run build"
   },
   "peerDependencies": {
     "three": ">= 0.141.0"
