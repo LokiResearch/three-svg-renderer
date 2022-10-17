@@ -12,6 +12,5 @@
  * Licence: Licence.md
  */
 
-export { SVGRenderer, SVGRenderInfo } from "./SVGRenderer";
-export * from './core';
-import "./augments";
+export { SVGMesh } from "./SVGMesh";
+export * from './svg/passes';

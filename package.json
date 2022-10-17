@@ -17,12 +17,13 @@
   "module": "build/index.esm.js",
   "types": "build/types/index.d.ts",
   "files":[
-    "build"
+    "build",
+    "src"
   ],
   "scripts": {
     "build": "rollup -c",
     "build-examples": "rollup -c --environment examples",
-    "watch": "rollup -cw",
+    "dev": "rollup -cw",
     "test": "jest",
     "lint": "eslint src examples",
     "prepublishOnly": "npm run build"

@@ -2,6 +2,7 @@ import typescript from '@rollup/plugin-typescript';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs'
 import htmlTemplate from 'rollup-plugin-generate-html-template';
+import { env } from 'process';
 
 const lib_cfg = {
   input: 'src/index.ts',
@@ -28,10 +29,11 @@ const lib_cfg = {
         'arrangement-2d-js':'Arrangement2d',
         'isect':'isect',
         '@svgdotjs/svg.js':'Svgdotjs',
+        "opencv-ts":'opencv',
         'fast-triangle-triangle-intersection':"FastTriangleTriangleIntersection",
       }
     },
-      {
+    {
       format: 'esm',
       file: 'build/index.esm.js',
       sourcemap: true,
@@ -49,7 +51,7 @@ const lib_cfg = {
         "sourceMap": true,
       },
       exclude: ["examples/*", 'node_modules'],
-      noEmitOnError: !process.env.ROLLUP_WATCH,
+      noEmitOnError: !env.ROLLUP_WATCH,
     })
   ],
 };
@@ -58,8 +60,7 @@ const examples = ['RendererDemo'];
 const examples_cfg = []
 
 for (const example of examples) {
-  examples_cfg.push(
-  {
+  examples_cfg.push({
     input: `examples/${example}.ts`,
     output: {
       file: `build/examples/${example}.js`,
@@ -69,7 +70,7 @@ for (const example of examples) {
       commonjs(),
       typescript({
         tsconfig: './tsconfig.json',
-        noEmitOnError: !process.env.ROLLUP_WATCH,
+        noEmitOnError: !env.ROLLUP_WATCH,
       }),
       htmlTemplate({
         template: `examples/${example}.html`,
@@ -81,9 +82,8 @@ for (const example of examples) {
   );
 }
 
-
 let exported;
-if (process.env.examples) {
+if (env.examples) {
   exported = examples_cfg;
 } else {
   exported = lib_cfg;
