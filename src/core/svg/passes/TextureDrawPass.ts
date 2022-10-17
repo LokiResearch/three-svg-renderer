@@ -40,6 +40,11 @@ import { getSVGPath, getSVGImage, NumberAliasToNumber, replaceShapeByPath } from
 declare const _cvVectorIn: CVMat;
 declare const _cvVectorOut: CVMat;
 
+export interface TextureFile {
+  name: string;
+  dataURL: string;
+}
+
 // Make a promise to know when opencv module is available
 const cvPromise = new Promise<void>(resolve => {
   cv.onRuntimeInitialized = () => {
@@ -51,9 +56,9 @@ const cvPromise = new Promise<void>(resolve => {
 export class SVGTexturedMesh extends SVGMesh {
   isSVGTexturedMesh = true;
 
-  texture: File;
+  texture: TextureFile;
 
-  constructor (mesh: Mesh, texture: File) {
+  constructor (mesh: Mesh, texture: TextureFile) {
     super(mesh);
     this.texture = texture;
   }
@@ -160,9 +165,9 @@ function getElligibleTMeshes(viewmap: Viewmap, tmeshes: SVGTexturedMesh[]) {
       // Probably a bit rough, but we consider if the mesh's HalfEdgeStructure
       // has 4 vertices and 2 faces, it is a plane
 
-      console.error(`Mesh ${tmesh.name} ignored: only plane geometries are currently supported`);
+      console.warn(`Mesh ${tmesh.name} ignored: only plane geometries are currently supported`);
     } else {
-      elligibleTMeshes.push()
+      elligibleTMeshes.push(tmesh);
     }
   }
 
@@ -178,10 +183,8 @@ async function getImageTexture(
     tmesh: SVGTexturedMesh
 ) {
 
-  const url = await loadFileAsDataURL(tmesh.texture);
-
   const imgEl = document.getElementById('openCVInputImage') as HTMLImageElement;
-  imgEl.src = url;
+  imgEl.src = tmesh.texture.dataURL;
   const srcImageMatrix = cv.imread(imgEl);
 
   // Get the transformation matrix and the output size;
@@ -196,7 +199,7 @@ async function getImageTexture(
   const canvas = document.getElementById('openCVOutputCanvas') as HTMLCanvasElement;
   cv.imshow(canvas, dstImageMatrix);
 
-  const svgImage = await new Promise<SVGImage>((resolve, reject) => {
+  return new Promise<SVGImage>((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (blob) {
         const fr = new FileReader();
@@ -211,8 +214,6 @@ async function getImageTexture(
       }
     });
   });
-
-  return svgImage;
 }
 
 async function getSVGTexture(
@@ -221,39 +222,39 @@ async function getSVGTexture(
     tmesh: SVGTexturedMesh
 ) {
 
-  const content = await loadFileAsText(tmesh.texture);
-  // As SVG.js gets an extra <svg> div around the svg for internal
-  // computations, we only take the children
-  // See first question in the FAQ: https://svgjs.dev/docs/3.0/faq/
-  const svg = SVG().svg(content);
-  
-  const group = new SVGGroup({id:"svg-interface-"+tmesh.name});
-  for(const child of svg.children()) {
-    transformSVG(child, camera, renderSize, tmesh);
-    group.add(child)
+  return new Promise<SVGGroup>((resolve, reject) => {
+    
+    const content = svgContentFromDataURL(tmesh.texture.dataURL);
+
+    if (!content) {
+      reject("Couldn't retrieved svg content from base64 dataURL");
+    } else {
+      // As SVG.js gets an extra <svg> div around the svg for internal
+      // computations, we only take the children
+      // See first question in the FAQ: https://svgjs.dev/docs/3.0/faq/
+      const svg = SVG().svg(content);
+      
+      const group = new SVGGroup({id:"svg-interface-"+tmesh.name});
+      for(const child of svg.children()) {
+        transformSVG(child, camera, renderSize, tmesh);
+        group.add(child)
+      }
+      resolve(group);
+    }
+  });
+}
+
+function svgContentFromDataURL(dataUrl: string) {
+  if (dataUrl.startsWith('data:image/svg+xml;base64,')) {
+    // Remove the header
+    const encodedString = dataUrl.replace('data:image/svg+xml;base64,','');
+
+    // Convert from base64 to utf8
+    const buffer = Buffer.from(encodedString, 'base64');
+    return buffer.toString('utf8');
   }
-  return group;
+  return null;
 }
-
-function loadFileAsText(file: File) {
-  return new Promise<string>((resolve) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      resolve(reader.result as string);
-    }
-    reader.readAsText(file);
-  });
-}
-
-async function loadFileAsDataURL(file: File) {
-  return new Promise<string>((resolve) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      resolve(reader.result as string);
-    }
-    reader.readAsDataURL(file);
-  });
-} 
 
 function getCVTransformMatrix(
     camera: PerspectiveCamera,
