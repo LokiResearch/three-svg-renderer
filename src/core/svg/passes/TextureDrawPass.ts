@@ -40,9 +40,9 @@ import { getSVGPath, getSVGImage, NumberAliasToNumber, replaceShapeByPath } from
 declare const _cvVectorIn: CVMat;
 declare const _cvVectorOut: CVMat;
 
-export interface TextureFile {
+export interface Texture {
   name: string;
-  dataURL: string;
+  url: string;
 }
 
 // Make a promise to know when opencv module is available
@@ -56,9 +56,9 @@ const cvPromise = new Promise<void>(resolve => {
 export class SVGTexturedMesh extends SVGMesh {
   isSVGTexturedMesh = true;
 
-  texture: TextureFile;
+  texture: Texture;
 
-  constructor (mesh: Mesh, texture: TextureFile) {
+  constructor (mesh: Mesh, texture: Texture) {
     super(mesh);
     this.texture = texture;
   }
@@ -184,7 +184,7 @@ async function getImageTexture(
 ) {
 
   const imgEl = document.getElementById('openCVInputImage') as HTMLImageElement;
-  imgEl.src = tmesh.texture.dataURL;
+  imgEl.src = tmesh.texture.url;
   const srcImageMatrix = cv.imread(imgEl);
 
   // Get the transformation matrix and the output size;
@@ -224,7 +224,7 @@ async function getSVGTexture(
 
   return new Promise<SVGGroup>((resolve, reject) => {
     
-    const content = svgContentFromDataURL(tmesh.texture.dataURL);
+    const content = svgContentFromDataURL(tmesh.texture.url);
 
     if (!content) {
       reject("Couldn't retrieved svg content from base64 dataURL");
