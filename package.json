@@ -26,7 +26,8 @@
     "dev": "rollup -cw",
     "test": "jest",
     "lint": "eslint src examples",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
   },
   "peerDependencies": {
     "three": ">= 0.141.0"
