@@ -13,7 +13,7 @@
 import {Vector2} from 'three';
 import {Edge} from './Edge';
 import {Point} from './Point';
-import { SVGMesh } from '../SVGMesh';
+import { SVGMesh } from '../svg/SVGMesh';
 
 export enum ContourVisibility {
   Unknown = "Unknown",

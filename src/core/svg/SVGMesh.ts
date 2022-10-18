@@ -13,14 +13,28 @@
 import {Mesh, Material, BufferGeometry, Color, Vector3, Raycaster, Intersection} from 'three';
 import {HalfEdgeStructure, HalfEdgeStructureOptions} from 'three-mesh-halfedge';
 import {MeshBVH, CENTER, MeshBVHOptions, acceleratedRaycast} from 'three-mesh-bvh';
-import {computeMorphedGeometry} from '../utils/geometry';
+import {computeMorphedGeometry} from '../../utils/geometry';
 
 type ColorMaterial = Material & {color: Color};
 
 export interface SVGMeshOptions {
   bvhOptions?: MeshBVHOptions;
   hesOptions?: HalfEdgeStructureOptions;
-  replaceMeshRaycastFunc?: boolean;
+}
+
+/**
+ * SVGTexture allows to add a texture to a SVGMesh.
+ * Raster image (.jpeg, .png) or vector graphics (.svg) are supported.
+ */
+export interface SVGTexture {
+  /**
+   * Name of the texture
+   */
+  name: string;
+  /**
+   * DataUrl to the image and vector graphics texture
+   */
+  url: string;
 }
 
 /**
@@ -34,7 +48,11 @@ export class SVGMesh {
   readonly morphGeometry: BufferGeometry;
   readonly hes: HalfEdgeStructure;
   readonly bvh: MeshBVH;
+  drawFills = true;
+  drawVisibleContours = true;
+  drawHiddenContours = true;
   isUsingBVHForRaycasting = false;
+  texture?: SVGTexture;
   private readonly _originalRaycastFunc: typeof Mesh.prototype.raycast;
 
   constructor(mesh: Mesh, options: SVGMeshOptions = {}) {
@@ -42,10 +60,6 @@ export class SVGMesh {
     this.morphGeometry = new BufferGeometry();
     this._originalRaycastFunc = mesh.raycast;
     this.updateMorphGeometry();
-    
-    if (options.replaceMeshRaycastFunc) {
-      this.useBVHRaycast(true);
-    }
 
     // Setup HES
     const hesOptions = {
@@ -63,6 +77,16 @@ export class SVGMesh {
 
     this.bvh = new MeshBVH(this.morphGeometry, bvhOptions);
   }
+
+  /**
+   * Adds a SVGtexture to the mesh.
+   * 
+   * @param texture The image or vector graphics texture to use.
+   */
+  addTexture(texture: SVGTexture) {
+    this.texture = texture;
+  }
+
 
   updateMorphGeometry() {
     computeMorphedGeometry(this.threeMesh, this.morphGeometry);

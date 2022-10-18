@@ -11,11 +11,11 @@
 // LICENCE: Licence.md 
 
 import { DrawPass } from "./DrawPass";
-import { Mesh, PerspectiveCamera, Vector2 } from "three";
+import { PerspectiveCamera, Vector2 } from "three";
 import cv, {Mat as CVMat} from "opencv-ts";
 import { round } from "../../../utils/math";
 import {Point, Size, Rect, projectPointImage} from '../../../utils/math';
-import { SVGMesh } from "../../SVGMesh";
+import { SVGMesh, SVGTexture } from "../SVGMesh";
 
 import {
   Svg, SVG,
@@ -40,10 +40,7 @@ import { getSVGPath, getSVGImage, NumberAliasToNumber, replaceShapeByPath } from
 declare const _cvVectorIn: CVMat;
 declare const _cvVectorOut: CVMat;
 
-export interface Texture {
-  name: string;
-  url: string;
-}
+
 
 // Make a promise to know when opencv module is available
 const cvPromise = new Promise<void>(resolve => {
@@ -53,16 +50,7 @@ const cvPromise = new Promise<void>(resolve => {
 });
 
 
-export class SVGTexturedMesh extends SVGMesh {
-  isSVGTexturedMesh = true;
 
-  texture: Texture;
-
-  constructor (mesh: Mesh, texture: Texture) {
-    super(mesh);
-    this.texture = texture;
-  }
-}
 
 /* 
 TODO: Add UV attribute and support all types of geometries
@@ -78,66 +66,91 @@ TODO: Add UV attribute and support all types of geometries
 */
 
 
+type SVGMeshWithTexture = SVGMesh & {texture: SVGTexture};
+
 /**
- * SVGDrawPass used to draw bitmap or svg textures on plane geometries
+ * SVGTexturePass used to draw image or vector graphics textures on mesh in the
+ * final SVG.
+ * 
+ * Note that only `PlaneGeometry` is supported for now. Textures set on 
+ * geometries other than plane will be ignored.
  */
 export class TextureDrawPass extends DrawPass {
-  camera: PerspectiveCamera;
-  tmeshes: SVGTexturedMesh[];
 
-  /**
-     * @param camera 
-     * @param tmeshes 
-     */
-  constructor(camera: PerspectiveCamera, tmeshes: SVGTexturedMesh[]) {
+  constructor() {
     super();
-    this.camera = camera;
-    this.tmeshes = tmeshes;
   }
   
   async draw(svg: Svg, viewmap: Viewmap) {
+
+    const {camera, meshes, polygons} = viewmap;
 
     const renderSize = {
       w: NumberAliasToNumber(svg.width()), 
       h: NumberAliasToNumber(svg.height())
     };
-
-    const elligibleMeshes = getElligibleTMeshes(viewmap, this.tmeshes);
-
-    if (elligibleMeshes.length == 0) {
+    
+    /**
+     * Gather meshes with texture
+     */
+    const textureMeshes = new Array<SVGMeshWithTexture>();
+    for (const mesh of meshes) {
+      if (mesh.texture) {
+        /** We only can handle Plane Geometry for now */
+        if (mesh.threeMesh.geometry.type === "PlaneGeometry") {
+          textureMeshes.push(mesh as SVGMeshWithTexture);
+        } else {
+          console.warn(`Mesh "${mesh.name}": Texture ignore, not a plane geometry.`);
+        }
+      }
+    }
+    
+    /**
+     * Exit if there is no mesh to handle
+     */
+    if (textureMeshes.length === 0) {
       return;
     }
 
+    /**
+     * Wait OpenCV to be loaded, as we need the module to compute the 
+     * perspective transform matrix and image perspective transform
+     */
     await cvPromise;
 
     const group = new SVGGroup({id: "textures"});
     svg.add(group);
 
-    // Get the viewmap polygons for each mesh so they can be used as clipping
-    // paths
+    /**
+     * Get the viewmap polygons for each mesh so they can be used as svg clipping
+     * path for the texture
+     */
     const meshPolygonsMap = new Map<SVGMesh, Polygon[]>();
-    for (const tmesh of this.tmeshes) {
-      meshPolygonsMap.set(tmesh, []);
+    for (const mesh of textureMeshes) {
+      meshPolygonsMap.set(mesh, []);
     }
 
-    for (const polygon of viewmap.polygons) {
+    for (const polygon of polygons) {
       if (polygon.mesh && meshPolygonsMap.has(polygon.mesh)) {
         meshPolygonsMap.get(polygon.mesh)?.push(polygon);
       }
     }
     
-    for (const tmesh of elligibleMeshes) {
+    /**
+     * Draw each mesh texture
+     */
+    for (const mesh of textureMeshes) {
       
       let svgTexture: SVGElement;
-      if (tmesh.texture.name.endsWith(".svg")) {
-        svgTexture = await getSVGTexture(this.camera, renderSize, tmesh);
+      if (mesh.texture.name.endsWith(".svg")) {
+        svgTexture = await getSVGTexture(camera, renderSize, mesh);
       } else {
-        svgTexture = await getImageTexture(this.camera, renderSize, tmesh);
+        svgTexture = await getImageTexture(camera, renderSize, mesh);
       }
 
       // Draw a clipping path using the polygons
       const clipPath = new SVGClipPath();
-      const polygons = meshPolygonsMap.get(tmesh) || []
+      const polygons = meshPolygonsMap.get(mesh) ?? [];
       for (const polygon of polygons) {
         const svgPath = getSVGPath(polygon.contour, polygon.holes, true);
         clipPath.add(svgPath);
@@ -147,34 +160,33 @@ export class TextureDrawPass extends DrawPass {
       group.add(svgTexture);
 
     }
-
   }
 }
 
-function getElligibleTMeshes(viewmap: Viewmap, tmeshes: SVGTexturedMesh[]) {
+// function getElligibleTMeshes(viewmap: Viewmap, tmeshes: SVGTexturedMesh[]) {
 
-  const elligibleTMeshes = new Array<SVGTexturedMesh>();
+//   const elligibleTMeshes = new Array<SVGTexturedMesh>();
 
-  console.log(viewmap, tmeshes);
+//   console.log(viewmap, tmeshes);
 
-  for (const tmesh of tmeshes) {
+//   for (const tmesh of tmeshes) {
 
-    if (!viewmap.meshes.has(tmesh)) {
-      console.error(`Mesh ${tmesh.name} ignored: please add mesh to the viewmap to render it in this pass`);
-    } else if (!tmesh.hes || tmesh.hes.vertices.length !== 4
-                          || tmesh.hes.faces.length !== 2) {
+//     if (!viewmap.meshes.has(tmesh)) {
+//       console.error(`Mesh ${tmesh.name} ignored: please add mesh to the viewmap to render it in this pass`);
+//     } else if (!tmesh.hes || tmesh.hes.vertices.length !== 4
+//                           || tmesh.hes.faces.length !== 2) {
       
-      // Probably a bit rough, but we consider if the mesh's HalfEdgeStructure
-      // has 4 vertices and 2 faces, it is a plane
+//       // Probably a bit rough, but we consider if the mesh's HalfEdgeStructure
+//       // has 4 vertices and 2 faces, it is a plane
 
-      console.warn(`Mesh ${tmesh.name} ignored: only plane geometries are currently supported`);
-    } else {
-      elligibleTMeshes.push(tmesh);
-    }
-  }
+//       console.warn(`Mesh ${tmesh.name} ignored: only plane geometries are currently supported`);
+//     } else {
+//       elligibleTMeshes.push(tmesh);
+//     }
+//   }
 
-  return elligibleTMeshes;
-}
+//   return elligibleTMeshes;
+// }
 
 
 
@@ -182,16 +194,16 @@ function getElligibleTMeshes(viewmap: Viewmap, tmeshes: SVGTexturedMesh[]) {
 async function getImageTexture(
     camera: PerspectiveCamera,
     renderSize: Size,
-    tmesh: SVGTexturedMesh
+    mesh: SVGMeshWithTexture
 ) {
 
   const imgEl = document.getElementById('openCVInputImage') as HTMLImageElement;
-  imgEl.src = tmesh.texture.url;
+  imgEl.src = mesh.texture.url;
   const srcImageMatrix = cv.imread(imgEl);
 
   // Get the transformation matrix and the output size;
   const imgRect = {x: 0, y: 0, w: srcImageMatrix.cols, h: srcImageMatrix.rows};
-  const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, imgRect, tmesh);
+  const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, imgRect, mesh);
 
   const dstImageMatrix = new cv.Mat();
   const dSize = new cv.Size(outRect.w, outRect.h);
@@ -221,12 +233,12 @@ async function getImageTexture(
 async function getSVGTexture(
     camera: PerspectiveCamera,
     renderSize: Size,
-    tmesh: SVGTexturedMesh
+    mesh: SVGMeshWithTexture
 ) {
 
   return new Promise<SVGGroup>((resolve, reject) => {
     
-    const content = svgContentFromDataURL(tmesh.texture.url);
+    const content = svgContentFromDataURL(mesh.texture.url);
 
     if (!content) {
       reject("Couldn't retrieved svg content from base64 dataURL");
@@ -236,9 +248,9 @@ async function getSVGTexture(
       // See first question in the FAQ: https://svgjs.dev/docs/3.0/faq/
       const svg = SVG().svg(content);
       
-      const group = new SVGGroup({id:"svg-interface-"+tmesh.name});
+      const group = new SVGGroup({id:"svg-interface-"+mesh.name});
       for(const child of svg.children()) {
-        transformSVG(child, camera, renderSize, tmesh);
+        transformSVG(child, camera, renderSize, mesh);
         group.add(child)
       }
       resolve(group);
@@ -262,7 +274,7 @@ function getCVTransformMatrix(
     camera: PerspectiveCamera,
     renderSize: Size,
     srcRect: Rect,
-    tmesh: SVGTexturedMesh,
+    mesh: SVGMesh,
 ) {
 
   let minX = Infinity;
@@ -279,7 +291,7 @@ function getCVTransformMatrix(
   const dstPointsArray = new Array<number>();
 
   // Get the coordinates in pixels of the four screen corners
-  const vertices = tmesh.hes.vertices;
+  const vertices = mesh.hes.vertices;
   const corners = vertices.map(vertex => {
     return projectPointImage(vertex.position, new Vector2(), camera, renderSize);
   });
@@ -313,13 +325,11 @@ function getCVTransformMatrix(
   };
 }
 
-
-
 function transformSVG(
     element: SVGElement,
     camera: PerspectiveCamera,
     renderSize: Size,
-    tmesh: SVGTexturedMesh,
+    mesh: SVGMesh,
     transformMatrix?: CVMat
 ){
   if (element.type === "svg") {
@@ -336,7 +346,7 @@ function transformSVG(
       throw("Embedded SVG has no visible dimension: i.e no width/height or viewbox properties.");
     }
 
-    const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, inRect, tmesh);
+    const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, inRect, mesh);
     svg.x(outRect.x);
     svg.y(outRect.y);
     svg.attr('viewBox', null);
@@ -364,7 +374,7 @@ function transformSVG(
   }
 
   for (const child of element.children()) {
-    transformSVG(child, camera, renderSize, tmesh, transformMatrix);
+    transformSVG(child, camera, renderSize, mesh, transformMatrix);
   }
 
   // Delete OpenCV Matrix if the top element has finished its transform
@@ -423,8 +433,6 @@ function transformSVGPath(path: SVGPath, matrix: CVMat) {
   }
   path.plot(new SVGPathArray(newCmds));
 }
-
-
 
 /**
  * Transform x and y coords with an OpenCV [perspective] matrix

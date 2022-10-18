@@ -56,12 +56,14 @@ export class FillsDrawPass extends DrawPass {
 
     for (const mesh of viewmap.meshes) {
 
-      const polygons = viewmap.polygons.filter(p => p.mesh === mesh);
-      const objectGroup = new SVGGroup({id: mesh.name});
-      group.add(objectGroup);
+      if (mesh.drawFills) {
+        const polygons = viewmap.polygons.filter(p => p.mesh === mesh);
+        const objectGroup = new SVGGroup({id: mesh.name});
+        group.add(objectGroup);
 
-      for (const polygon of polygons) {
-        drawPolygon(group, polygon, this.options, undefined, this.fillStyle);
+        for (const polygon of polygons) {
+          drawPolygon(group, polygon, this.options, undefined, this.fillStyle);
+        }
       }
     }
   }

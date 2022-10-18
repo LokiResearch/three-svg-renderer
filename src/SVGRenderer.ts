@@ -12,7 +12,7 @@
 
 import {PerspectiveCamera} from 'three';
 import {Viewmap, ViewmapBuildInfo, ViewmapBuildOptions} from './core/viewmap/Viewmap';
-import {SVGMesh} from './core/SVGMesh';
+import {SVGMesh} from './core/svg/SVGMesh';
 import {SVGBuilder, SVGBuildInfo, SVGBuildOptions} from './core/svg/SVGBuilder';
 import {DrawPass} from './core/svg/passes/DrawPass';
 import {Svg} from '@svgdotjs/svg.js';

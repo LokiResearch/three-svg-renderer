@@ -17,6 +17,7 @@ import {Svg, StrokeData, G as SVGGroup, Element as SVGElement, Color as SVGColor
 import {Contour, ContourVisibility} from '../../viewmap/Contour';
 import {EdgeNature} from '../../viewmap/Edge';
 import {getSVGPath, getSVGCircle, getSVGText} from '../svgutils';
+import { SVGMesh } from '../SVGMesh';
 
 const EdgeNatures = Object.values(EdgeNature)
   .filter(nature => nature !== EdgeNature.None);
@@ -69,16 +70,16 @@ export class VisibleContoursDrawPass extends ContoursDrawPass {
   }
 
   async draw(svg: Svg, viewmap: Viewmap) {
-    const contours = viewmap.contours.filter(
-      contour => contour.visibility === ContourVisibility.Visible
-    );
+    const contours = viewmap.contours
+      .filter(c => c.visibility === ContourVisibility.Visible);
+
+    const meshes = Array.from(viewmap.meshes).filter(m => m.drawVisibleContours);
 
     const group = new SVGGroup({id: "visible-contours"});
-    drawContours(group, viewmap, contours, this.options, this.strokeStyle);
+    drawContours(group, meshes, contours, this.options, this.strokeStyle);
     svg.add(group);
   }
 }
-
 
 export class HiddenContoursDrawPass extends ContoursDrawPass {
 
@@ -90,28 +91,29 @@ export class HiddenContoursDrawPass extends ContoursDrawPass {
   }
 
   async draw(svg: Svg, viewmap: Viewmap) {
-    const contours = viewmap.contours.filter(
-      contour => contour.visibility === ContourVisibility.Hidden
-    );
+ 
+    const contours = viewmap.contours
+      .filter(c => c.visibility === ContourVisibility.Hidden);
+
+    const meshes = Array.from(viewmap.meshes).filter(m => m.drawHiddenContours);
 
     const group = new SVGGroup({id: "hidden-contours"});
     svg.add(group);
 
-    drawContours(group, viewmap, contours, this.options, this.strokeStyle);
+    drawContours(group, meshes, contours, this.options, this.strokeStyle);
   }
 }
 
 function drawContours(
     parent: SVGElement,
-    viewmap: Viewmap,
+    meshes: SVGMesh[],
     contours: Contour[],
     options: ContoursDrawPassOptions,
     strokeStyle: StrokeData = {},
 ) {
 
-
   // Group the contours by mesh
-  for (const mesh of viewmap.meshes) {
+  for (const mesh of meshes) {
     const objectContours = contours.filter(c => c.object === mesh);
     const objectGroup = new SVGGroup({id: mesh.name});
     parent.add(objectGroup);

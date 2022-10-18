@@ -21,7 +21,7 @@ import {Polygon} from './Polygon';
 import {computePolygons} from './Arr2D';
 import {sameSide, Size, NDCPointToImage} from '../../utils/math';
 import {trianglesIntersect} from 'fast-triangle-triangle-intersection';
-import { SVGMesh } from '../SVGMesh';
+import { SVGMesh } from '../svg/SVGMesh';
 
 /**
  * Add an array of ViewEdge property for each halfedge. At the begining of the
@@ -84,6 +84,7 @@ const _proj = new Vector3();
 
 export class Viewmap {
 
+  readonly camera = new PerspectiveCamera;
   meshes = new Set<SVGMesh>();
   edges = new Set<Edge>();
   points = new Set<Point>();
@@ -93,12 +94,12 @@ export class Viewmap {
   polygons = new Array<Polygon>();
 
   clear() {
-    this.edges = new Set<Edge>();
-    this.points = new Set<Point>();
-    this.singularityPoints = new Array<Point>();
-    this.contours = new Array<Contour>();
-    this.polygonsRaycastPoints = new Array<Vector2>();
-    this.polygons = new Array<Polygon>();
+    this.edges.clear();
+    this.points.clear();
+    this.singularityPoints.clear();
+    this.contours.clear();
+    this.polygonsRaycastPoints.clear();
+    this.polygons.clear();
   }
 
   async build(
@@ -110,6 +111,7 @@ export class Viewmap {
   ) {
 
     this.clear();
+    
 
     const buildStartTime = Date.now();
     let stepStartTime;
@@ -124,8 +126,8 @@ export class Viewmap {
 
     // Step:
     // Prepare camera
-    camera = camera.clone();
-    camera.getWorldPosition(camera.position);
+    this.camera.copy(camera);
+    this.camera.getWorldPosition(this.camera.position);
 
     // Step:
     // Update render meshes
@@ -175,7 +177,7 @@ export class Viewmap {
     // Create view edges
     stepStartTime = Date.now();
     for (const mesh of this.meshes) {
-      createFaceEdges(mesh, camera);
+      createFaceEdges(mesh, this.camera);
     }
     info.times.createFaceEdges = Date.now() - stepStartTime;
 
@@ -202,7 +204,7 @@ export class Viewmap {
     // Step:
     // Setup points for each vertex
     stepStartTime = Date.now();
-    this.points = initPoints(this.edges, camera);
+    this.points = initPoints(this.edges, this.camera);
     info.times.RENAME_ME = Date.now() - stepStartTime;
 
 
@@ -210,7 +212,7 @@ export class Viewmap {
     // Find singularity points in the 3D space (curtain folds, mesh intersections
     // or bifurcations)
     stepStartTime = Date.now();
-    this.singularityPoints = findSingularityPointsIn3D(this.points, camera);
+    this.singularityPoints = findSingularityPointsIn3D(this.points, this.camera);
     info.times.singularities3D = Date.now() - stepStartTime;
 
 
@@ -240,7 +242,7 @@ export class Viewmap {
     if (!options.ignoreContoursVisibility) {
       stepStartTime = Date.now();
 
-      const visInfo = computeContoursVisibility(this.contours, camera, meshes);
+      const visInfo = computeContoursVisibility(this.contours, this.camera, meshes);
       info.extra.visibility.numberOfRaycast = visInfo.numberOfRaycasts;
       info.times.visibility = Date.now() - stepStartTime;
 
@@ -264,7 +266,7 @@ export class Viewmap {
     // Step:
     //
     stepStartTime = Date.now();
-    const assignInfo =  assignPolygons(this.polygons, camera, meshes, options.defaultMeshColor);
+    const assignInfo =  assignPolygons(this.polygons, this.camera, meshes, options.defaultMeshColor);
     info.extra.polygons.numberOfAssignedPolygons = assignInfo.assigned;
     info.extra.polygons.numberOfNonAssignedPolygons = assignInfo.nonAssigned;
     info.times.assignPolygons = Date.now() - stepStartTime;
