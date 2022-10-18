@@ -38,20 +38,18 @@ import { Polygon } from "../../viewmap/Polygon";
 import { Viewmap } from "../../viewmap/Viewmap";
 import { getSVGPath, getSVGImage, NumberAliasToNumber, replaceShapeByPath } from '../svgutils';
 
+
 declare const _cvVectorIn: CVMat;
 declare const _cvVectorOut: CVMat;
 
-
-
-// Make a promise to know when opencv module is available
+// Make a promise to know when opencv module is available and init the two buffers
 const cvPromise = new Promise<void>(resolve => {
   cv.onRuntimeInitialized = () => {
+    cv.matFromArray(1, 1, cv.CV_32FC2, [0, 0])
+    cv.matFromArray(1, 1, cv.CV_32FC2, [0, 0]);
     resolve();
   }
 });
-
-
-
 
 /* 
 TODO: support all types of geometries
