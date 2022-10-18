@@ -53,16 +53,22 @@ const cvPromise = new Promise<void>(resolve => {
 
 
 /* 
-TODO: Add UV attribute and support all types of geometries
+TODO: support all types of geometries
 
-- Texture is an image
-  - Idea 1 (hard):  cut image for each uv, project pieces and draw them separatly
-  - Idea 2 (doable): draw image on gpu, get back the framebuffer and draw that in the SVG
+* Texture is an image
 
-- Texture is a svg 
-  - Idea 1: cut shapes for each uv, project shapes and draw them
+  - Idea 1:
+    Draw only image on gpu in the framebuffer, the image will have the correct
+    shape, get back the framebuffer and draw the image in SVG in the correct layer
 
-  Good luck for that ! ;)
+* Texture is a svg 
+
+  - Idea 1:
+    Add UV attribute to meshes and, for each triangle UV, cut the SVG shapes.
+    Then we project each shapes point using the triangle coordinates in world 
+    space and draw them.
+
+  Good luck have fun! ;)
 */
 
 
@@ -96,11 +102,18 @@ export class TextureDrawPass extends DrawPass {
     const textureMeshes = new Array<SVGMeshWithTexture>();
     for (const mesh of meshes) {
       if (mesh.texture) {
-        /** We only can handle Plane Geometry for now */
-        if (mesh.threeMesh.geometry.type === "PlaneGeometry") {
+        /** 
+         * We only can handle Plane Geometry for now
+         * 
+         * Probably a bit rough, but we consider tthat if the mesh's 
+         * HalfEdgeStructure has 4 vertices and 2 faces, it is a plane
+         *
+         */
+        if (mesh.hes && mesh.hes.vertices.length === 4
+                     && mesh.hes.faces.length === 2) {
           textureMeshes.push(mesh as SVGMeshWithTexture);
         } else {
-          console.warn(`Mesh "${mesh.name}": Texture ignore, not a plane geometry.`);
+          console.warn(`Mesh "${mesh.name}": Texture ignored, not a plane geometry.`);
         }
       }
     }
