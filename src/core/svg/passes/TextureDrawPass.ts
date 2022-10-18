@@ -16,6 +16,7 @@ import cv, {Mat as CVMat} from "opencv-ts";
 import { round } from "../../../utils/math";
 import {Point, Size, Rect, projectPointImage} from '../../../utils/math';
 import { SVGMesh, SVGTexture } from "../SVGMesh";
+import { Buffer } from 'buffer'
 
 import {
   Svg, SVG,

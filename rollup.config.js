@@ -14,7 +14,7 @@ const lib_cfg = {
     "isect",
     "@svgdotjs/svg.js",
     "opencv-ts",
-    "fast-triangle-triangle-intersection"
+    "fast-triangle-triangle-intersection",
   ],
   output: [
     {
@@ -40,7 +40,9 @@ const lib_cfg = {
     }
   ],
   plugins: [
-    nodeResolve(),
+    nodeResolve({
+      preferBuiltins: false,
+    }),
     commonjs(),
     typescript({
       tsconfig: './tsconfig.json',
