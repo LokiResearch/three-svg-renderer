@@ -155,6 +155,8 @@ function getElligibleTMeshes(viewmap: Viewmap, tmeshes: SVGTexturedMesh[]) {
 
   const elligibleTMeshes = new Array<SVGTexturedMesh>();
 
+  console.log(viewmap, tmeshes);
+
   for (const tmesh of tmeshes) {
 
     if (!viewmap.meshes.has(tmesh)) {
