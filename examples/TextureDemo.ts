@@ -180,6 +180,7 @@ window.addEventListener('resize', function () {
 
   renderer.setSize(W, H);
   renderScene();
+  generateSVG();
 
 }, false);
 

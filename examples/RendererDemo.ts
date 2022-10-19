@@ -172,6 +172,7 @@ window.addEventListener('resize', function () {
 
   renderer.setSize(W, H);
   render();
+  generateSVG();
 
 }, false);
 
