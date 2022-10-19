@@ -15,6 +15,7 @@ import {Viewmap} from '../../viewmap/Viewmap';
 
 export abstract class DrawPass {
   name: string;
+  enabled = true;
   constructor() {
     this.name = this.constructor.name;
   }

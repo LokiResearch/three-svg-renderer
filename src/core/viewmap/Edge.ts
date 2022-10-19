@@ -14,7 +14,7 @@ import {PerspectiveCamera, Vector3, Vector2} from 'three';
 import {Vertex, Face, HalfEdge} from 'three-mesh-halfedge'
 import {Point} from './Point';
 import {frontSide} from '../../utils/math';
-import {SVGMesh} from '../svg/SVGMesh';
+import {SVGMesh} from '../SVGMesh';
 
 export enum EdgeNature {
   None = "None",

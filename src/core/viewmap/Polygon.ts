@@ -11,7 +11,7 @@
 // LICENCE: Licence.md
 
 import {Vector2, Color} from 'three';
-import { SVGMesh } from '../svg/SVGMesh';
+import { SVGMesh } from '../SVGMesh';
 
 export class Polygon {
   id: number;

@@ -57,15 +57,16 @@ export class SVGBuilder {
     // Call the draw passes
     for (let i=0; i<this.drawPasses.length; i++) {
       const pass = this.drawPasses[i];
-      const passStartTime = Date.now();
-      await pass.draw(svg, viewmap);
-      
-      info.passesInfo.push({
-        name: pass.name,
-        order: i,
-        time: Date.now() - passStartTime,
-      });
-
+      if (pass.enabled) {
+        const passStartTime = Date.now();
+        await pass.draw(svg, viewmap);
+        
+        info.passesInfo.push({
+          name: pass.name,
+          order: i,
+          time: Date.now() - passStartTime,
+        });
+      }
     }
 
     info.totalTime = Date.now() - buildStartTime;

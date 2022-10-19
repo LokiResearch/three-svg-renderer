@@ -12,5 +12,5 @@
  * Licence: Licence.md
  */
 
-export { SVGMesh } from "./svg/SVGMesh";
+export { SVGMesh } from "./SVGMesh";
 export * from './svg/passes';

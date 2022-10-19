@@ -40,9 +40,7 @@ const lib_cfg = {
     }
   ],
   plugins: [
-    nodeResolve({
-      preferBuiltins: false,
-    }),
+    nodeResolve(),
     commonjs(),
     typescript({
       tsconfig: './tsconfig.json',
@@ -58,19 +56,26 @@ const lib_cfg = {
   ],
 };
 
-const examples = ['RendererDemo'];
+const examples = ['RendererDemo', 'TextureDemo'];
+// const examples = ['RendererDemo'];
 const examples_cfg = []
 
 for (const example of examples) {
   examples_cfg.push({
     input: `examples/${example}.ts`,
     output: {
+      sourcemap: true,
       file: `build/examples/${example}.js`,
     },
     plugins: [
-      nodeResolve(),
+      nodeResolve({
+        browser: true,
+      }),
       commonjs(),
       typescript({
+        compilerOptions: {
+          "sourceMap": true,
+        },
         tsconfig: './tsconfig.json',
         noEmitOnError: !env.ROLLUP_WATCH,
       }),

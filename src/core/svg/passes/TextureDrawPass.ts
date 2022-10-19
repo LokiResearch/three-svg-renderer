@@ -15,8 +15,8 @@ import { PerspectiveCamera, Vector2 } from "three";
 import cv, {Mat as CVMat} from "opencv-ts";
 import { round } from "../../../utils/math";
 import {Point, Size, Rect, projectPointImage} from '../../../utils/math';
-import { SVGMesh, SVGTexture } from "../SVGMesh";
-import { Buffer } from 'buffer'
+import { SVGMesh, SVGTexture } from "../../SVGMesh";
+// import { Buffer } from 'buffer'
 
 import {
   Svg, SVG,
@@ -39,14 +39,14 @@ import { Viewmap } from "../../viewmap/Viewmap";
 import { getSVGPath, getSVGImage, NumberAliasToNumber, replaceShapeByPath } from '../svgutils';
 
 
-declare const _cvVectorIn: CVMat;
-declare const _cvVectorOut: CVMat;
+let _cvVectorIn: CVMat;
+let _cvVectorOut: CVMat;
 
 // Make a promise to know when opencv module is available and init the two buffers
 const cvPromise = new Promise<void>(resolve => {
   cv.onRuntimeInitialized = () => {
-    cv.matFromArray(1, 1, cv.CV_32FC2, [0, 0])
-    cv.matFromArray(1, 1, cv.CV_32FC2, [0, 0]);
+    _cvVectorIn= cv.matFromArray(1, 1, cv.CV_32FC2, [0, 0])
+    _cvVectorOut = cv.matFromArray(1, 1, cv.CV_32FC2, [0, 0]);
     resolve();
   }
 });
@@ -154,7 +154,8 @@ export class TextureDrawPass extends DrawPass {
     for (const mesh of textureMeshes) {
       
       let svgTexture: SVGElement;
-      if (mesh.texture.name.endsWith(".svg")) {
+      if (mesh.texture.url.startsWith('data:image/svg+xml;base64,')) {
+        console.log("SVGTexture found", mesh.texture.name);
         svgTexture = await getSVGTexture(camera, renderSize, mesh);
       } else {
         svgTexture = await getImageTexture(camera, renderSize, mesh);
@@ -210,6 +211,9 @@ async function getImageTexture(
 ) {
 
   const imgEl = document.getElementById('openCVInputImage') as HTMLImageElement;
+  // const imgEl = document.createElement('image') as HTMLImageElement;
+  // imgEl.id = 'opencvInput'
+  // document.body.append(imgEl);
   imgEl.src = mesh.texture.url;
   const srcImageMatrix = cv.imread(imgEl);
 
@@ -224,17 +228,19 @@ async function getImageTexture(
   // OpenCV needs a canvas to draw the transformed image
   const canvas = document.getElementById('openCVOutputCanvas') as HTMLCanvasElement;
   cv.imshow(canvas, dstImageMatrix);
+  srcImageMatrix.delete();
+  dstImageMatrix.delete();
 
   return new Promise<SVGImage>((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (blob) {
-        const fr = new FileReader();
-        fr.onloadend = () => {
-          const str = fr.result as string;
-          const svgImage = getSVGImage("data:image/png;base64,"+window.btoa(str), outRect);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const url = reader.result as string;
+          const svgImage = getSVGImage(url, outRect);
           resolve(svgImage);
         }
-        fr.readAsBinaryString(blob);
+        reader.readAsDataURL(blob);
       } else {
         reject("Error blob conversion from opencv canvas")
       }
@@ -250,36 +256,78 @@ async function getSVGTexture(
 
   return new Promise<SVGGroup>((resolve, reject) => {
     
-    const content = svgContentFromDataURL(mesh.texture.url);
+    svgContentFromDataURL(mesh.texture.url)
+      .then(content => {
 
-    if (!content) {
-      reject("Couldn't retrieved svg content from base64 dataURL");
-    } else {
-      // As SVG.js gets an extra <svg> div around the svg for internal
-      // computations, we only take the children
-      // See first question in the FAQ: https://svgjs.dev/docs/3.0/faq/
-      const svg = SVG().svg(content);
+        // As SVG.js gets an extra <svg> div around the svg for internal
+        // computations, we only take the children
+        // See first question in the FAQ: https://svgjs.dev/docs/3.0/faq/
+     
+        const svg = SVG().svg(content);
       
-      const group = new SVGGroup({id:"svg-interface-"+mesh.name});
-      for(const child of svg.children()) {
-        transformSVG(child, camera, renderSize, mesh);
-        group.add(child)
-      }
-      resolve(group);
-    }
+        const group = new SVGGroup({id:"svg-interface-"+mesh.name});
+        for(const child of svg.children()) {
+          try {
+            const ignoredElements = new Array<SVGElement>();
+            transformSVG(
+              child, camera, renderSize, mesh, undefined, ignoredElements);
+              
+            console.info(`SVG Transform: ${ignoredElements.length} elements ignored.`, ignoredElements);
+
+          } catch(e) {
+            console.error("Error while transforming SVG", e);
+          }
+          group.add(child)
+        }
+        resolve(group);
+      })
+      .catch(reason => {
+        reject("Couldn't retrieved svg content from base64 dataURL: "+reason);
+      });
   });
 }
 
 function svgContentFromDataURL(dataUrl: string) {
-  if (dataUrl.startsWith('data:image/svg+xml;base64,')) {
-    // Remove the header
-    const encodedString = dataUrl.replace('data:image/svg+xml;base64,','');
+  return new Promise<string>((resolve, reject) => {
 
-    // Convert from base64 to utf8
-    const buffer = Buffer.from(encodedString, 'base64');
-    return buffer.toString('utf8');
-  }
-  return null;
+    if (dataUrl.startsWith('data:image/svg+xml;base64,')) {
+
+      fetch(dataUrl)
+        .then(value => {
+          value.blob()
+            .then(blob => {
+              const reader = new FileReader();
+
+              reader.onloadend = () => {
+                resolve(reader.result as string);
+              }
+
+              reader.onerror = () => {
+                reject("Couldn't read content");
+              }
+
+              reader.readAsText(blob);
+            })
+            .catch(() => {
+              reject("Couldn't create blob");
+            });
+        })
+        .catch(() => {
+          reject("Couldn't fetch data ");
+        });
+
+      // Remove the header
+      // const encodedString = dataUrl.replace('data:image/svg+xml;base64,','');
+
+      // // Convert from base64 to utf8
+      // const buffer = Buffer.from(encodedString, 'base64');
+      // return buffer.toString('utf8');
+    } else {
+      reject("Data not svg xml based");
+    }
+
+
+  });
 }
 
 function getCVTransformMatrix(
@@ -342,7 +390,8 @@ function transformSVG(
     camera: PerspectiveCamera,
     renderSize: Size,
     mesh: SVGMesh,
-    transformMatrix?: CVMat
+    transformMatrix?: CVMat,
+    ignoredElements?: SVGElement[],
 ){
   if (element.type === "svg") {
     const svg = element as Svg;
@@ -361,6 +410,8 @@ function transformSVG(
     const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, inRect, mesh);
     svg.x(outRect.x);
     svg.y(outRect.y);
+    svg.width(outRect.w);
+    svg.height(outRect.h);
     svg.attr('viewBox', null);
     transformMatrix = matrix;
   } else if (element.type === "polygon") {
@@ -372,7 +423,7 @@ function transformSVG(
   } else if (element.type === "circle") {
     element = replaceShapeByPath(element as SVGCircle);
   } else if (element.type !== "path" && element.type !== "g") {
-    console.error("Unknown SVG tag \""+element.type+"\", ignoring.", element);
+    ignoredElements?.push(element);
   }
 
   if (element.type !== 'svg' && !transformMatrix) {
@@ -386,7 +437,7 @@ function transformSVG(
   }
 
   for (const child of element.children()) {
-    transformSVG(child, camera, renderSize, mesh, transformMatrix);
+    transformSVG(child, camera, renderSize, mesh, transformMatrix, ignoredElements);
   }
 
   // Delete OpenCV Matrix if the top element has finished its transform

@@ -11,7 +11,7 @@
 // LICENCE: Licence.md 
 
 import {Vector2, Vector3, Raycaster, Material, Mesh, Side, DoubleSide,
-  Matrix3, Matrix4, Line3, PerspectiveCamera, ColorRepresentation, Color} from 'three';
+  Matrix3, Matrix4, Line3, PerspectiveCamera, ColorRepresentation, Color, Triangle} from 'three';
 import {Vertex, HalfEdge, Face} from 'three-mesh-halfedge';
 import {bush} from 'isect';
 import {Edge, EdgeNature} from './Edge';
@@ -21,7 +21,7 @@ import {Polygon} from './Polygon';
 import {computePolygons} from './Arr2D';
 import {sameSide, Size, NDCPointToImage} from '../../utils/math';
 import {trianglesIntersect} from 'fast-triangle-triangle-intersection';
-import { SVGMesh } from '../svg/SVGMesh';
+import { SVGMesh } from '../SVGMesh';
 
 /**
  * Add an array of ViewEdge property for each halfedge. At the begining of the
@@ -84,7 +84,7 @@ const _proj = new Vector3();
 
 export class Viewmap {
 
-  readonly camera = new PerspectiveCamera;
+  readonly camera = new PerspectiveCamera();
   meshes = new Set<SVGMesh>();
   edges = new Set<Edge>();
   points = new Set<Point>();
@@ -94,12 +94,12 @@ export class Viewmap {
   polygons = new Array<Polygon>();
 
   clear() {
-    this.edges.clear();
-    this.points.clear();
-    this.singularityPoints.clear();
-    this.contours.clear();
-    this.polygonsRaycastPoints.clear();
-    this.polygons.clear();
+    this.edges = new Set<Edge>();
+    this.points = new Set<Point>();
+    this.singularityPoints = new Array<Point>();
+    this.contours = new Array<Contour>();
+    this.polygonsRaycastPoints = new Array<Vector2>();
+    this.polygons = new Array<Polygon>();
   }
 
   async build(
@@ -111,7 +111,6 @@ export class Viewmap {
   ) {
 
     this.clear();
-    
 
     const buildStartTime = Date.now();
     let stepStartTime;
@@ -387,7 +386,7 @@ export function computeSurfaceIntersections(meshA: SVGMesh, meshB: SVGMesh) {
   const interLine = new Line3();
 
   meshA.bvh.bvhcast(meshB.bvh, matrixBtoA, {
-    intersectsTriangles: function(triangleA, triangleB, indexA, indexB) {
+    intersectsTriangles: (triangleA: Triangle, triangleB: Triangle, indexA: number, indexB: number) => {
       info.nbTests += 1;
 
       // if (triangleA.intersectsTriangle(triangleB, line)) {
@@ -767,8 +766,11 @@ export function isBoundaryCurtainFoldVertex(vertex: Vertex, camera: PerspectiveC
 
 export function getIntersectingsEdges(edges: Set<Edge>) {
 
-  const array = [];
+  if (edges.size === 0) {
+    return [];
+  }
 
+  const array = [];
   const intersectionAlgorithm = bush([...edges], {});
   const intersections = intersectionAlgorithm.run();
 

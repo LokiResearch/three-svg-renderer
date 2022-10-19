@@ -17,7 +17,7 @@ import {Svg, StrokeData, G as SVGGroup, Element as SVGElement, Color as SVGColor
 import {Contour, ContourVisibility} from '../../viewmap/Contour';
 import {EdgeNature} from '../../viewmap/Edge';
 import {getSVGPath, getSVGCircle, getSVGText} from '../svgutils';
-import { SVGMesh } from '../SVGMesh';
+import { SVGMesh } from '../../SVGMesh';
 
 const EdgeNatures = Object.values(EdgeNature)
   .filter(nature => nature !== EdgeNature.None);
@@ -70,6 +70,7 @@ export class VisibleContoursDrawPass extends ContoursDrawPass {
   }
 
   async draw(svg: Svg, viewmap: Viewmap) {
+
     const contours = viewmap.contours
       .filter(c => c.visibility === ContourVisibility.Visible);
 
@@ -111,7 +112,6 @@ function drawContours(
     options: ContoursDrawPassOptions,
     strokeStyle: StrokeData = {},
 ) {
-
   // Group the contours by mesh
   for (const mesh of meshes) {
     const objectContours = contours.filter(c => c.object === mesh);
@@ -143,7 +143,6 @@ function drawContour(
     options: ContoursDrawPassOptions,
     strokeStyle: StrokeData = {}
 ) {
-
   if (options.useRandomColors) {
     strokeStyle = {...strokeStyle};
     strokeStyle.color = SVGColor.random().toString();

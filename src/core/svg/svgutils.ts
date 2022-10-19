@@ -68,6 +68,7 @@ export function getSVGPath(
   for (const hole of holes) {
     cmds = cmds.concat(getSVGPathCommands(hole, closed));
   }
+
   path.plot(new SVGPathArray(cmds));
   if (strokeStyle) {
     path.stroke(strokeStyle);

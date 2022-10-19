@@ -7,6 +7,9 @@ import { Mesh } from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {debounce} from 'throttle-debounce';
 
+
+const resourcesURL = window.location+"../../../../resources/";
+
 const possibleObjects = {
   "cube": "cube",
   "pig": "pig",
@@ -16,34 +19,20 @@ const possibleObjects = {
 
 // Init SVG Renderer
 const svgRenderer = new SVGRenderer();
+const fillsPass = new FillsDrawPass();
 const visibleContoursPass = new VisibleContoursDrawPass();
 const hiddenContoursPass = new HiddenContoursDrawPass();
-const fillsPass = new FillsDrawPass();
+hiddenContoursPass.enabled = false;
 const singularityPass = new SingularityPointsDrawPass();
-
+singularityPass.enabled = false;
+svgRenderer.addDrawPass(fillsPass);
+svgRenderer.addDrawPass(visibleContoursPass);
+svgRenderer.addDrawPass(hiddenContoursPass);
+svgRenderer.addDrawPass(singularityPass);
 
 const params = {
   autoRender: true,
   scene: "cube",
-  fills: {
-    draw: true,
-    style: fillsPass.fillStyle,
-    options: fillsPass.options,
-  },
-  visible_contours: {
-    draw: true,
-    style: visibleContoursPass.strokeStyle,
-    options: visibleContoursPass.options,
-  },
-  hidden_contours: {
-    draw: false,
-    style: hiddenContoursPass.strokeStyle,
-    options: hiddenContoursPass.options,
-  },
-  singularityPoints: {
-    draw: false,
-    options: singularityPass.options,
-  }
 }
 
 const bgColor = 0x555555;
@@ -96,59 +85,67 @@ let style_gui: GUI;
 let options_gui: GUI;
 let options, style;
 
-// Setup visible and hidden contours gui (same settings basically)
+/**
+ * Contours Settings
+ */
 const contours_gui_params = [
-  {c_params: params.visible_contours, gui_root: gui.addFolder("Visible Contours")},
-  {c_params: params.hidden_contours, gui_root: gui.addFolder("Hidden Contours")}
+  {c_params: visibleContoursPass, gui_root: gui.addFolder("Visible Contours")},
+  {c_params: hiddenContoursPass, gui_root: gui.addFolder("Hidden Contours")}
 ]
 for (const {c_params, gui_root} of contours_gui_params) {
 
-  gui_root.add(c_params, 'draw').onChange(updatePasses);
+  gui_root.add(c_params, 'enabled').onChange(generateSVG);
   
   style_gui = gui_root.addFolder("Style");
-  style = c_params.style;
-  style_gui.addColor(style, "color").onChange(updatePasses);
-  style_gui.add(style, "width", 0, 20, 0.5).onChange(updatePasses);
-  style_gui.add(style, "dasharray").onChange(updatePasses);
-  style_gui.add(style, "opacity", 0, 1, 0.05).onChange(updatePasses);
+  style = c_params.strokeStyle;
+  style_gui.addColor(style, "color").onChange(generateSVG);
+  style_gui.add(style, "width", 0, 20, 0.5).onChange(generateSVG);
+  style_gui.add(style, "dasharray").onChange(generateSVG);
+  style_gui.add(style, "opacity", 0, 1, 0.05).onChange(generateSVG);
   
   options_gui = gui_root.addFolder("Options");
   options = c_params.options;
-  options_gui.add(options, "useRandomColors").onChange(updatePasses);
-  options_gui.add(options, "drawContourId").onChange(updatePasses);
-  options_gui.add(options, "groupByNature").onChange(updatePasses);
-  options_gui.add(options, "drawRaycastPoint").onChange(updatePasses);
+  options_gui.add(options, "useRandomColors").onChange(generateSVG);
+  options_gui.add(options, "drawContourId").onChange(generateSVG);
+  options_gui.add(options, "groupByNature").onChange(generateSVG);
+  options_gui.add(options, "drawRaycastPoint").onChange(generateSVG);
 }
 
-// Setup fills gui
+/**
+ * Fills Draw pass options
+ */
 gui_root = gui.addFolder("Fills");
-gui_root.add(params.fills, 'draw').onChange(updatePasses);
+gui_root.add(fillsPass, 'enabled').onChange(generateSVG);
 
 style_gui = gui_root.addFolder("Style");
-style = params.fills.style;
-style_gui.addColor(style, "color").onChange(updatePasses);
-style_gui.add(style, "opacity", 0, 1, 0.05).onChange(updatePasses);
+style = fillsPass.fillStyle;
+style_gui.addColor(style, "color").onChange(generateSVG);
+style_gui.add(style, "opacity", 0, 1, 0.05).onChange(generateSVG);
 
 options_gui = gui_root.addFolder("Options");
-options = params.fills.options;
-options_gui.add(options, "useRandomColors").onChange(updatePasses);
-options_gui.add(options, "useFixedFillColor").onChange(updatePasses);
-options_gui.add(options, "drawPolygonId").onChange(updatePasses);
-options_gui.add(options, "drawRaycastPoint").onChange(updatePasses);
+options = fillsPass.options;
+options_gui.add(options, "useRandomColors").onChange(generateSVG);
+options_gui.add(options, "useFixedFillColor").onChange(generateSVG);
+options_gui.add(options, "drawPolygonId").onChange(generateSVG);
+options_gui.add(options, "drawRaycastPoint").onChange(generateSVG);
 
-// Setup debug gui
+/**
+ * Debug options
+ */
 const debug_gui = gui.addFolder("Debug");
 
-// Debug -> Singularity points
+/**
+ * Singularity points
+ */
 gui_root = debug_gui.addFolder("Singularity Points");
-gui_root.add(params.singularityPoints, 'draw').onChange(updatePasses);
+gui_root.add(singularityPass, 'enabled').onChange(generateSVG);
 
 options_gui = gui_root.addFolder("Options");
-options = params.singularityPoints.options;
-options_gui.add(options, "drawLegend").onChange(updatePasses);
-options_gui.add(options, "pointSize", 0, 20, 0.5).onChange(updatePasses);
-options_gui.add(options, "drawVisiblePoints").onChange(updatePasses);
-options_gui.add(options, "drawHiddenPoints").onChange(updatePasses);
+options = singularityPass.options;
+options_gui.add(options, "drawLegend").onChange(generateSVG);
+options_gui.add(options, "pointSize", 0, 20, 0.5).onChange(generateSVG);
+options_gui.add(options, "drawVisiblePoints").onChange(generateSVG);
+options_gui.add(options, "drawHiddenPoints").onChange(generateSVG);
 
 gui.add(params, 'autoRender').onChange(autoRenderChanged);
 gui.add({'Render SVG':generateSVG}, 'Render SVG');
@@ -192,40 +189,13 @@ function autoRenderChanged() {
 //##############################################################################
 
 
-
-function updatePasses() {
-
-  svgRenderer.clearDrawPasses();
-
-  if (params.fills.draw) {
-    svgRenderer.addDrawPass(fillsPass);
-  }
-
-  if (params.hidden_contours.draw) {
-    svgRenderer.addDrawPass(hiddenContoursPass);
-  }
-
-  if (params.visible_contours.draw) {
-    svgRenderer.addDrawPass(visibleContoursPass);
-  }
-
-  if (params.singularityPoints.draw) {
-    svgRenderer.addDrawPass(singularityPass);
-  }
-}
-
-
-
 const meshMaterial = new THREE.MeshPhongMaterial({
   color: 0x333388,
   flatShading: true,
 });
 
 function setupScene() {
-  // Clean the current scene
-  for (const obj of scene.children) {
-    obj.removeFromParent();
-  }
+  scene.clear();
   scene.add(ambientLight)
   scene.add(camera);
 
@@ -234,7 +204,7 @@ function setupScene() {
     scene.add(new Mesh(new THREE.TorusKnotGeometry(), meshMaterial));
     break;
   case "pig":
-    loadGLTFObject(window.location+"../../../../objects/pig.gltf")
+    loadGLTFObject(resourcesURL+"pig.gltf")
     break;
   case "cube":
   default:
@@ -266,6 +236,8 @@ const debouncedGenerateSVG = debounce(500, () => {
     }
   });
 
+  console.log("genrate svg", svgMeshes);
+
   const info = new SVGRenderInfo();
   svgRenderer.generateSVG(svgMeshes, camera, {w: W, h: H}, {}, info).then(svg => {
     if (svgDomElement) {
@@ -289,7 +261,6 @@ function clearHTMLElement(e: HTMLElement) {
 }
 
 autoRenderChanged();
-updatePasses();
 setupScene();
 params.autoRender && generateSVG();
 

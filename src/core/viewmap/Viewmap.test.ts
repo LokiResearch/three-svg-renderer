@@ -18,7 +18,7 @@ import {triangleGeometry} from '../../utils/geometry';
 import {createFaceEdges, computeSurfaceIntersections, SurfaceIntersectionInfo,
   splitEdge
 } from './Viewmap';
-import {SVGMesh} from '../svg/SVGMesh';
+import {SVGMesh} from '../SVGMesh';
 
 // jest seems to not support WASM files, use a mock
 // jest.mock('./viewmap/CGALHandler');
