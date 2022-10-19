@@ -61,6 +61,7 @@
     "rollup": "^2.77.0",
     "rollup-plugin-generate-html-template": "^1.7.0",
     "rollup-plugin-node-externals": "^4.1.1",
+    "three-spritetext": "^1.6.5",
     "throttle-debounce": "^5.0.0",
     "ts-jest": "^28.0.7",
     "ts-loader": "^9.3.1",

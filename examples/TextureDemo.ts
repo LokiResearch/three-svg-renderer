@@ -28,9 +28,11 @@ import {
   PlaneGeometry,
   Scene,
   ShaderChunk,
+  Sprite,
   TextureLoader,
   WebGLRenderer
 } from 'three';
+import SpriteText from 'three-spritetext';
 
 /**
  * This Fragment shader merges the texture transparency with the diffuse Color
@@ -67,6 +69,7 @@ const textures = [
  */
 const plane = new PlaneGeometry();
 const meshes = new Array<CMesh>(); 
+const sprites = new Array<Sprite>();
 const loadedTexturePromises = new Array<Promise<void>>();
 for (const texture of textures) {
 
@@ -77,6 +80,10 @@ for (const texture of textures) {
   }));
   loadedTexturePromises.push(loadTexture(mesh, texture));
   meshes.push(mesh);
+
+  const sprite = new SpriteText(texture, 0.1);
+  sprite.backgroundColor = "#555555";
+  sprites.push(sprite);
 }
 
 /**
@@ -122,13 +129,16 @@ const planeSize = 1;
 const min_pos = -(meshes.length*planeSize + (meshes.length-1)*gap)/2+planeSize/2;
 for (let i=0; i<meshes.length ; i++) {
   const mesh = meshes[i];
+  const sprite = sprites[i];
   scene.add(mesh);
   mesh.position.set(min_pos + i*(planeSize+gap), 0, 0);
+  mesh.add(sprite);
+  sprite.position.set(0,0.6,0);
 }
 
 // Init camera
 const camera = new THREE.PerspectiveCamera(75, W / H, 0.1, 50);
-camera.position.set(-2, 0, 3);
+camera.position.set(-3, 0, 3);
 camera.far = 100;
 camera.updateProjectionMatrix();
 

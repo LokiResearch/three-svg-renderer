@@ -155,7 +155,6 @@ export class TextureDrawPass extends DrawPass {
       
       let svgTexture: SVGElement;
       if (mesh.texture.url.startsWith('data:image/svg+xml;base64,')) {
-        console.log("SVGTexture found", mesh.texture.name);
         svgTexture = await getSVGTexture(camera, renderSize, mesh);
       } else {
         svgTexture = await getImageTexture(camera, renderSize, mesh);
@@ -176,44 +175,13 @@ export class TextureDrawPass extends DrawPass {
   }
 }
 
-// function getElligibleTMeshes(viewmap: Viewmap, tmeshes: SVGTexturedMesh[]) {
-
-//   const elligibleTMeshes = new Array<SVGTexturedMesh>();
-
-//   console.log(viewmap, tmeshes);
-
-//   for (const tmesh of tmeshes) {
-
-//     if (!viewmap.meshes.has(tmesh)) {
-//       console.error(`Mesh ${tmesh.name} ignored: please add mesh to the viewmap to render it in this pass`);
-//     } else if (!tmesh.hes || tmesh.hes.vertices.length !== 4
-//                           || tmesh.hes.faces.length !== 2) {
-      
-//       // Probably a bit rough, but we consider if the mesh's HalfEdgeStructure
-//       // has 4 vertices and 2 faces, it is a plane
-
-//       console.warn(`Mesh ${tmesh.name} ignored: only plane geometries are currently supported`);
-//     } else {
-//       elligibleTMeshes.push(tmesh);
-//     }
-//   }
-
-//   return elligibleTMeshes;
-// }
-
-
-
-
 async function getImageTexture(
     camera: PerspectiveCamera,
     renderSize: Size,
     mesh: SVGMeshWithTexture
 ) {
 
-  const imgEl = document.getElementById('openCVInputImage') as HTMLImageElement;
-  // const imgEl = document.createElement('image') as HTMLImageElement;
-  // imgEl.id = 'opencvInput'
-  // document.body.append(imgEl);
+  const imgEl = document.createElement('img');
   imgEl.src = mesh.texture.url;
   const srcImageMatrix = cv.imread(imgEl);
 
@@ -226,7 +194,7 @@ async function getImageTexture(
   cv.warpPerspective(srcImageMatrix, dstImageMatrix, matrix, dSize, cv.INTER_LINEAR);
 
   // OpenCV needs a canvas to draw the transformed image
-  const canvas = document.getElementById('openCVOutputCanvas') as HTMLCanvasElement;
+  const canvas = document.createElement('canvas');
   cv.imshow(canvas, dstImageMatrix);
   srcImageMatrix.delete();
   dstImageMatrix.delete();
