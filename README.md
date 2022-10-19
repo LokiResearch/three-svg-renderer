@@ -17,8 +17,8 @@ Feel free to test the demo!
 
 ## Demo
 
-[SVG Renderer Demo](https://lokiresearch.github.io/three-svg-rendering/build/examples/RendererDemo.html)
-[Render PNG|SVG Textures Demo](https://lokiresearch.github.io/three-svg-rendering/build/examples/TextureDemo.html)
+- [SVG Renderer Demo](https://lokiresearch.github.io/three-svg-rendering/build/examples/RendererDemo.html)
+- [Render PNG|SVG Textures Demo](https://lokiresearch.github.io/three-svg-rendering/build/examples/TextureDemo.html)
 
 ## Install
 
