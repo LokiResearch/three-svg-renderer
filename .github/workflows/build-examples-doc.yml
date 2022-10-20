@@ -32,7 +32,6 @@ jobs:
     - name: Commit Examples-Doc
       uses: EndBug/add-and-commit@v7
       with:
-        add: 'build/examples --force'
-        add: 'doc --force'
+        add: 'build/examples doc --force'
         message: 'Update Examples and Doc'
         push: 'origin HEAD:public --force'
