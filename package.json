@@ -1,10 +1,12 @@
 {
-  "name": "three-svg-rendering",
-  "description": "A three.js SVG renderer to render 3D scenes as Vector Graphics.",
+  "name": "three-svg-renderer",
+  "description": "An experimental three.js SVG renderer written in Typescript to render 3D scenes as Vector Graphics.",
   "keywords": [
     "svg",
-    "svg rendering",
-    "three.js"
+    "renderer",
+    "three.js",
+    "vector-graphics",
+    "3D"
   ],
   "version": "0.0.1",
   "author": {
