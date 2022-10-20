@@ -1,4 +1,4 @@
-# three-svg-rendering
+# three-svg-renderer
 
 [![npm version](https://badge.fury.io/js/three-svg-rendering.svg)](https://badge.fury.io/js/three-svg-rendering)
 [![build](https://github.com/LokiResearch/three-svg-rendering/workflows/build/badge.svg)](https://github.com/LokiResearch/three-svg-rendering/actions?query=workflow:"build")
@@ -6,24 +6,20 @@
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/LokiResearch/three-svg-rendering?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/minitoine/three-svg-rendering/context:javascript)
 [![License](https://img.shields.io/badge/License-MIT-green)](#license)
 
-### A **experimental** three.js SVG renderer to render 3D scenes as Vector Graphics.
-
-Instead of basically drawing all the objects triangles which produces a **HUGE** svg file (such as threejs embedded SVGRenderer), this renderer analyzes the geometry to compute visible and hidden contours to draw (e.g. such as Freestyle renderer in Blender). 
-
-Feel free to test the demo!
+An **experimental** three.js SVG renderer written in Typescript to render 3D scenes as Vector Graphics. The renderer analyzes the geometry in the scene, builds a viewmap of the mesh edges and computes the visible and hidden contours to draw. 
 
 ![A SVG rendering of a 3D pig](./images/pig_rendering.png)
 
-
 ## Demo
 
-- [SVG Renderer Demo](https://lokiresearch.github.io/three-svg-rendering/build/examples/RendererDemo.html)
-- [Render PNG/SVG Textures Demo](https://lokiresearch.github.io/three-svg-rendering/build/examples/TextureDemo.html)
+- [SVG Renderer Demo](https://lokiresearch.github.io/three-svg-renderer/build/examples/RendererDemo.html)
+    
+- [PNG/SVG Textures Demo](https://lokiresearch.github.io/three-svg-renderer/build/examples/TextureDemo.html)
 
 ## Install
 
 ```bash
-npm i three-svg-rendering
+npm i three-svg-renderer
 ```
 
 ## How to use
@@ -32,7 +28,7 @@ npm i three-svg-rendering
 const scene = new THREE.Scene();
 const camera = new THREE.Camera();
 
-// Setup the svg meshes
+// Gather meshes from the scene and setup SVGMesh
 const meshes = new Array<SVGMesh>();
 scene.traverse(obj => {
   obj.isMesh && meshes.push(new SVGMesh(obj as THREE.Mesh));
@@ -63,13 +59,11 @@ svgRender.addDrawPass(fillsPass);
 svgRender.addDrawPass(visibleContoursPass);
 svgRender.addDrawPass(hiddenContoursPass);
 
-// Get the svg and render info
-const info = new SVGRenderInfo();
-svgRenderer.generateSVG(meshes, camera, {w: 1000, h:1000}, {}, info).then(svg => {
-  console.log(info);
-  // Save svg as file, display it in the DOM, etc
+// Get the SVG
+svgRenderer.generateSVG(meshes, camera, {w: 1000, h:1000})
+.then((svg) => {
+    // [...]
 });
-
 ```
 
 
