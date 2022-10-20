@@ -23,6 +23,7 @@
   "scripts": {
     "build": "rollup -c",
     "build-examples": "rollup -c --environment examples",
+    "build-doc": "typedoc src/index.ts",
     "dev": "rollup -cw",
     "dev-examples": "rollup -cw --environment examples",
     "test": "jest",
@@ -49,13 +50,15 @@
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.3.3",
     "@types/dat.gui": "^0.7.7",
+    "@types/eslint": "^8.4.6",
+    "@types/estree": "^1.0.0",
     "@types/jest": "^28.1.6",
     "@types/three": "^0.141.0",
     "@types/throttle-debounce": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "@typescript-eslint/parser": "^5.30.7",
     "dat.gui": "^0.7.9",
-    "eslint": "^8.20.0",
+    "eslint": "^8.25.0",
     "eslint-plugin-jest": "^26.6.0",
     "jest": "^28.1.3",
     "rollup": "^2.77.0",
@@ -66,6 +69,7 @@
     "ts-jest": "^28.0.7",
     "ts-loader": "^9.3.1",
     "tslib": "^2.4.0",
+    "typedoc": "^0.23.17",
     "typescript": "^4.7.4"
   }
 }

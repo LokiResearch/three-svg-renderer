@@ -26,9 +26,9 @@ import {
   FillData,
   FontData
 } from '@svgdotjs/svg.js';
-import {Point, Rect, round} from '../../utils/math';
+import {PointLike, RectLike, round} from '../../utils';
 
-export function getSVGImage(url: string, rect: Rect) {
+export function getSVGImage(url: string, rect: RectLike) {
   const svgImage = new SVGImage();
   svgImage.load(url);
   svgImage.x(rect.x);
@@ -57,8 +57,8 @@ export function getSVGText(
 }
 
 export function getSVGPath(
-    contour: Point[], 
-    holes: Point[][], 
+    contour: PointLike[], 
+    holes: PointLike[][], 
     closed: boolean,
     strokeStyle?: StrokeData,
     fillStyle?: FillData
@@ -83,7 +83,7 @@ export function getSVGPath(
   return path;
 }
     
-function getSVGPathCommands(points: Point[], closed = true): SVGPathCommand[] {
+function getSVGPathCommands(points: PointLike[], closed = true): SVGPathCommand[] {
   const cmds = new Array<SVGPathCommand>();
   let p;
   if (points.length > 0) {

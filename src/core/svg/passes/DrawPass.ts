@@ -14,14 +14,22 @@ import {Svg} from '@svgdotjs/svg.js';
 import {Viewmap} from '../../viewmap/Viewmap';
 
 export abstract class DrawPass {
-  name: string;
+  /**
+   * Name of the draw pass
+   */
+  readonly name: string;
+  /** 
+   * Enables/Disables draw pass.
+   * @defaultValue `true` 
+  */
   enabled = true;
+
   constructor() {
     this.name = this.constructor.name;
   }
   
   /**
-   * Function automatically called by SVGBuilder
+   * Function automatically called by the `SVGDrawHandler`
    * @param svg The svg tree being built
    * @param viewmap The viewmap data structure
    */

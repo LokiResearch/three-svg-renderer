@@ -28,26 +28,24 @@ const PointSingularityColor = {
   [PointSingularity.Bifurcation]: "orange",
 }
 
-export interface SingularityPointsDrawPassOptions {
-  drawLegend: boolean;
-  pointSize: number;
-  drawVisiblePoints: boolean;
-  drawHiddenPoints: boolean;
+export interface SingularityPointPassOptions {
+  drawLegend?: boolean;
+  pointSize?: number;
+  drawVisiblePoints?: boolean;
+  drawHiddenPoints?: boolean;
 }
 
-export class SingularityPointsDrawPass extends DrawPass {
-  readonly options: SingularityPointsDrawPassOptions;
+export class SingularityPointPass extends DrawPass {
+  readonly options: Required<SingularityPointPassOptions> = {
+    drawVisiblePoints: true,
+    drawHiddenPoints: false,
+    drawLegend: true,
+    pointSize: 2,
+  };
 
-  constructor(options: Partial<SingularityPointsDrawPassOptions> = {}) {
+  constructor(options: SingularityPointPassOptions = {}) {
     super();
-
-    this.options = {
-      drawVisiblePoints: true,
-      drawHiddenPoints: false,
-      drawLegend: true,
-      pointSize: 2,
-      ...options
-    }
+    Object.assign(this.options, options);
   }
 
   async draw(svg: Svg, viewmap: Viewmap) {

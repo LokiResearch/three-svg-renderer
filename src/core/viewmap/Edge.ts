@@ -13,15 +13,24 @@
 import {PerspectiveCamera, Vector3, Vector2} from 'three';
 import {Vertex, Face, HalfEdge} from 'three-mesh-halfedge'
 import {Point} from './Point';
-import {frontSide} from '../../utils/math';
+import {frontSide} from '../../utils';
 import {SVGMesh} from '../SVGMesh';
 
+/**
+ * Possible values for the edge nature in the viemap.
+ */
 export enum EdgeNature {
+  /** Edge is standard */
   None = "None",
+  /** Edge is connected to front-facing and a back-facing face */
   Silhouette = "Silhouette",
+  /** Edge is only connected to one face */
   Boundary = "Boudary",
+  /** Edge is on the intersection between two meshes */
   SurfaceIntersection = "SurfaceIntersection",
+  /** Edge is connected to two faces where the angle between normals is acute */
   Crease = "Crease",
+  /** Edge is connected to two faces using a different material/vertex color */
   Material = "Material",
 }
 
@@ -33,15 +42,18 @@ const _v = new Vector3();
 const _cross = new Vector3();
 
 export class Edge {
-  readonly vertices: Array<Vertex>;
-  readonly meshes: Array<SVGMesh>;
-  readonly faces: Array<Face>;
+  readonly vertices: Vertex[];
+  readonly meshes: SVGMesh[];
+  readonly faces: Face[];
+  /** Nature of the edge */
   nature = EdgeNature.None;
+  /** Angle between to the connected faces. Set to `Infinity` if one face is connected. */
   angle = Infinity;
+  /** Indicates whether the edge is connected to back-facing faces only */
   isBack = false;
   isConcave = false;
 
-  constructor(meshes: Array<SVGMesh>, faces: Array<Face>, a: Vertex, b: Vertex) {
+  constructor(meshes: SVGMesh[], faces: Array<Face>, a: Vertex, b: Vertex) {
     this.meshes = meshes;
     this.vertices = [a,b];
     this.faces = faces;
@@ -57,7 +69,7 @@ export class Edge {
         halfEdge.vertex.position,
         halfEdge.next.vertex.position,
         halfEdge.prev.vertex.position,
-        halfEdge.twin.prev.vertex.position) > 0;
+        halfEdge.twin.prev.vertex.position);
 
       const faceAFront = halfEdge.face.isFront(camera.position);
       const faceBFront = halfEdge.twin.face.isFront(camera.position);

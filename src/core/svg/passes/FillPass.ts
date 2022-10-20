@@ -12,41 +12,61 @@
 
 import {DrawPass} from './DrawPass';
 import {Viewmap} from '../../viewmap/Viewmap';
-import {Svg, StrokeData, FillData, Element as SVGElement, Color as SVGColor,
+import {Svg, Element as SVGElement, Color as SVGColor,
   G as SVGGroup} from '@svgdotjs/svg.js';
 import {getSVGPath, getSVGCircle, getSVGText} from '../svgutils';
 import {Polygon} from '../../viewmap/Polygon';
 
-export interface FillsDrawPassOptions {
-  drawRaycastPoint: boolean;
-  drawPolygonId: boolean;
-  useRandomColors: boolean;
-  useFixedFillColor: boolean;
+export interface FillPassOptions {
+  drawRaycastPoint?: boolean;
+
+  drawPolygonId?: boolean;
+  /** 
+   * Use a random color for each polygon in the svg. Overwrites 
+   * {@link useFixedColor} if `true`. 
+   * @defaultValue `false`
+   */
+  useRandomColors?: boolean;
+  /** 
+   * Use a fixed `color` and/or `opacity` provided by {@link FillStyle} instead of 
+   * mesh material. 
+   * @defaultValue `false`
+   */
+  useFixedColor?: boolean;
 }
 
-export class FillsDrawPass extends DrawPass {
-  readonly options: FillsDrawPassOptions;
-  readonly fillStyle: FillData;
+export interface FillStyle {
+  /** 
+   * Color of the polygons.
+   * Must be used with {@link FillPassOptions.useFixedColor} option to be effective.
+   * @defaultValue `"#333333"`
+   */
+  color?: string;
+  /** 
+   * Opacity of the polygons.
+   * Must be used with {@link FillPassOptions.useFixedColor} option to be effective.
+   * @defaultValue `1`
+   */
+  opacity?: number;
+}
 
-  constructor(
-      fillStyle: FillData = {},
-      options: Partial<FillsDrawPassOptions> = {}
-  ) {
+export class FillPass extends DrawPass {
+  readonly options: Required<FillPassOptions> = {
+    drawRaycastPoint: false,
+    drawPolygonId: false,
+    useRandomColors: false,
+    useFixedColor: false,
+  };
+  readonly fillStyle: FillStyle = {
+    color: "#333333",
+    opacity: 1,
+  };
+
+  constructor(fillStyle: FillStyle = {}, options: FillPassOptions = {}) {
     super();
 
-    this.options = {
-      drawRaycastPoint: false,
-      drawPolygonId: false,
-      useRandomColors: false,
-      useFixedFillColor: false,
-      ...options
-    };
-
-    this.fillStyle = {
-      color: "#333333",
-      opacity: 1,
-      ...fillStyle
-    };
+    Object.assign(this.options, options);
+    Object.assign(this.fillStyle, fillStyle);
   }
 
   async draw(svg: Svg, viewmap: Viewmap) {
@@ -62,7 +82,7 @@ export class FillsDrawPass extends DrawPass {
         group.add(objectGroup);
 
         for (const polygon of polygons) {
-          drawPolygon(group, polygon, this.options, undefined, this.fillStyle);
+          drawPolygon(group, polygon, this.options, this.fillStyle);
         }
       }
     }
@@ -72,24 +92,23 @@ export class FillsDrawPass extends DrawPass {
 function drawPolygon(
     parent: SVGElement, 
     polygon: Polygon,
-    options: FillsDrawPassOptions,
-    strokeStyle: StrokeData = {},
-    fillStyle: FillData = {}
+    options: FillPassOptions,
+    style: FillStyle = {}
 ) {
 
   // Make a copy of the style so we can modify it
-  fillStyle = {...fillStyle};
+  style = {...style};
 
   // If not using fixed color through the style, use the object color
-  if (!options.useFixedFillColor) {
-    fillStyle.color = '#'+polygon.color.getHexString();
+  if (!options.useFixedColor) {
+    style.color = '#'+polygon.color.getHexString();
   }
   
   if (options.useRandomColors) {
-    fillStyle.color = SVGColor.random().toString();
+    style.color = SVGColor.random().toString();
   }
 
-  const path = getSVGPath(polygon.contour, polygon.holes, true, strokeStyle, fillStyle);
+  const path = getSVGPath(polygon.contour, polygon.holes, true, style);
   path.id("fill-"+polygon.id);
   parent.add(path);
 
@@ -98,7 +117,7 @@ function drawPolygon(
   }
 
   if (options.drawPolygonId) {
-    drawPolygonId(path, polygon, fillStyle);
+    drawPolygonId(path, polygon, style);
   }
 
 }
@@ -113,7 +132,7 @@ function drawPolygonRaycastPoint(parent: SVGElement, polygon: Polygon) {
   parent.add(point);
 }
 
-function drawPolygonId(parent: SVGElement, polygon: Polygon, fillStyle: FillData) {
+function drawPolygonId(parent: SVGElement, polygon: Polygon, style: FillStyle) {
   const fontStyle = {size: 8};
   const delta = 10;
   const x = polygon.insidePoint.x + delta;
@@ -125,7 +144,7 @@ function drawPolygonId(parent: SVGElement, polygon: Polygon, fillStyle: FillData
   const cx = x + box.width/2;
   const cy = y + box.height/2;
 
-  const circle = getSVGCircle(cx, cy, 0.85*box.width, {}, fillStyle);
+  const circle = getSVGCircle(cx, cy, 0.85*box.width, {}, style);
   circle.id('polygon-id');
   circle.add(text);
 

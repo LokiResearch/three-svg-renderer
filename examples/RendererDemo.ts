@@ -1,8 +1,8 @@
 import {GUI} from 'dat.gui';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import * as THREE from 'three';
-import { FillsDrawPass, HiddenContoursDrawPass, SingularityPointsDrawPass, SVGMesh, 
-  SVGRenderer, VisibleContoursDrawPass, SVGRenderInfo} from '../src/index';
+import { FillPass, HiddenContourPass, SingularityPointPass, SVGMesh, 
+  SVGRenderer, VisibleContourPass, SVGRenderInfo} from '../src/index';
 import { Mesh } from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {debounce} from 'throttle-debounce';
@@ -19,15 +19,15 @@ const possibleObjects = {
 
 // Init SVG Renderer
 const svgRenderer = new SVGRenderer();
-const fillsPass = new FillsDrawPass();
-const visibleContoursPass = new VisibleContoursDrawPass();
-const hiddenContoursPass = new HiddenContoursDrawPass();
-hiddenContoursPass.enabled = false;
-const singularityPass = new SingularityPointsDrawPass();
+const fillPass = new FillPass();
+const visibleContourPass = new VisibleContourPass();
+const hiddenContourPass = new HiddenContourPass();
+hiddenContourPass.enabled = false;
+const singularityPass = new SingularityPointPass();
 singularityPass.enabled = false;
-svgRenderer.addDrawPass(fillsPass);
-svgRenderer.addDrawPass(visibleContoursPass);
-svgRenderer.addDrawPass(hiddenContoursPass);
+svgRenderer.addDrawPass(fillPass);
+svgRenderer.addDrawPass(visibleContourPass);
+svgRenderer.addDrawPass(hiddenContourPass);
 svgRenderer.addDrawPass(singularityPass);
 
 const params = {
@@ -89,8 +89,8 @@ let options, style;
  * Contours Settings
  */
 const contours_gui_params = [
-  {c_params: visibleContoursPass, gui_root: gui.addFolder("Visible Contours")},
-  {c_params: hiddenContoursPass, gui_root: gui.addFolder("Hidden Contours")}
+  {c_params: visibleContourPass, gui_root: gui.addFolder("Visible Contours")},
+  {c_params: hiddenContourPass, gui_root: gui.addFolder("Hidden Contours")}
 ]
 for (const {c_params, gui_root} of contours_gui_params) {
 
@@ -115,15 +115,15 @@ for (const {c_params, gui_root} of contours_gui_params) {
  * Fills Draw pass options
  */
 gui_root = gui.addFolder("Fills");
-gui_root.add(fillsPass, 'enabled').onChange(generateSVG);
+gui_root.add(fillPass, 'enabled').onChange(generateSVG);
 
 style_gui = gui_root.addFolder("Style");
-style = fillsPass.fillStyle;
+style = fillPass.fillStyle;
 style_gui.addColor(style, "color").onChange(generateSVG);
 style_gui.add(style, "opacity", 0, 1, 0.05).onChange(generateSVG);
 
 options_gui = gui_root.addFolder("Options");
-options = fillsPass.options;
+options = fillPass.options;
 options_gui.add(options, "useRandomColors").onChange(generateSVG);
 options_gui.add(options, "useFixedFillColor").onChange(generateSVG);
 options_gui.add(options, "drawPolygonId").onChange(generateSVG);

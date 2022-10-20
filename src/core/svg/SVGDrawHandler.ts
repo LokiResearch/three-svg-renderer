@@ -11,7 +11,7 @@
 // LICENCE: Licence.md 
 
 import {Viewmap} from '../viewmap/Viewmap';
-import {Size} from '../../utils/math';
+import {SizeLike} from '../../utils/math';
 import {Svg} from '@svgdotjs/svg.js';
 import '@svgdotjs/svg.topath.js';
 import { DrawPass } from './passes/DrawPass';
@@ -22,30 +22,30 @@ export interface SVGDrawPassInfo {
   time: number;
 }
 
-export class SVGBuildInfo {
+export class SVGDrawInfo {
   totalTime = Infinity;
   passesInfo = new Array<SVGDrawPassInfo>();
 }
 
-export interface SVGBuildOptions {
+export interface SVGDrawOptions {
   prettifySVG: boolean;
 }
 
-export class SVGBuilder {
-  readonly options: SVGBuildOptions;
-  readonly drawPasses = new Array<DrawPass>;
+export class SVGDrawHandler {
+  readonly options: SVGDrawOptions;
+  readonly passes = new Array<DrawPass>();
 
-  constructor(options: Partial<SVGBuildOptions> = {}) {
+  constructor(options: Partial<SVGDrawOptions> = {}) {
     this.options = {
       prettifySVG: false,
       ...options
     };
   }
 
-  async buildSVG(
+  async drawSVG(
       viewmap: Viewmap, 
-      size: Size,
-      info = new SVGBuildInfo()
+      size: SizeLike,
+      info = new SVGDrawInfo()
   ): Promise<Svg> {
 
     const buildStartTime = Date.now();
@@ -55,8 +55,8 @@ export class SVGBuilder {
     svg.height(size.h);
 
     // Call the draw passes
-    for (let i=0; i<this.drawPasses.length; i++) {
-      const pass = this.drawPasses[i];
+    for (let i=0; i<this.passes.length; i++) {
+      const pass = this.passes[i];
       if (pass.enabled) {
         const passStartTime = Date.now();
         await pass.draw(svg, viewmap);

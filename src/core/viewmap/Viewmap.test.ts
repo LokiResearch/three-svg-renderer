@@ -14,7 +14,7 @@ import {Mesh, BoxGeometry, MeshStandardMaterial, PerspectiveCamera, Vector3
 } from 'three';
 import {Edge} from './Edge';
 import {Vertex} from 'three-mesh-halfedge';
-import {triangleGeometry} from '../../utils/geometry';
+import {triangleGeometry} from '../../utils';
 import {createFaceEdges, computeSurfaceIntersections, SurfaceIntersectionInfo,
   splitEdge
 } from './Viewmap';
@@ -91,13 +91,13 @@ describe("Function splitEdge", () => {
 
     let split = splitEdge(edge, edge.vertices[0].position);
     expect(split).not.toBeNull();
-    expect(split!.vertex).toBe(edge.vertices[0]);
-    expect(split!.cut).not.toBeTruthy();
+    expect(split?.vertex).toBe(edge.vertices[0]);
+    expect(split?.cut).not.toBeTruthy();
 
     split = splitEdge(edge, edge.vertices[1].position);
     expect(split).not.toBeNull();
-    expect(split!.vertex).toBe(edge.vertices[1]);
-    expect(split!.cut).not.toBeTruthy();
+    expect(split?.vertex).toBe(edge.vertices[1]);
+    expect(split?.cut).not.toBeTruthy();
   });
 
   test("Expect edge to be splited in the middle", () => {
@@ -107,8 +107,8 @@ describe("Function splitEdge", () => {
 
     const split = splitEdge(edge, pos);
     expect(split).not.toBeNull();
-    expect(split!.vertex.matchesPosition(pos)).toBeTruthy();
-    expect(split!.cut).toBeTruthy();
+    expect(split?.vertex.matchesPosition(pos)).toBeTruthy();
+    expect(split?.cut).toBeTruthy();
   });
 
   test("Expect the adjacent faces to be updated", () => {

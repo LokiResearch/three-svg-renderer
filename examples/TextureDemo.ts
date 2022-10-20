@@ -15,9 +15,9 @@
 import { GUI } from 'dat.gui';
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { SVGRenderer, VisibleContoursDrawPass, TextureDrawPass, SVGRenderInfo, 
+import { SVGRenderer, VisibleContourPass, TexturePass, SVGRenderInfo, 
   SVGMesh, 
-  FillsDrawPass} from '../src/index';
+  FillPass} from '../src/index';
 import {debounce} from 'throttle-debounce';
 import {
   AmbientLight,
@@ -90,12 +90,12 @@ for (const texture of textures) {
  * Init the SVG Renderer and the draw passes
  */
 const svgRenderer = new SVGRenderer();
-const fillsPass = new FillsDrawPass();
-const contoursPass = new VisibleContoursDrawPass();
-const texturePass = new TextureDrawPass();
-svgRenderer.addDrawPass(fillsPass);
+const fillPass = new FillPass();
+const contourPass = new VisibleContourPass();
+const texturePass = new TexturePass();
+svgRenderer.addDrawPass(fillPass);
 svgRenderer.addDrawPass(texturePass);
-svgRenderer.addDrawPass(contoursPass);
+svgRenderer.addDrawPass(contourPass);
 
 /**
  * Init the Threejs WebGL Renderer 
@@ -206,7 +206,7 @@ function renderScene() {
  * Enables/Disables SVG Renderer draw passes based on params
  */
 function updatePasses() {
-  contoursPass.enabled = params.drawContours;
+  contourPass.enabled = params.drawContours;
   generateSVG();
 }
 
@@ -223,7 +223,7 @@ function updateTransparentTextures() {
     for (const mesh of meshes) {
       mesh.material.transparent = true;
       mesh.material.color.set(0xFFFFFF);
-      fillsPass.enabled = false;
+      fillPass.enabled = false;
       // Use the default fragment
       mesh.material.onBeforeCompile = (shader) => {
         shader.fragmentShader = shader.fragmentShader.replace(
@@ -244,7 +244,7 @@ function updateTransparentTextures() {
     for (const mesh of meshes) {
       mesh.material.transparent = false;
       mesh.material.color.set(params.materialColor);
-      fillsPass.enabled = true;
+      fillPass.enabled = true;
       // Use the blend texture fragment
       mesh.material.onBeforeCompile = (shader) => {
         shader.fragmentShader = shader.fragmentShader.replace(

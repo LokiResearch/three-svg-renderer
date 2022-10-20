@@ -11,29 +11,30 @@
 // LICENCE: Licence.md
 
 import {PerspectiveCamera} from 'three';
-import {Viewmap, ViewmapBuildInfo, ViewmapBuildOptions} from './core/viewmap/Viewmap';
+import {
+  Viewmap, ViewmapBuildInfo, ViewmapBuildOptions,
+  SVGDrawHandler, SVGDrawInfo, SVGDrawOptions, DrawPass
+} from './core';
 import {SVGMesh} from './core/SVGMesh';
-import {SVGBuilder, SVGBuildInfo, SVGBuildOptions} from './core/svg/SVGBuilder';
-import {DrawPass} from './core/svg/passes/DrawPass';
 import {Svg} from '@svgdotjs/svg.js';
 
 export interface SVGRenderOptions {
   updateMeshes?: boolean;
   viewmap?: ViewmapBuildOptions;
-  svg?: SVGBuildOptions;
+  svg?: SVGDrawOptions;
 }
 
 export class SVGRenderInfo {
   resolution = {w: Infinity, h: Infinity};
   renderingTime = Infinity;
-  viewmapBuildInfo = new ViewmapBuildInfo();
-  svgBuildInfo = new SVGBuildInfo();
+  readonly viewmapBuildInfo = new ViewmapBuildInfo();
+  readonly svgDrawInfo = new SVGDrawInfo();
 }
 
 export class SVGRenderer {
 
   readonly viewmap = new Viewmap ();
-  readonly svgBuilder = new SVGBuilder();
+  readonly drawHandler = new SVGDrawHandler();
 
   /**
    * Render a SVG file from the given meshes and returns it.
@@ -54,11 +55,8 @@ export class SVGRenderer {
 
     const renderStartTime = Date.now();
 
-    // Setup camera
-    const renderSize = {
-      w: size.w,
-      h: size.w/camera.aspect
-    };
+    // Setup camera keeping
+    const renderSize = {w: size.w, h: size.w/camera.aspect};
     info.resolution = renderSize;
 
     // Viewmap Build
@@ -67,8 +65,8 @@ export class SVGRenderer {
     );
 
     // SVG Buid
-    const svg = await this.svgBuilder.buildSVG(
-      this.viewmap, renderSize, info.svgBuildInfo
+    const svg = await this.drawHandler.drawSVG(
+      this.viewmap, renderSize, info.svgDrawInfo
     );
 
     info.renderingTime = Date.now() - renderStartTime;
@@ -77,17 +75,17 @@ export class SVGRenderer {
   }
 
   addDrawPass(pass: DrawPass) {
-    if (!this.svgBuilder.drawPasses.includes(pass)) {
-      this.svgBuilder.drawPasses.push(pass);
+    if (!this.drawHandler.passes.includes(pass)) {
+      this.drawHandler.passes.push(pass);
     }
   }
 
   removeDrawPass(pass: DrawPass) {
-    this.svgBuilder.drawPasses.remove(pass);
+    this.drawHandler.passes.remove(pass);
   }
 
   clearDrawPasses() {
-    this.svgBuilder.drawPasses.clear();
+    this.drawHandler.passes.clear();
   }
 
 

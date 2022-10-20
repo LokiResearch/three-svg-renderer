@@ -19,7 +19,7 @@ import {Point, PointSingularity} from './Point';
 import {Contour, ContourVisibility} from './Contour';
 import {Polygon} from './Polygon';
 import {computePolygons} from './Arr2D';
-import {sameSide, Size, NDCPointToImage} from '../../utils/math';
+import {sameSide, SizeLike, NDCPointToImage} from '../../utils';
 import {trianglesIntersect} from 'fast-triangle-triangle-intersection';
 import { SVGMesh } from '../SVGMesh';
 
@@ -105,7 +105,7 @@ export class Viewmap {
   async build(
       meshes: SVGMesh[],
       camera: PerspectiveCamera,
-      renderSize: Size,
+      renderSize: SizeLike,
       buildOptions: ViewmapBuildOptions = {},
       info = new ViewmapBuildInfo()
   ) {
@@ -988,10 +988,10 @@ export function computeContoursVisibility(
   for (const mesh of meshes) {
     if (Array.isArray(mesh.material)) {
       for (const material of mesh.material) {
-        material.side = materialSidenessMap.get(material)!;
+        material.side = materialSidenessMap.get(material) ?? material.side;
       }
     } else {
-      mesh.material.side = materialSidenessMap.get(mesh.material)!;
+      mesh.material.side = materialSidenessMap.get(mesh.material) ?? mesh.material.side;
     }
 
 

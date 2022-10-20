@@ -12,5 +12,6 @@
  * Licence: Licence.md
  */
 
-export { SVGMesh } from "./SVGMesh";
-export * from './svg/passes';
+export * from "./viewmap";
+export * from "./svg";
+export { SVGMesh, SVGMeshOptions, SVGTexture } from "./SVGMesh";

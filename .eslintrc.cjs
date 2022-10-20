@@ -17,7 +17,7 @@ module.exports = {
     "jest/valid-expect": "error",
     'array-bracket-spacing':["error"],
     'space-in-parens':["error"],
-    "@typescript-eslint/no-namespace": "off",
+    "@typescript/no-empty-interface": "off",
     "indent": ["error", 2, {
       "FunctionDeclaration": {"parameters": 2},
       "FunctionExpression": {"parameters": 2}

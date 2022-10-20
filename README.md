@@ -22,6 +22,10 @@ An **experimental** three.js SVG renderer written in Typescript to render 3D sce
 npm i three-svg-renderer
 ```
 
+## Documentation
+
+- [Open the documentation](https://lokiresearch.github.io/three-svg-renderer/doc/index.html)
+
 ## How to use
 
 ```ts
@@ -65,144 +69,6 @@ svgRenderer.generateSVG(meshes, camera, {w: 1000, h:1000})
     // [...]
 });
 ```
-
-
-## Documentation
-
-*Real generated documentation to come.*
-
-
-### SVGRenderer
-
-```ts
-class SVGRenderer {
-    readonly viewmap: Viewmap;
-    readonly svgBuilder: SVGBuilder;
-    generateSVG(
-      meshes: Array<SVGMesh>, 
-      camera: PerspectiveCamera, 
-      size: {w: number; h: number;},
-      options?: SVGRenderOptions,
-      info?: SVGRenderInfo): Promise<Svg>;
-    addDrawPass(pass: DrawPass): void;
-    removeDrawPass(pass: DrawPass): void;
-    clearDrawPasses(): void;
-}
-```
-
-```ts
-interface SVGRenderOptions {
-    updateMeshes?: boolean;
-    viewmap?: ViewmapBuildOptions;
-    svg?: SVGBuildOptions;
-}
-```
-
-### SVGMesh
-
-```ts
-class SVGMesh {
-    readonly threeMesh: Mesh;
-    readonly morphGeometry: BufferGeometry;
-    readonly hes: HalfEdgeStructure;
-    readonly bvh: MeshBVH;
-    constructor(mesh: Mesh, options?: SVGMeshOptions);
-    updateMorphGeometry(): void;
-    updateBVH(updateMorphGeometry?: boolean): void;
-    updateHES(updateMorphGeometry?: boolean): void;
-    dispose(): void;
-    useBVHRaycast(use: boolean): void;
-}
-```
-
-```ts
-interface SVGMeshOptions {
-    bvhOptions?: MeshBVHOptions;
-    hesOptions?: HalfEdgeStructureOptions;
-    replaceMeshRaycastFunc?: boolean;
-}
-```
-
-### Viewmap
-
-```ts
-interface ViewmapBuildOptions {
-    meshesNeedUpdate?: boolean;
-    ignoreContoursVisibility?: boolean;
-    defaultMeshColor?: ColorRepresentation;
-}
-```
-
-### SVGBuilder
-
-```ts
-interface SVGBuildOptions {
-    prettifySVG: boolean;
-}
-```
-
-### DrawPass
-
-```ts
-abstract class DrawPass {
-    name: string;
-    constructor();
-    /**
-     * Function automatically called by SVGBuilder
-     * @param svg The svg tree being built
-     * @param viewmap The viewmap data structure
-     */
-    abstract draw(svg: Svg, viewmap: Viewmap): Promise<void>;
-}
-```
-
-Can be inherited to add custom passes to the SVG renderer.
-
-### Passes
-
-```ts
-interface ContoursDrawPassOptions {
-    useRandomColors: boolean;
-    groupByNature: boolean;
-    drawContourId: boolean;
-    drawRaycastPoint: boolean;
-}
-```
-
-```ts
-class VisibleContoursDrawPass extends ContoursDrawPass {
-    constructor(strokeStyle?: StrokeData, options?: Partial<ContoursDrawPassOptions>);
-    draw(svg: Svg, viewmap: Viewmap): Promise<void>;
-}
-```
-
-```ts
-class HiddenContoursDrawPass extends ContoursDrawPass {
-    constructor(strokeStyle?: StrokeData, options?: Partial<ContoursDrawPassOptions>);
-    draw(svg: Svg, viewmap: Viewmap): Promise<void>;
-}
-```
-
-```ts
-interface FillsDrawPassOptions {
-    drawRaycastPoint: boolean;
-    drawPolygonId: boolean;
-    useRandomColors: boolean;
-    useFixedFillColor: boolean;
-}
-```
-
-```ts
-class FillsDrawPass extends DrawPass {
-    readonly options: FillsDrawPassOptions;
-    readonly fillStyle: FillData;
-    constructor(fillStyle?: FillData, options?: Partial<FillsDrawPassOptions>);
-    draw(svg: Svg, viewmap: Viewmap): Promise<void>;
-}
-```
-
-
-
 
 ## References
 

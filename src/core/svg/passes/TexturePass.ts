@@ -13,10 +13,8 @@
 import { DrawPass } from "./DrawPass";
 import { PerspectiveCamera, Vector2 } from "three";
 import cv, {Mat as CVMat} from "opencv-ts";
-import { round } from "../../../utils/math";
-import {Point, Size, Rect, projectPointImage} from '../../../utils/math';
+import { PointLike, SizeLike, RectLike, projectPointImage, round } from '../../../utils';
 import { SVGMesh, SVGTexture } from "../../SVGMesh";
-// import { Buffer } from 'buffer'
 
 import {
   Svg, SVG,
@@ -80,11 +78,7 @@ type SVGMeshWithTexture = SVGMesh & {texture: SVGTexture};
  * Note that only `PlaneGeometry` is supported for now. Textures set on 
  * geometries other than plane will be ignored.
  */
-export class TextureDrawPass extends DrawPass {
-
-  constructor() {
-    super();
-  }
+export class TexturePass extends DrawPass {
   
   async draw(svg: Svg, viewmap: Viewmap) {
 
@@ -177,7 +171,7 @@ export class TextureDrawPass extends DrawPass {
 
 async function getImageTexture(
     camera: PerspectiveCamera,
-    renderSize: Size,
+    renderSize: SizeLike,
     mesh: SVGMeshWithTexture
 ) {
 
@@ -218,7 +212,7 @@ async function getImageTexture(
 
 async function getSVGTexture(
     camera: PerspectiveCamera,
-    renderSize: Size,
+    renderSize: SizeLike,
     mesh: SVGMeshWithTexture
 ) {
 
@@ -300,8 +294,8 @@ function svgContentFromDataURL(dataUrl: string) {
 
 function getCVTransformMatrix(
     camera: PerspectiveCamera,
-    renderSize: Size,
-    srcRect: Rect,
+    renderSize: SizeLike,
+    srcRect: RectLike,
     mesh: SVGMesh,
 ) {
 
@@ -356,14 +350,14 @@ function getCVTransformMatrix(
 function transformSVG(
     element: SVGElement,
     camera: PerspectiveCamera,
-    renderSize: Size,
+    renderSize: SizeLike,
     mesh: SVGMesh,
     transformMatrix?: CVMat,
     ignoredElements?: SVGElement[],
 ){
   if (element.type === "svg") {
     const svg = element as Svg;
-    let inRect: Rect = {
+    let inRect = {
       x: NumberAliasToNumber(svg.x()), y: NumberAliasToNumber(svg.y()),
       w: NumberAliasToNumber(svg.width()), h: NumberAliasToNumber(svg.height())};
     const viewBox = svg.viewbox();
@@ -418,7 +412,7 @@ function transformSVGPath(path: SVGPath, matrix: CVMat) {
   const array = path.array();
   const newCmds = new Array<SVGPathCommand>();
   const lastP = {x: 0, y:0};
-  let p: Point, p1: Point, p2: Point;
+  let p: PointLike, p1: PointLike, p2: PointLike;
   for (let i=0; i<array.length; i++) {
     const cmd = array[i];
     const op = cmd[0];

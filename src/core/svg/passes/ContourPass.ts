@@ -12,7 +12,7 @@
 
 import {DrawPass} from './DrawPass';
 import {Viewmap} from '../../viewmap/Viewmap';
-import {Svg, StrokeData, G as SVGGroup, Element as SVGElement, Color as SVGColor,
+import {Svg, G as SVGGroup, Element as SVGElement, Color as SVGColor,
 } from '@svgdotjs/svg.js';
 import {Contour, ContourVisibility} from '../../viewmap/Contour';
 import {EdgeNature} from '../../viewmap/Edge';
@@ -22,49 +22,102 @@ import { SVGMesh } from '../../SVGMesh';
 const EdgeNatures = Object.values(EdgeNature)
   .filter(nature => nature !== EdgeNature.None);
 
-export interface ContoursDrawPassOptions {
-  useRandomColors: boolean;
-  groupByNature: boolean;
-  drawContourId: boolean; 
-  drawRaycastPoint: boolean;
+export interface ContourPassOptions {
+  /** 
+   * Draw each contours in the svg with random colors. 
+   * @defaultValue `false`
+   */
+  useRandomColors?: boolean;
+  /**
+   * Group contours by their {@link EdgeNature} in  different svg groups.
+   * @defaultValue `true`.
+   */
+  groupByNature?: boolean;
+  /**
+   * Draw the contour id next to the associated contour in the svg.
+   * @defaultValue `false`
+   */
+  drawContourId?: boolean; 
+  /**
+   * Draw the raycasting point used to determine visibility in the svg.
+   * @defaultValue `false`
+   */
+  drawRaycastPoint?: boolean;
 }
 
-export abstract class ContoursDrawPass extends DrawPass {
-  readonly options: ContoursDrawPassOptions;
-  readonly strokeStyle: StrokeData;
+export interface StrokeStyle {
+  /**
+   * Color of the stroke in hex format.
+   * @defaultValue `"#000000"'
+   */
+  color?: string;
+  /**
+   * Width of the stroke
+   * @defaultValue `1`
+   */
+  width?: number;
+  /**
+   * Opacity of the stroke
+   * @defaultValue `1`
+   */
+  opacity?: number;
+  /**
+   * Pattern of dashes and gaps used for the stroke e.g. `"2,2"`
+   * @defaultValue `""`
+   */
+  dasharray?: string;
+  /**
+   * Shape to be used at the ends of stroke
+   * @defaultValue `"butt"`
+   */
+  linecap?: 'butt' | 'round' | 'square';
+  /**
+   * Shape to use at the corners of stroke
+   * @defaultValue `"miter"`
+   */
+  linejoin?: 'arcs' | 'bevel' | 'miter' | 'miter-clip' | 'round';
+  /**
+   * Offset to use before starting dash-array
+   * @defaultValue `0`
+   */
+  dashoffset?: number;
+}
+
+export abstract class ContourPass extends DrawPass {
+  /** Options of the draw pass */
+  readonly options: Required<ContourPassOptions> = {
+    drawContourId: false,
+    drawRaycastPoint: false,
+    useRandomColors: false,
+    groupByNature: true,
+  }
+  /** Style to apply to the strokes */
+  readonly strokeStyle: StrokeStyle = {
+    color: "#000000",
+    width: 1,
+    dasharray: "",
+    linecap: "butt",
+    linejoin: "miter",
+    opacity: 1,
+    dashoffset: 0,
+  };
 
   constructor(
-      strokeStyle: StrokeData = {},
-      options: Partial<ContoursDrawPassOptions> = {}, 
+      strokeStyle: StrokeStyle = {},
+      options: ContourPassOptions = {}, 
   ) {
     super();
 
-    this.options = {
-      drawContourId: false,
-      drawRaycastPoint: false,
-      useRandomColors: false,
-      groupByNature: true,
-      ...options
-    }
-
-    this.strokeStyle = {
-      color: "#000000",
-      width: 1,
-      dasharray: "",
-      linecap: "butt",
-      linejoin: "miter",
-      opacity: 1,
-      dashoffset: 0,
-      ...strokeStyle
-    }
+    Object.assign(this.strokeStyle, strokeStyle);
+    Object.assign(this.options, options);
   }
 }
 
-export class VisibleContoursDrawPass extends ContoursDrawPass {
+export class VisibleContourPass extends ContourPass {
 
   constructor(
-      strokeStyle: StrokeData = {},
-      options: Partial<ContoursDrawPassOptions> = {}, 
+      strokeStyle: StrokeStyle = {},
+      options: Partial<ContourPassOptions> = {}, 
   ) {
     super(strokeStyle, options);
   }
@@ -82,11 +135,11 @@ export class VisibleContoursDrawPass extends ContoursDrawPass {
   }
 }
 
-export class HiddenContoursDrawPass extends ContoursDrawPass {
+export class HiddenContourPass extends ContourPass {
 
   constructor(
-      strokeStyle: StrokeData = {},
-      options: Partial<ContoursDrawPassOptions> = {}, 
+      strokeStyle: StrokeStyle = {},
+      options: Partial<ContourPassOptions> = {}, 
   ) {
     super({color: "#FF0000", dasharray: "2,2", ...strokeStyle}, options);
   }
@@ -109,8 +162,8 @@ function drawContours(
     parent: SVGElement,
     meshes: SVGMesh[],
     contours: Contour[],
-    options: ContoursDrawPassOptions,
-    strokeStyle: StrokeData = {},
+    options: ContourPassOptions,
+    style: StrokeStyle = {},
 ) {
   // Group the contours by mesh
   for (const mesh of meshes) {
@@ -126,12 +179,12 @@ function drawContours(
         objectGroup.add(natureGroup);
 
         for (const contour of natureContours) {
-          drawContour(natureGroup, contour, options, strokeStyle);
+          drawContour(natureGroup, contour, options, style);
         }
       }
     } else {
       for (const contour of objectContours) {
-        drawContour(objectGroup, contour, options, strokeStyle);
+        drawContour(objectGroup, contour, options, style);
       }
     }
   }
@@ -140,24 +193,26 @@ function drawContours(
 function drawContour(
     parent: SVGElement, 
     contour: Contour,
-    options: ContoursDrawPassOptions,
-    strokeStyle: StrokeData = {}
+    options: ContourPassOptions,
+    style: StrokeStyle = {}
 ) {
+
+  // Make a copy of the style so we can modify it
+  style = {...style};
+
   if (options.useRandomColors) {
-    strokeStyle = {...strokeStyle};
-    strokeStyle.color = SVGColor.random().toString();
+    style.color = SVGColor.random().toString();
   }
 
-  const path = getSVGPath(contour.points, [], false, strokeStyle);
+  const path = getSVGPath(contour.points, [], false, style);
   parent.add(path);
-
 
   if (options.drawRaycastPoint) {
     drawContourRaycastPoint(path, contour);
   }
 
   if (options.drawContourId) {
-    drawContourId(path, contour, strokeStyle);
+    drawContourId(path, contour, style);
   }
 }
 
@@ -171,7 +226,7 @@ function drawContourRaycastPoint(parent: SVGElement, contour: Contour) {
   parent.add(point);
 }
 
-function drawContourId(parent: SVGElement, contour: Contour, strokeStyle: StrokeData) {
+function drawContourId(parent: SVGElement, contour: Contour, style: StrokeStyle) {
   const fontStyle = {size: 8};
   const delta = 10;
   const x = contour.raycastPoint.x + delta;
@@ -182,7 +237,7 @@ function drawContourId(parent: SVGElement, contour: Contour, strokeStyle: Stroke
 
   const cx = x + box.width/2;
   const cy = y + box.height/2;
-  const circle = getSVGCircle(cx, cy, 0.85*box.width, {}, strokeStyle);
+  const circle = getSVGCircle(cx, cy, 0.85*box.width, {}, style);
   circle.id('contour-id');
   circle.add(text);
 
