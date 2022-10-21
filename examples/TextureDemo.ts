@@ -45,7 +45,7 @@ const _BlendTextureFragment = ShaderChunk.map_fragment.replace(
   `diffuseColor = vec4( mix( diffuse, sampledDiffuseColor.rgb, sampledDiffuseColor.a ), opacity );`
 );
 
-const resourcesURL = window.location+"../../../../resources/";
+const resourcesURL = window.location+"../../../resources/";
 type CMesh = Mesh<BufferGeometry, MeshStandardMaterial>;
 
 const params = {

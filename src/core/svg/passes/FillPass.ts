@@ -108,7 +108,9 @@ function drawPolygon(
     style.color = SVGColor.random().toString();
   }
 
-  const path = getSVGPath(polygon.contour, polygon.holes, true, style);
+  console.log("polygon style", style);
+
+  const path = getSVGPath(polygon.contour, polygon.holes, true, {}, style);
   path.id("fill-"+polygon.id);
   parent.add(path);
 

@@ -8,7 +8,7 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {debounce} from 'throttle-debounce';
 
 
-const resourcesURL = window.location+"../../../../resources/";
+const resourcesURL = window.location+"../../../resources/";
 
 const possibleObjects = {
   "cube": "cube",
@@ -86,7 +86,7 @@ let options_gui: GUI;
 let options, style;
 
 /**
- * Contours Settings
+ * Contour Pass
  */
 const contours_gui_params = [
   {c_params: visibleContourPass, gui_root: gui.addFolder("Visible Contours")},
@@ -112,9 +112,9 @@ for (const {c_params, gui_root} of contours_gui_params) {
 }
 
 /**
- * Fills Draw pass options
+ * Fill Pass
  */
-gui_root = gui.addFolder("Fills");
+gui_root = gui.addFolder("Fill");
 gui_root.add(fillPass, 'enabled').onChange(generateSVG);
 
 style_gui = gui_root.addFolder("Style");
@@ -125,7 +125,7 @@ style_gui.add(style, "opacity", 0, 1, 0.05).onChange(generateSVG);
 options_gui = gui_root.addFolder("Options");
 options = fillPass.options;
 options_gui.add(options, "useRandomColors").onChange(generateSVG);
-options_gui.add(options, "useFixedFillColor").onChange(generateSVG);
+options_gui.add(options, "useFixedColor").onChange(generateSVG);
 options_gui.add(options, "drawPolygonId").onChange(generateSVG);
 options_gui.add(options, "drawRaycastPoint").onChange(generateSVG);
 
@@ -135,7 +135,7 @@ options_gui.add(options, "drawRaycastPoint").onChange(generateSVG);
 const debug_gui = gui.addFolder("Debug");
 
 /**
- * Singularity points
+ * Singularity point
  */
 gui_root = debug_gui.addFolder("Singularity Points");
 gui_root.add(singularityPass, 'enabled').onChange(generateSVG);
