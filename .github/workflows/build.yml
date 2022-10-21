@@ -11,31 +11,27 @@ on:
 
 jobs:
 
-  build:
-
+  test_and_build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run lint
-    - run: npm run test
-    - run: npm run build
-    - run: npm run build-examples
-    - run: npm run build-doc
-
-    - name: Commit to public branch
-      uses: EndBug/add-and-commit@v7
-      with:
-        add: 'build doc --force'
-        message: 'Update Examples and Doc'
-        push: 'origin HEAD:public --force'
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: 'npm'
+      - name: build, lint and test
+        run: |
+          npm ci
+          npm run lint
+          npm run test
+          npm run build
+          npm run build-examples
+          npm run build-doc
+      - name: Commit to public
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: 'build build-examples doc --force'
+          message: 'Update Examples and Doc'
+          push: 'origin HEAD:public --force'

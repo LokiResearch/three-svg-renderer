@@ -1,6 +1,18 @@
 
 import {BufferGeometry, BufferAttribute, Material, Mesh} from 'three';
 import {computeMorphedAttributes} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+
+/**
+ * Types definitions are not up to date
+ */
+declare module 'three/examples/jsm/utils/BufferGeometryUtils' {
+  export function computeMorphedAttributes(object: Mesh): {
+    positionAttribute: BufferAttribute,
+    normalAttribute: BufferAttribute,
+    morphedPositionAttribute: BufferAttribute,
+    morphedNormalAttribute: BufferAttribute
+  }
+}
   
 export function triangleGeometry(size: number) {
   const vertices = new Float32Array([

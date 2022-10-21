@@ -1,2 +1,0 @@
-import './svgdotjs';
-import './BufferGeometryUtils';

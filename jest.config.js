@@ -12,5 +12,4 @@ export default {
   transformIgnorePatterns: [
     "node_modules/(?!(three/examples)/)",
   ],
-  setupFilesAfterEnv: ['./src/setup-jest.ts']
 }

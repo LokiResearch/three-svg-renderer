@@ -12,12 +12,12 @@
 
 import {Mesh, BoxGeometry, MeshStandardMaterial, PerspectiveCamera, Vector3
 } from 'three';
-import {Edge} from './Edge';
+import {Edge} from '../viewmap/Edge';
 import {Vertex} from 'three-mesh-halfedge';
 import {triangleGeometry} from '../../utils';
 import {createFaceEdges, computeSurfaceIntersections, SurfaceIntersectionInfo,
   splitEdge
-} from './Viewmap';
+} from '../viewmap/Viewmap';
 import {SVGMesh} from '../SVGMesh';
 
 // jest seems to not support WASM files, use a mock
