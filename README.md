@@ -42,26 +42,26 @@ scene.traverse(obj => {
 const svgRenderer = new SVGRenderer();
 
 // This pass will draw fills for meshes using the three.js material color
-const fillsPass = new FillsDrawPass();
+const fillPass = new FillPass();
 
 // This pass will draw visible contours of meshes on top of fills
 // using black color and solid line of width 1
-const visibleContoursPass = new VisibleContoursDrawPass({
+const visibleContourPass = new VisibleContourPass({
   color: "#000000",
   width: 1
 });
 
 // This pass will draw hidden contours on top of visible and fills
 // using red color, dash line of width 1
-const hiddenContoursPass = new HiddenContoursDrawPass({
+const hiddenContourPass = new HiddenContourPass({
   color: "#FF0000",
   width: 1,
   dashArray: "2,2"
 });
 
-svgRender.addDrawPass(fillsPass);
-svgRender.addDrawPass(visibleContoursPass);
-svgRender.addDrawPass(hiddenContoursPass);
+svgRender.addPass(fillPass);
+svgRender.addPass(visibleContourPass);
+svgRender.addPass(hiddenContourPass);
 
 // Get the SVG
 svgRenderer.generateSVG(meshes, camera, {w: 1000, h:1000})

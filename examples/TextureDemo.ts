@@ -93,9 +93,9 @@ const svgRenderer = new SVGRenderer();
 const fillPass = new FillPass();
 const contourPass = new VisibleContourPass();
 const texturePass = new TexturePass();
-svgRenderer.addDrawPass(fillPass);
-svgRenderer.addDrawPass(texturePass);
-svgRenderer.addDrawPass(contourPass);
+svgRenderer.addPass(fillPass);
+svgRenderer.addPass(texturePass);
+svgRenderer.addPass(contourPass);
 
 /**
  * Init the Threejs WebGL Renderer 

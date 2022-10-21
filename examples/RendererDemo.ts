@@ -25,10 +25,10 @@ const hiddenContourPass = new HiddenContourPass();
 hiddenContourPass.enabled = false;
 const singularityPass = new SingularityPointPass();
 singularityPass.enabled = false;
-svgRenderer.addDrawPass(fillPass);
-svgRenderer.addDrawPass(visibleContourPass);
-svgRenderer.addDrawPass(hiddenContourPass);
-svgRenderer.addDrawPass(singularityPass);
+svgRenderer.addPass(fillPass);
+svgRenderer.addPass(visibleContourPass);
+svgRenderer.addPass(hiddenContourPass);
+svgRenderer.addPass(singularityPass);
 
 const params = {
   autoRender: true,

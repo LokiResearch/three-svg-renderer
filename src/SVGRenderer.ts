@@ -31,6 +31,9 @@ export class SVGRenderInfo {
   readonly svgDrawInfo = new SVGDrawInfo();
 }
 
+/**
+ * 
+ */
 export class SVGRenderer {
 
   readonly viewmap = new Viewmap ();
@@ -74,17 +77,28 @@ export class SVGRenderer {
     return svg;
   }
 
-  addDrawPass(pass: DrawPass) {
+  /**
+   * Adds a pass to the SVG rendering pipeline.
+   * @param pass 
+   */
+  addPass(pass: DrawPass) {
     if (!this.drawHandler.passes.includes(pass)) {
       this.drawHandler.passes.push(pass);
     }
   }
 
-  removeDrawPass(pass: DrawPass) {
+  /**
+   * Removes a pass from the SVG rendering pipeline
+   * @param pass 
+   */
+  removePass(pass: DrawPass) {
     this.drawHandler.passes.remove(pass);
   }
 
-  clearDrawPasses() {
+  /**
+   * Removes all the passes from the SVG rendering pipeline.
+   */
+  clearPasses() {
     this.drawHandler.passes.clear();
   }
 
