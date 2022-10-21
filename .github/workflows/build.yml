@@ -10,6 +10,7 @@ on:
     branches: [ main ]
 
 jobs:
+
   build:
 
     runs-on: ubuntu-latest
@@ -26,6 +27,15 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build
     - run: npm run lint
-    - run: npm test
+    - run: npm run test
+    - run: npm run build
+    - run: npm run build-examples
+    - run: npm run build-doc
+
+    - name: Commit to public branch
+      uses: EndBug/add-and-commit@v7
+      with:
+        add: 'build doc --force'
+        message: 'Update Examples and Doc'
+        push: 'origin HEAD:public --force'

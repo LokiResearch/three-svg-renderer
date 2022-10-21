@@ -65,7 +65,7 @@ for (const example of examples) {
     input: `examples/${example}.ts`,
     output: {
       sourcemap: true,
-      file: `build/examples/${example}.js`,
+      file: `build-examples/${example}.js`,
     },
     plugins: [
       nodeResolve({
