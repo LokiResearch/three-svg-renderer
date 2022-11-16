@@ -1,9 +1,8 @@
 # three-svg-renderer
 
-[![npm version](https://badge.fury.io/js/three-svg-rendering.svg)](https://badge.fury.io/js/three-svg-rendering)
-[![build](https://github.com/LokiResearch/three-svg-rendering/workflows/build/badge.svg)](https://github.com/LokiResearch/three-svg-rendering/actions?query=workflow:"build")
-[![GitHub release](https://img.shields.io/github/release/LokiResearch/three-svg-rendering?include_prereleases=&sort=semver&color=blue)](https://github.com/LokiResearch/three-svg-rendering/releases/)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/LokiResearch/three-svg-rendering?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/minitoine/three-svg-rendering/context:javascript)
+[![npm release](https://img.shields.io/npm/v/three-mesh-renderer)](https://www.npmjs.com/package/three-mesh-renderer)
+[![build](https://img.shields.io/github/workflow/status/LokiResearch/three-svg-renderer/build)](https://github.com/LokiResearch/three-mesh-renderer/actions)
+[![Documentation](https://img.shields.io/badge/view-Documentation-blue?label=Open)](https://lokiresearch.github.io/three-svg-renderer/doc/index.html)
 [![License](https://img.shields.io/badge/License-MIT-green)](#license)
 
 An **experimental** three.js SVG renderer written in Typescript to render 3D scenes as Vector Graphics. The renderer analyzes the geometry in the scene, builds a viewmap of the mesh edges and computes the visible and hidden contours to draw. 
@@ -21,29 +20,27 @@ An **experimental** three.js SVG renderer written in Typescript to render 3D sce
 ```
 npm i three-svg-renderer
 ```
-or
-```
-npm i git+https://github.com/LokiResearch/three-svg-renderer.git#public
-```
 
 ## Documentation
 
-- [Open the documentation](https://lokiresearch.github.io/three-svg-renderer/doc/index.html)
+[![Documentation](https://img.shields.io/badge/view-Documentation-blue?label=Open)](https://lokiresearch.github.io/three-svg-renderer/doc/index.html)
+
+*Documentation is still in progress.*
 
 ## How to use
 
 ```ts
-const scene = new THREE.Scene();
-const camera = new THREE.Camera();
+const scene = new Scene();
+const camera = new PerspectiveCamera();
 
 // Gather meshes from the scene and setup SVGMesh
 const meshes = new Array<SVGMesh>();
 scene.traverse(obj => {
-  obj.isMesh && meshes.push(new SVGMesh(obj as THREE.Mesh));
+  (obj as Mesh).isMesh && meshes.push(new SVGMesh(obj as Mesh));
 });
 
 // Setup the svg renderer and add pass to it
-const svgRenderer = new SVGRenderer();
+const renderer = new SVGRenderer();
 
 // This pass will draw fills for meshes using the three.js material color
 const fillPass = new FillPass();
@@ -60,18 +57,18 @@ const visibleContourPass = new VisibleContourPass({
 const hiddenContourPass = new HiddenContourPass({
   color: "#FF0000",
   width: 1,
-  dashArray: "2,2"
+  dasharray: "2,2"
 });
 
-svgRender.addPass(fillPass);
-svgRender.addPass(visibleContourPass);
-svgRender.addPass(hiddenContourPass);
+renderer.addPass(fillPass);
+renderer.addPass(visibleContourPass);
+renderer.addPass(hiddenContourPass);
 
 // Get the SVG
-svgRenderer.generateSVG(meshes, camera, {w: 1000, h:1000})
-.then((svg) => {
-    // [...]
-});
+renderer.generateSVG(meshes, camera, {w: 1000, h:1000})
+  .then((svg) => {
+    console.log(svg);
+  });
 ```
 
 ## References
