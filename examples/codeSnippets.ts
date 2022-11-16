@@ -19,7 +19,7 @@
  */
 
 import { Mesh, PerspectiveCamera, Scene } from 'three';
-import { SVGRenderer, FillPass, VisibleContourPass, HiddenContourPass } from '../src/index';
+import { SVGRenderer, FillPass, VisibleContourPass, HiddenContourPass, SVGMesh } from '../src/index';
 
 // Example 1: Basic drawing
 {
