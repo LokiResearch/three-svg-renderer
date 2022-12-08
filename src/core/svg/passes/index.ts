@@ -29,7 +29,7 @@ export {
 } from "./TexturePass";
 export {
   StrokeStyle,
-  VisibleContourPass,
-  HiddenContourPass,
-  ContourPassOptions
-} from "./ContourPass";
+  VisibleChainPass,
+  HiddenChainPass,
+  ChainPassOptions
+} from "./ChainPass";

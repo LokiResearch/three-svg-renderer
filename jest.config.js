@@ -12,4 +12,5 @@ export default {
   transformIgnorePatterns: [
     "node_modules/(?!(three/examples)/)",
   ],
+  "setupFilesAfterEnv": ['./src/setuptests.ts']
 }

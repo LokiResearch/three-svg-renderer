@@ -108,18 +108,16 @@ function drawPolygon(
     style.color = SVGColor.random().toString();
   }
 
-  console.log("polygon style", style);
-
   const path = getSVGPath(polygon.contour, polygon.holes, true, {}, style);
   path.id("fill-"+polygon.id);
   parent.add(path);
 
   if (options.drawRaycastPoint) {
-    drawPolygonRaycastPoint(path, polygon);
+    drawPolygonRaycastPoint(parent, polygon);
   }
 
   if (options.drawPolygonId) {
-    drawPolygonId(path, polygon, style);
+    drawPolygonId(parent, polygon, style);
   }
 
 }

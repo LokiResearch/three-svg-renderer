@@ -11,9 +11,8 @@
 // LICENCE: Licence.md 
 
 import { DrawPass } from "./DrawPass";
-import { PerspectiveCamera, Vector2 } from "three";
 import cv, {Mat as CVMat} from "opencv-ts";
-import { PointLike, SizeLike, RectLike, projectPointImage, round } from '../../../utils';
+import { PointLike, RectLike, round } from '../../../utils';
 import { SVGMesh, SVGTexture } from "../../SVGMesh";
 
 import {
@@ -82,12 +81,12 @@ export class TexturePass extends DrawPass {
   
   async draw(svg: Svg, viewmap: Viewmap) {
 
-    const {camera, meshes, polygons} = viewmap;
+    const {meshes, polygons} = viewmap;
 
-    const renderSize = {
-      w: NumberAliasToNumber(svg.width()), 
-      h: NumberAliasToNumber(svg.height())
-    };
+    // const renderSize = {
+    //   w: NumberAliasToNumber(svg.width()), 
+    //   h: NumberAliasToNumber(svg.height())
+    // };
     
     /**
      * Gather meshes with texture
@@ -149,9 +148,11 @@ export class TexturePass extends DrawPass {
       
       let svgTexture: SVGElement;
       if (mesh.texture.url.startsWith('data:image/svg+xml;base64,')) {
-        svgTexture = await getSVGTexture(camera, renderSize, mesh);
+        // svgTexture = await getSVGTexture(camera, renderSize, mesh);
+        svgTexture = await getSVGTexture(mesh);
       } else {
-        svgTexture = await getImageTexture(camera, renderSize, mesh);
+        // svgTexture = await getImageTexture(camera, renderSize, mesh);
+        svgTexture = await getImageTexture(mesh);
       }
 
       // Draw a clipping path using the polygons
@@ -170,8 +171,8 @@ export class TexturePass extends DrawPass {
 }
 
 async function getImageTexture(
-    camera: PerspectiveCamera,
-    renderSize: SizeLike,
+    // camera: PerspectiveCamera,
+    // renderSize: SizeLike,
     mesh: SVGMeshWithTexture
 ) {
 
@@ -181,7 +182,8 @@ async function getImageTexture(
 
   // Get the transformation matrix and the output size;
   const imgRect = {x: 0, y: 0, w: srcImageMatrix.cols, h: srcImageMatrix.rows};
-  const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, imgRect, mesh);
+  // const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, imgRect, mesh);
+  const {matrix, outRect} = getCVTransformMatrix(imgRect, mesh);
 
   const dstImageMatrix = new cv.Mat();
   const dSize = new cv.Size(outRect.w, outRect.h);
@@ -211,8 +213,8 @@ async function getImageTexture(
 }
 
 async function getSVGTexture(
-    camera: PerspectiveCamera,
-    renderSize: SizeLike,
+    // camera: PerspectiveCamera,
+    // renderSize: SizeLike,
     mesh: SVGMeshWithTexture
 ) {
 
@@ -231,8 +233,8 @@ async function getSVGTexture(
         for(const child of svg.children()) {
           try {
             const ignoredElements = new Array<SVGElement>();
-            transformSVG(
-              child, camera, renderSize, mesh, undefined, ignoredElements);
+            // transformSVG(child, camera, renderSize, mesh, undefined, ignoredElements);
+            transformSVG(child, mesh, undefined, ignoredElements);
               
             console.info(`SVG Transform: ${ignoredElements.length} elements ignored.`, ignoredElements);
 
@@ -293,8 +295,8 @@ function svgContentFromDataURL(dataUrl: string) {
 }
 
 function getCVTransformMatrix(
-    camera: PerspectiveCamera,
-    renderSize: SizeLike,
+    // camera: PerspectiveCamera,
+    // renderSize: SizeLike,
     srcRect: RectLike,
     mesh: SVGMesh,
 ) {
@@ -313,18 +315,16 @@ function getCVTransformMatrix(
   const dstPointsArray = new Array<number>();
 
   // Get the coordinates in pixels of the four screen corners
-  const vertices = mesh.hes.vertices;
-  const corners = vertices.map(vertex => {
-    return projectPointImage(vertex.position, new Vector2(), camera, renderSize);
-  });
+  const vertices = Array.from(mesh.hes.vertices);
+  const points = vertices.map(vertex => vertex.point);
 
-  for (const corner of corners) {
-    minX = Math.min(minX, corner.x);
-    minY = Math.min(minY, corner.y);
-    maxX = Math.max(maxX, corner.x);
-    maxY = Math.max(maxY, corner.y);
-    dstPointsArray.push(corner.x);
-    dstPointsArray.push(corner.y);
+  for (const point of points) {
+    minX = Math.min(minX, point.x);
+    minY = Math.min(minY, point.y);
+    maxX = Math.max(maxX, point.x);
+    maxY = Math.max(maxY, point.y);
+    dstPointsArray.push(point.x);
+    dstPointsArray.push(point.y);
   }
 
   // Recenter the projection on top left corner of the object
@@ -349,8 +349,8 @@ function getCVTransformMatrix(
 
 function transformSVG(
     element: SVGElement,
-    camera: PerspectiveCamera,
-    renderSize: SizeLike,
+    // camera: PerspectiveCamera,
+    // renderSize: SizeLike,
     mesh: SVGMesh,
     transformMatrix?: CVMat,
     ignoredElements?: SVGElement[],
@@ -369,7 +369,8 @@ function transformSVG(
       throw("Embedded SVG has no visible dimension: i.e no width/height or viewbox properties.");
     }
 
-    const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, inRect, mesh);
+    const {matrix, outRect} = getCVTransformMatrix(inRect, mesh);
+    // const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, inRect, mesh);
     svg.x(outRect.x);
     svg.y(outRect.y);
     svg.width(outRect.w);
@@ -399,7 +400,8 @@ function transformSVG(
   }
 
   for (const child of element.children()) {
-    transformSVG(child, camera, renderSize, mesh, transformMatrix, ignoredElements);
+    transformSVG(child, mesh, transformMatrix, ignoredElements);
+    // transformSVG(child, camera, renderSize, mesh, transformMatrix, ignoredElements);
   }
 
   // Delete OpenCV Matrix if the top element has finished its transform

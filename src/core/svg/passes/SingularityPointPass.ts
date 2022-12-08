@@ -13,9 +13,9 @@
 import {DrawPass} from './DrawPass';
 import {Viewmap} from '../../viewmap/Viewmap';
 import {Svg, G as SVGGroup} from '@svgdotjs/svg.js';
-import {ContourVisibility} from '../../viewmap/Contour';
+import {ChainVisibility} from '../../viewmap/Chain';
 import {getSVGCircle, getSVGText} from '../svgutils';
-import {PointSingularity} from '../../viewmap/Point';
+import {Point, PointSingularity} from '../../viewmap/Point';
 
 const PointSingularities = Object.values(PointSingularity)
   .filter(singularity => singularity !== PointSingularity.None);
@@ -49,11 +49,14 @@ export class SingularityPointPass extends DrawPass {
   }
 
   async draw(svg: Svg, viewmap: Viewmap) {
-    // Update point visibility to avoid drawing point on hidden contours if only
-    // visible contours are drawn
-    for (const contour of viewmap.contours) {
-      for (const p of contour.points) {
-        p.visible = p.visible || contour.visibility === ContourVisibility.Visible;
+    // Update point visibility to avoid drawing point on hidden chains if only
+    // visible chains are drawn
+
+    const pts = new Set<Point>();
+    for (const chain of viewmap.chains) {
+      for (const p of chain.points) {
+        p.visible = p.visible || chain.visibility === ChainVisibility.Visible;
+        pts.add(p);
       }
     }
 
@@ -76,6 +79,8 @@ export class SingularityPointPass extends DrawPass {
       color: "",
     };
 
+    const singularityPoints = viewmap.points.filter(p => p.singularity != PointSingularity.None);
+
     for (const visibility of visibilities) {
 
       const visibilityGroup = new SVGGroup({id: visibility? "visible" : "hidden"})
@@ -83,7 +88,7 @@ export class SingularityPointPass extends DrawPass {
 
       for (const singularity of PointSingularities) {
         
-        const points = viewmap.singularityPoints
+        const points = singularityPoints
           .filter(p => p.singularity === singularity && p.visible === visibility);
 
         const singularityGroup = new SVGGroup({id: singularity});
@@ -97,8 +102,7 @@ export class SingularityPointPass extends DrawPass {
       }
     }
 
-    if (this.options.drawLegend &&
-      (this.options.drawVisiblePoints || this.options.drawHiddenPoints)) {
+    if (this.options.drawLegend) {
       group.add(getLegend());
     }
   }

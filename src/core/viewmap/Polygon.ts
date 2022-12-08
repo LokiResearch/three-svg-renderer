@@ -17,20 +17,18 @@ export class Polygon {
   id: number;
   mesh?: SVGMesh;
   color = new Color();
-  insidePoint: Vector2;
+  insidePoint: Vector2 = new Vector2();
   contour: Vector2[];
   holes: Vector2[][];
 
   constructor(
       id: number,
       contour: Vector2[],
-      holes: Vector2[][],
-      insidePoint: Vector2) {
+      holes: Vector2[][]) {
 
     this.id = id;
     this.contour = contour;
     this.holes = holes;
-    this.insidePoint = insidePoint;
   }
 
 }

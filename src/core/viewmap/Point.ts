@@ -1,6 +1,7 @@
-import {Vector2} from 'three';
+import {Vector2, Vector3} from 'three';
 import {Edge} from './Edge';
 import {Vertex} from 'three-mesh-halfedge';
+import { vectors2Equal } from '../../utils';
 
 export enum PointSingularity {
   None = "None",
@@ -10,20 +11,17 @@ export enum PointSingularity {
   Bifurcation = "Bifurcation",
 }
 
-const _u = new Vector2();
-
 export class Point {
 
-  readonly position: Vector2;
+  hash3d = "";
+
+  readonly pos3d = new Vector3();
+  readonly pos2d = new Vector2();
+  readonly vertices = new Set<Vertex>();
+  readonly edges = new Set<Edge>();
+
   visible = false;
   singularity = PointSingularity.None;
-
-  vertices: Array<Vertex>;
-
-  constructor(position: Vector2, vertices: Array<Vertex>) {
-    this.position = position;
-    this.vertices = vertices;
-  }
 
   get x() {
     return this.position.x;
@@ -33,18 +31,32 @@ export class Point {
     return this.position.y;
   }
 
-  get edges() {
-    const set = new Set<Edge>();
-    for (const v of this.vertices) {
-      for(const e of v.edges) {
-        set.add(e);
+  /**
+   * Return the common edge between this point and the other if any, otherwise 
+   * returns null.
+   */
+  connectedTo(other: Point) {
+    for (const edge of this.edges) {
+      if (other.edges.has(edge)) {
+        return edge;
       }
     }
-    return Array.from(set);
+    return null;
   }
 
-  matchPosition(position: Vector2, tolerance = 1e-10) {
-    _u.subVectors(position, this.position);
-    return _u.length() < tolerance;
+  // get edges() {
+  //   const set = new Set<Edge>();
+  //   for (const v of this.vertices) {
+  //     for(const e of v.edges) {
+  //       set.add(e);
+  //     }
+  //   }
+  //   return Array.from(set);
+  // }
+
+  matchesPosition(position: Vector2, tolerance = 1e-10) {
+    return vectors2Equal(this.position, position, tolerance);
   }
+
+
 }

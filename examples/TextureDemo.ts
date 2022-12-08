@@ -15,7 +15,7 @@
 import { GUI } from 'dat.gui';
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { SVGRenderer, VisibleContourPass, TexturePass, SVGRenderInfo, 
+import { SVGRenderer, VisibleChainPass, TexturePass, SVGRenderInfo, 
   SVGMesh, 
   FillPass} from '../src/index';
 import {debounce} from 'throttle-debounce';
@@ -51,7 +51,7 @@ type CMesh = Mesh<BufferGeometry, MeshStandardMaterial>;
 const params = {
   autoRender: true,
   useTransparency: true,
-  drawContours: true,
+  drawChains: true,
   materialColor: "#FFFFFF"
 }
 
@@ -91,11 +91,11 @@ for (const texture of textures) {
  */
 const svgRenderer = new SVGRenderer();
 const fillPass = new FillPass();
-const contourPass = new VisibleContourPass();
+const chainPass = new VisibleChainPass();
 const texturePass = new TexturePass();
 svgRenderer.addPass(fillPass);
 svgRenderer.addPass(texturePass);
-svgRenderer.addPass(contourPass);
+svgRenderer.addPass(chainPass);
 
 /**
  * Init the Threejs WebGL Renderer 
@@ -153,7 +153,7 @@ scene.add(camera);
 //##############################################################################
 
 const gui = new GUI();
-gui.add(params, "drawContours").onChange(updatePasses);
+gui.add(params, "drawChains").onChange(updatePasses);
 gui.add(params, "useTransparency").onChange(updateTransparentTextures);
 gui.addColor(params, "materialColor").onChange(updateColors);
 gui.add(params, 'autoRender').onChange(autoRenderChanged);
@@ -206,7 +206,7 @@ function renderScene() {
  * Enables/Disables SVG Renderer draw passes based on params
  */
 function updatePasses() {
-  contourPass.enabled = params.drawContours;
+  chainPass.enabled = params.drawChains;
   generateSVG();
 }
 
@@ -335,7 +335,7 @@ const debouncedGenerateSVG = debounce(500, () => {
   }
 
   const info = new SVGRenderInfo();
-  svgRenderer.generateSVG(svgMeshes, camera, {w: W, h: H}, {}, info).then(svg => {
+  svgRenderer.generateSVG(svgMeshes, camera, {w: W, h: H}, info).then(svg => {
     if (svgDomElement) {
       clearHTMLElement(svgDomElement);
       svg.addTo(svgDomElement);

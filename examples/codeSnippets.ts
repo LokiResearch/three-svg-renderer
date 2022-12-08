@@ -19,7 +19,7 @@
  */
 
 import { Mesh, PerspectiveCamera, Scene } from 'three';
-import { SVGRenderer, FillPass, VisibleContourPass, HiddenContourPass, SVGMesh } from '../src/index';
+import { SVGRenderer, FillPass, VisibleChainPass, HiddenChainPass, SVGMesh } from '../src/index';
 
 // Example 1: Basic drawing
 {
@@ -38,24 +38,24 @@ import { SVGRenderer, FillPass, VisibleContourPass, HiddenContourPass, SVGMesh }
   // This pass will draw fills for meshes using the three.js material color
   const fillPass = new FillPass();
 
-  // This pass will draw visible contours of meshes on top of fills
+  // This pass will draw visible chains of meshes on top of fills
   // using black color and solid line of width 1
-  const visibleContourPass = new VisibleContourPass({
+  const visibleChainPass = new VisibleChainPass({
     color: "#000000",
     width: 1
   });
 
-  // This pass will draw hidden contours on top of visible and fills
+  // This pass will draw hidden chains on top of visible and fills
   // using red color, dash line of width 1
-  const hiddenContourPass = new HiddenContourPass({
+  const hiddenChainPass = new HiddenChainPass({
     color: "#FF0000",
     width: 1,
     dasharray: "2,2"
   });
 
   renderer.addPass(fillPass);
-  renderer.addPass(visibleContourPass);
-  renderer.addPass(hiddenContourPass);
+  renderer.addPass(visibleChainPass);
+  renderer.addPass(hiddenChainPass);
 
   // Get the SVG
   renderer.generateSVG(meshes, camera, {w: 1000, h:1000})

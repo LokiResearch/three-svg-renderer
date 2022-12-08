@@ -10,11 +10,15 @@
 
 // LICENCE: Licence.md
 
-import {PerspectiveCamera, Vector3, Vector2} from 'three';
-import {Vertex, Face, HalfEdge} from 'three-mesh-halfedge'
-import {Point} from './Point';
-import {frontSide} from '../../utils';
-import {SVGMesh} from '../SVGMesh';
+import { PerspectiveCamera, Vector2, Vector3 } from 'three';
+import { Face, Halfedge, Vertex } from 'three-mesh-halfedge';
+import { frontSide } from '../../utils';
+import { SVGMesh } from '../SVGMesh';
+import { Point } from './Point';
+
+export interface HalfedgeNatureOptions {
+  creaseAngle?: {min: number, max: number};
+}
 
 /**
  * Possible values for the edge nature in the viemap.
@@ -25,174 +29,256 @@ export enum EdgeNature {
   /** Edge is connected to front-facing and a back-facing face */
   Silhouette = "Silhouette",
   /** Edge is only connected to one face */
-  Boundary = "Boudary",
+  Boundary = "Boundary",
   /** Edge is on the intersection between two meshes */
-  SurfaceIntersection = "SurfaceIntersection",
+  MeshIntersection = "MeshIntersection",
   /** Edge is connected to two faces where the angle between normals is acute */
   Crease = "Crease",
   /** Edge is connected to two faces using a different material/vertex color */
   Material = "Material",
 }
 
-const _vec2a = new Vector2();
-const _vec2b = new Vector2();
+const _u2 = new Vector2();
+const _v2 = new Vector2();
 
 const _u = new Vector3();
 const _v = new Vector3();
-const _cross = new Vector3();
+// const _cross = new Vector3();
 
 export class Edge {
-  readonly vertices: Vertex[];
-  readonly meshes: SVGMesh[];
-  readonly faces: Face[];
-  /** Nature of the edge */
+
+  /**
+   * Halfedge on which the edge is based on
+   * @defaultValue null
+   */
+  halfedge: Halfedge | null = null;
+
+  /**
+   * List of the meshes the Edge belongs to
+   */
+  readonly meshes = new Array<SVGMesh>();
+  
+  /** 
+   * Nature of the edge
+   * @defautValue EdgeNature.None 
+   */
   nature = EdgeNature.None;
-  /** Angle between to the connected faces. Set to `Infinity` if one face is connected. */
+
+  /** 
+   * Angle between to the connected faces.
+   * @defaultValue Infinity */
   angle = Infinity;
-  /** Indicates whether the edge is connected to back-facing faces only */
+
+  /**
+   * Indicates whether the edge is connected to back-facing faces only 
+   * *Note: this makes only sense with 2 connected faces.*
+   * @defaultValue false
+  */
   isBack = false;
+  
+  /**
+   * Indicates wheter the edge is concave. 
+   * *Note: this makes only sense with 2 connected faces.*
+   * @defaultValue false
+   */
   isConcave = false;
 
-  constructor(meshes: SVGMesh[], faces: Array<Face>, a: Vertex, b: Vertex) {
-    this.meshes = meshes;
-    this.vertices = [a,b];
-    this.faces = faces;
+  faces = new Array<Face>();
+
+  a: Point;
+  b: Point;
+
+  constructor(a: Point, b: Point) {
+    this.a = a;
+    this.b = b;
   }
 
-  updateNatureFromHalfEdge(halfEdge: HalfEdge, camera: PerspectiveCamera) {
+  // get points() {
+  //   return [this.a.point, this.b.point];
+  // }
 
-    // this.halfEdge = halfEdge;
+  get points() {
+    return [this.a, this.b];
+  }
 
-    if (halfEdge.twin) {
+  get from(): Vector2 {
+    return this.a.pos2d;
+  }
 
-      this.isConcave = frontSide(
-        halfEdge.vertex.position,
-        halfEdge.next.vertex.position,
-        halfEdge.prev.vertex.position,
-        halfEdge.twin.prev.vertex.position);
+  get to(): Vector2 {
+    return this.b.pos2d;
+  }
 
-      const faceAFront = halfEdge.face.isFront(camera.position);
-      const faceBFront = halfEdge.twin.face.isFront(camera.position);
+  // get faces(): Face[] {
+  //   const faces = [];
+  //   if (this.halfedge?.face) {
+  //     faces.push(this.halfedge.face);
+  //   }
+  //   if (this.halfedge?.twin.face) {
+  //     faces.push(this.halfedge.twin.face);
+  //   }
+  //   return faces;
+  // }
+
+  toJSON() {
+    return {
+      id: this.a.id + '-' + this.b.id,
+    }
+  }
+
+  clone() {
+    const edge =  new Edge(this.a, this.b);
+    edge.nature = this.nature;
+    edge.angle = this.angle;
+    edge.isBack = this.isBack;
+    edge.isConcave = this.isConcave;
+    edge.meshes.push(...this.meshes);
+    edge.halfedge = this.halfedge;
+    edge.faces.push(...this.faces);
+    return edge;
+  }
+
+  updateFromHalfedge(
+      halfedge: Halfedge,
+      camera: PerspectiveCamera,
+      options?: HalfedgeNatureOptions) {
+
+    const opt = {
+      creaseAngle: {min: 80, max: 100},
+      ...options
+    }
+
+    this.halfedge = halfedge;
+    
+    // If halfedge only has one connected face, then it is a boundary
+    if (!halfedge.face || !halfedge.twin.face) {
+      this.nature = EdgeNature.Boundary;
+    } else {
+
+      const faceAFront = halfedge.face.isFront(camera.position);
+      const faceBFront = halfedge.twin.face.isFront(camera.position);
 
       // If edge is between two back faces, then it is a back edge
       this.isBack = !faceAFront && !faceBFront;
 
+      // Compute the angle between the 2 connected face
+      halfedge.face.getNormal(_u);
+      halfedge.twin.face.getNormal(_v);
+      this.angle = Math.acos(_u.dot(_v)) * 180 / Math.PI;
+
+      // Concavity is determined by an orientation test
+      this.isConcave = frontSide(
+        halfedge.prev.vertex.position,
+        halfedge.vertex.position,
+        halfedge.next.vertex.position,
+        halfedge.twin.prev.vertex.position);
+
       // If edge is between front and back face, then it is a silhouette edge
       if (faceAFront !== faceBFront) {
+        
         this.nature = EdgeNature.Silhouette;
-      } else {
-
-        const n1 = halfEdge.face.normal.normalize();
-        const n2 = halfEdge.twin.face.normal.normalize();
-        const angle = Math.acos(n1.dot(n2)) * 180 / Math.PI;
-        if(80 < angle && angle < 100) {
-          this.nature = EdgeNature.Crease;
-        }
+      
+      } else if(opt.creaseAngle.min <= this.angle && 
+                this.angle <= opt.creaseAngle.max) {
+        this.nature = EdgeNature.Crease;
       }
-    } else {
-      // If edge only has one connected face, then it is a boundary
-      this.nature = EdgeNature.Boundary;
     }
   }
 
-  get points() {
-    return [this.vertices[0].point, this.vertices[1].point];
-  }
 
-  get to(): {x: number, y: number} {
-    return this.vertices[1].point.position;
-  }
-
-  get from(): {x: number, y: number} {
-    return this.vertices[0].point.position;
-  }
-
-  clone(): Edge {
-    return (new Edge([], [], this.vertices[0], this.vertices[1])).copy(this);
-  }
-
-  copy(source: Edge): Edge {
-    this.meshes.clear();
-    this.meshes.push(...source.meshes);
-    this.faces.clear();
-    this.faces.push(...source.faces);
-    this.nature = source.nature;
-    this.angle = source.angle;
-    this.isBack = source.isBack;
-    // this.halfEdge = source.halfEdge;
-    this.replaceVertex(this.vertices[0], source.vertices[0]);
-    this.replaceVertex(this.vertices[1], source.vertices[1]);
-    this.isConcave = source.isConcave;
-    return this;
-  }
-
-  replaceVertex(oldVertex: Vertex, newVertex: Vertex) {
-    const index = this.vertices.indexOf(oldVertex);
-    if (index !== -1) {
-      this.vertices[index] = newVertex;
-      return true;
-    }
-    return false;
-  }
 
   otherVertex(vertex: Vertex) {
-    if (vertex === this.vertices[0]) {
-      return this.vertices[1];
+    if (vertex === this.a) {
+      return this.b;
     } else {
-      return this.vertices[0];
+      return this.a;
     }
   }
 
   otherPoint(point: Point) {
-    if (point === this.vertices[0].point) {
-      return this.vertices[1].point;
+    if (point === this.a.point) {
+      return this.b.point;
     } else {
-      return this.vertices[0].point;
+      return this.a.point;
     }
   }
 
   hasVertex(vertex: Vertex) {
-    return this.vertices[0] === vertex || this.vertices[1] === vertex;
+    return this.a === vertex || this.b === vertex;
   }
 
   hasPoint(point: Point) {
-    return this.vertices[0].point === point || this.vertices[1].point === point;
+    return this.a.point === point || this.b.point === point;
   }
 
-  isConnectedToEdge(edge: Edge) {
-    return this.hasPoint(edge.vertices[0].point) ||
-           this.hasPoint(edge.vertices[1].point);
+  isConnectedToEdgeIn3D(edge: Edge) {
+    return this.hasVertex(edge.a) || this.hasVertex(edge.b);
   }
 
-  contains3dPosition(position: Vector3, tolerance = 1e-10) {
-
-    _u.subVectors(this.vertices[0].position, position);
-    _v.subVectors(this.vertices[1].position, position);
-    _cross.crossVectors(_u, _v);
-
-    return _cross.length() < tolerance && _u.dot(_v) < 0;
+  isConnectedToEdgeIn2D(edge: Edge) {
+    return this.hasPoint(edge.a.point) || this.hasPoint(edge.b.point);
   }
+
+
+
+  // contains3dPosition(position: Vector3, tolerance = 1e-10) {
+
+  //   _u.subVectors(this.b.position, this.a.position);
+  //   _v.subVectors(position, this.a.position);
+  //   // _cross.crossVectors(_u, _v);
+  //   const r = _u.dot(_v)/_v.length();
+  //   return tolerance <= r && r <= 1-tolerance; 
+  //   // return _cross.length() < tolerance && _u.dot(_v)/dot < 0;
+  // }
+
+
 
   contains2dPosition(position: Vector2, tolerance = 1e-10) {
-    _vec2a.subVectors(this.vertices[0].point.position, position);
-    _vec2b.subVectors(this.vertices[1].point.position, position);
+    
+    if (this.a.point.matchesPosition(position, tolerance)) {
+      return 0;
+    }
+    if (this.b.point.matchesPosition(position, tolerance)) {
+      return 1;
+    }
+  
+    _u2.subVectors(position, this.a.point.position);
+    _v2.subVectors(this.b.point.position, this.a.point.position);
+  
+    // Check points are aligned
+    const cross = _u2.cross(_v2);
+    if (cross > 1e-10 || cross < -1e-10) {
+      return null;
+    }
+  
+    const lengthU = _u2.length();
+    const lengthV = _v2.length();
+  
+    if (lengthU > lengthV) {
+      return null;
+    }
+  
+    // Check points order
+    if (_u.dot(_v) < -1e10) {
+      return null;
+    }
 
-    return _vec2a.cross(_vec2b) < tolerance && _vec2a.dot(_vec2b) < 0;
+    return lengthU/lengthV;
   }
 
-  normalAtPosition(point: Vector3, target: Vector3) {
-    _u.subVectors(this.vertices[0].position, point);
-    _v.subVectors(this.vertices[0].position, this.vertices[1].position);
-    const ratio = _u.length() / _v.length();
-    return target.lerpVectors(this.vertices[0].normal, this.vertices[1].normal, ratio);
-  }
+  // normalAtPosition(point: Vector3, target: Vector3) {
+  //   _u.subVectors(this.vertices[0].position, point);
+  //   _v.subVectors(this.vertices[0].position, this.vertices[1].position);
+  //   const ratio = _u.length() / _v.length();
+  //   return target.lerpVectors(this.vertices[0].normal, this.vertices[1].normal, ratio);
+  // }
 
-  position3dFromPosition2d(position: Vector2, target: Vector3) {
-    _vec2a.subVectors(this.vertices[0].point.position, position);
-    _vec2b.subVectors(this.vertices[0].point.position, this.vertices[1].point.position);
-    const ratio = _vec2a.length() / _vec2b.length();
-    return target.lerpVectors(this.vertices[0].position, this.vertices[1].position, ratio);
-  }
+  // position3dFromPosition2d(position: Vector2, target: Vector3) {
+  //   _vec2a.subVectors(this.a.point.position, position);
+  //   _vec2b.subVectors(this.b.point.position, this.a.point.position);
+  //   const ratio = _vec2a.length() / _vec2b.length();
+  //   return target.lerpVectors(this.a.position, this.b.position, ratio);
+  // }
 
 }
 

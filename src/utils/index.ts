@@ -12,6 +12,6 @@
  * Licence: Licence.md
  */
 
+export * from './trigeometry';
 export * from './geometry';
-export * from './math';
 export * from './orientationtests';
