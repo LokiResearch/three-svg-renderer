@@ -13,11 +13,12 @@
  */
 
 import { Line3, Vector3 } from "three";
-import { Face, Vertex } from "three-mesh-halfedge";
+import { Face } from "three-mesh-halfedge";
 import { hashVector3, intersectLines } from "../../../utils";
 import { SVGMesh } from "../../SVGMesh";
-import { Edge, EdgeNature } from "../Edge";
+import { ViewEdge, ViewEdgeNature } from "../ViewEdge";
 import { Viewmap } from "../Viewmap";
+import { ViewVertex } from "../ViewVertex";
 // import { insertFaceEdge, splitFaceEdges } from "./insertFaceEdge";
 import { TriIntersectionInfo, meshIntersectionCb } from "./meshIntersectionCb";
 import { splitEdgeAt3dPosition } from "./splitEdge";
@@ -35,7 +36,7 @@ export function computeMeshIntersections(
     viewmap: Viewmap,
     info = new MeshIntersectionInfo()) {
 
-  const {meshes} = viewmap;
+  const {meshes, viewVertexMap} = viewmap;
 
   info.nbMeshesTested = 0;
   info.nbIntersections = 0;
@@ -67,39 +68,38 @@ export function computeMeshIntersections(
   //   }
   // }
 
-  const vertexMap = new Map<string, Vertex>();
   const _line = new Line3();
   const _inter = new Vector3();
 
-  const intersectCallback = (meshA: SVGMesh, meshB: SVGMesh, line: Line3, _faceA: Face, _faceB: Face) => {
+  const intersectCallback = (
+      meshA: SVGMesh, meshB: SVGMesh, line: Line3, 
+      _faceA: Face, _faceB: Face) => {
 
     const hash1 = hashVector3(line.start);
-    let v1 = vertexMap.get(hash1);
+    let v1 = viewVertexMap.get(hash1);
     if (!v1) {
-      v1 = new Vertex();
-      v1.edges = new Array<Edge>();
+      v1 = new ViewVertex();
       v1.position.copy(line.start);
-      vertexMap.set(hash1, v1);
+      v1.hash = hash1;
+      viewVertexMap.set(hash1, v1);
     }
 
     const hash2 = hashVector3(line.end);
-    let v2 = vertexMap.get(hash2);
+    let v2 = viewVertexMap.get(hash2);
     if (!v2) {
-      v2 = new Vertex();
-      v2.edges = new Array<Edge>();
+      v2 = new ViewVertex();
       v2.position.copy(line.end);
-      vertexMap.set(hash2, v2);
+      v2.hash = hash2;
+      viewVertexMap.set(hash2, v2);
     }
 
-    const edge = new Edge(v1, v2);
-    edge.nature = EdgeNature.MeshIntersection;
+    const edge = new ViewEdge(v1, v2);
+    edge.nature = ViewEdgeNature.MeshIntersection;
     edge.meshes.push(meshA, meshB);
-    v1.edges.push(edge);
-    v2.edges.push(edge);
+    v1.viewEdges.add(edge);
+    v2.viewEdges.add(edge);
     
-    viewmap.edges.push(edge);
-
-
+    viewmap.viewEdges.push(edge);
 
     for (const faceEdge of [..._faceA.edges, ..._faceB.edges]) {
 

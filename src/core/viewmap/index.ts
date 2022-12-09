@@ -12,8 +12,9 @@
  * Licence: Licence.md
  */
 
-export { Point, PointSingularity } from './Point';
-export { Edge, EdgeNature } from './Edge';
+export { ViewPoint, ViewPointSingularity } from './ViewPoint';
+export { ViewEdge, ViewEdgeNature } from './ViewEdge';
+export { ViewVertex } from './ViewVertex';
 export { Chain, ChainVisibility } from './Chain';
 export { Polygon } from './Polygon';
 export {

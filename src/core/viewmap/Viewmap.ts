@@ -14,29 +14,32 @@ import { ColorRepresentation, PerspectiveCamera } from 'three';
 import { SizeLike } from '../../utils';
 import { SVGMesh } from '../SVGMesh';
 import { Chain, ChainVisibility } from './Chain';
-import { Edge } from './Edge';
+import { ViewEdge } from './ViewEdge';
 import { computePolygons, PolygonsInfo } from './operations/computePolygons';
 import { createChains } from './operations/createChains';
 import { find3dSingularities } from './operations/find3dSingularities';
 import { setupEdges } from './operations/setupEdges';
-import { Point } from './Point';
+import { ViewPoint } from './ViewPoint';
 import { Polygon } from './Polygon';
 import { find2dSingularities } from './operations/find2dSingularities';
 import { AssignPolygonInfo, assignPolygons } from './operations/assignPolygons';
 import { ChainVisibilityInfo, computeChainsVisibility } from './operations/computeChainsVisibility';
 import { setupPoints } from './operations/setupPoints';
-import { computeMeshIntersections, MeshIntersectionInfo } from './operations/computeMeshIntersections';
+import { 
+  computeMeshIntersections, 
+  MeshIntersectionInfo } from './operations/computeMeshIntersections';
+import { ViewVertex } from './ViewVertex';
 
 declare module 'three-mesh-halfedge' {
 
   export interface Face {
-    edges: Edge[];
+    edges: ViewEdge[];
   }
 
-  export interface Vertex {
-    point: Point;
-    edges: Edge[];
-  }
+  // export interface Vertex {
+  //   point: ViewPoint;
+  //   edges: ViewEdge[];
+  // }
 }
 
 export interface ViewmapOptions {
@@ -97,12 +100,11 @@ interface ViewmapAction {
 export class Viewmap {
 
   readonly meshes = new Array<SVGMesh>();
-  readonly edges = new Array<Edge>();
+  
+  readonly viewEdges = new Array<ViewEdge>();
+  readonly viewPointMap = new Map<string, ViewPoint>();
+  readonly viewVertexMap = new Map<string, ViewVertex>();
 
-
-  readonly pointMap = new Map<string, Point>();
-
-  readonly points = new Array<Point>();
   readonly chains = new Array<Chain>();
   readonly polygons = new Array<Polygon>();
   readonly camera = new PerspectiveCamera();
@@ -123,8 +125,9 @@ export class Viewmap {
 
   clear() {
     this.meshes.clear();
-    this.edges.clear();
-    this.points.clear();
+    this.viewEdges.clear();
+    this.viewPointMap.clear();
+    this.viewVertexMap.clear();
     this.chains.clear();
     this.polygons.clear();
   }
@@ -259,7 +262,6 @@ export class Viewmap {
         const startTime = Date.now();
         setupEdges(this, this.options);
         info.times.setupEdges = Date.now() - startTime;
-        console.log("Setup Edges", this.edges);
       }
     });
 
@@ -272,7 +274,6 @@ export class Viewmap {
         const startTime = Date.now();
         computeMeshIntersections(this, info.intersections);
         info.times.meshIntersections = Date.now() - startTime;
-        console.log("Intersection Edges", this.edges);
       }
     });
 
@@ -319,7 +320,7 @@ export class Viewmap {
      * of their connexity and nature
      */
     actions.push({
-      name: "UpdateMorphedGeometries",
+      name: "Create chains",
       process: async() => {
         const startTime = Date.now();
         createChains(this);
@@ -333,7 +334,7 @@ export class Viewmap {
      * If ignore visibility is set, set all contours to be visible
      */
     actions.push({
-      name: "UpdateMorphedGeometries",
+      name: "Compute chains visibility",
       process: async() => {
         if (!this.options.ignoreVisibility)  {
           const startTime = Date.now();
@@ -352,7 +353,7 @@ export class Viewmap {
      * Compute the polygons formed by the visible subset of contours
      */
     actions.push({
-      name: "UpdateMorphedGeometries",
+      name: "Compute polygons",
       process: async() => {
         const startTime = Date.now();
         const polyInfo = new PolygonsInfo();
@@ -367,7 +368,7 @@ export class Viewmap {
      * Assign polygons to their corresponding object with raycasting
      */
     actions.push({
-      name: "UpdateMorphedGeometries",
+      name: "Assign Polygons",
       process: async() => {
         const startTime = Date.now();
         const assignInfo = new AssignPolygonInfo();

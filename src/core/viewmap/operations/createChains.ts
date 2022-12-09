@@ -14,16 +14,17 @@
 
 import { SVGMesh } from "../../SVGMesh";
 import { Chain } from "../Chain";
-import { Edge } from "../Edge";
-import { Point, PointSingularity } from "../Point";
+import { ViewEdge } from "../ViewEdge";
+import { ViewPoint, ViewPointSingularity } from "../ViewPoint";
 import { Viewmap } from "../Viewmap";
 
 
 // See chaining section of https://hal.inria.fr/hal-02189483
 export function createChains(viewmap: Viewmap) {
 
-  const {edges, chains} = viewmap;
-  const remainingEdges = new Set(edges);
+  console.log(viewmap);
+  const {viewEdges, chains} = viewmap;
+  const remainingEdges = new Set(viewEdges);
 
   let chainId = 0;
   while(remainingEdges.size > 0) {
@@ -36,7 +37,6 @@ export function createChains(viewmap: Viewmap) {
 
     // Search for connected edges from one direction
     for (const startPoint of startEdge.points) {
-
       let point = startPoint;
       let edge = nextChainEdgeFromPoint(startEdge, point, remainingEdges, currentObject);
 
@@ -53,13 +53,13 @@ export function createChains(viewmap: Viewmap) {
 }
 
 export function nextChainEdgeFromPoint(
-    currentEdge: Edge,
-    point: Point,
-    remainingEdges: Set<Edge>,
-    obj: SVGMesh) : Edge | null {
+    currentEdge: ViewEdge,
+    point: ViewPoint,
+    remainingEdges: Set<ViewEdge>,
+    obj: SVGMesh) : ViewEdge | null {
 
   // If point is a singularity, chaining stops
-  if (point.singularity !== PointSingularity.None) {
+  if (point.singularity !== ViewPointSingularity.None) {
     return null;
   }
 

@@ -14,7 +14,7 @@
 
 import { Line3, Vector3 } from "three";
 import { Face, Halfedge, Vertex } from "three-mesh-halfedge";
-import { Edge } from "../Edge";
+import { ViewEdge } from "../ViewEdge";
 import { Viewmap } from "../Viewmap";
 import { insertFaceEdge, splitFaceEdges } from "./insertFaceEdge";
 
@@ -35,7 +35,7 @@ const _v = new Vertex();
 const _h = new Halfedge(_v);
 
 let v0: Vertex, v1: Vertex, v2: Vertex, v3: Vertex;
-let e0_1: Edge, e1_2: Edge, e2_0: Edge, e1_3: Edge, e3_2: Edge;
+let e0_1: ViewEdge, e1_2: ViewEdge, e2_0: ViewEdge, e1_3: ViewEdge, e3_2: ViewEdge;
 let f0: Face, f1: Face;
 
 beforeEach(() => {
@@ -45,11 +45,11 @@ beforeEach(() => {
   v2 = new Vertex(); v2.position.set(1,2,0); v2.id = 2;
   v3 = new Vertex(); v3.position.set(3,2,0); v3.id = 3;
   
-  e0_1 = new Edge(v0, v1);
-  e1_2 = new Edge(v1, v2);
-  e2_0 = new Edge(v2, v0);
-  e1_3 = new Edge(v1, v3);
-  e3_2 = new Edge(v3, v2);
+  e0_1 = new ViewEdge(v0, v1);
+  e1_2 = new ViewEdge(v1, v2);
+  e2_0 = new ViewEdge(v2, v0);
+  e1_3 = new ViewEdge(v1, v3);
+  e3_2 = new ViewEdge(v3, v2);
 
   v0.edges = [e0_1, e2_0];
   v1.edges = [e0_1, e1_2, e1_3];

@@ -11,8 +11,8 @@
 // LICENCE: Licence.md
 
 import {Vector2} from 'three';
-import {Edge} from './Edge';
-import {Point} from './Point';
+import {ViewEdge} from './ViewEdge';
+import {ViewPoint} from './ViewPoint';
 import { SVGMesh } from '../SVGMesh';
 
 export enum ChainVisibility {
@@ -25,8 +25,8 @@ export class Chain {
   id: number;
   object: SVGMesh;
   raycastPoint = new Vector2();
-  edges = new Array<Edge>();
-  points = new Array<Point>();
+  edges = new Array<ViewEdge>();
+  points = new Array<ViewPoint>();
   visibility: ChainVisibility = ChainVisibility.Unknown;
 
   constructor(id: number, object: SVGMesh) {
@@ -34,11 +34,11 @@ export class Chain {
     this.object = object;
   }
 
-  get head(): Point {
+  get head(): ViewPoint {
     return this.points[0]
   }
 
-  get tail(): Point {
+  get tail(): ViewPoint {
     return this.points[this.points.length -1];
   }
 
@@ -50,11 +50,11 @@ export class Chain {
     return this.edges[0].nature;
   }
 
-  middlePoint(): Point {
+  middlePoint(): ViewPoint {
     return this.points[Math.floor(this.points.length/2)];
   }
 
-  middleEdge(): Edge | null {
+  middleEdge(): ViewEdge | null {
     if (this.edges.length === 0) {
       return null;
     } else {
@@ -62,11 +62,11 @@ export class Chain {
     }
   }
 
-  addEdge(edge: Edge): void {
+  addEdge(edge: ViewEdge): void {
     if (this.edges.length == 0) {
       this.edges.push(edge);
-      this.points.push(edge.vertices[0].point);
-      this.points.push(edge.vertices[1].point);
+      this.points.push(edge.vertices[0].viewPoint);
+      this.points.push(edge.vertices[1].viewPoint);
     } else {
       if (edge.hasPoint(this.head)) {
         // Put vertex and segment in the head of the lists

@@ -15,17 +15,17 @@ import {Viewmap} from '../../viewmap/Viewmap';
 import {Svg, G as SVGGroup} from '@svgdotjs/svg.js';
 import {ChainVisibility} from '../../viewmap/Chain';
 import {getSVGCircle, getSVGText} from '../svgutils';
-import {Point, PointSingularity} from '../../viewmap/Point';
+import {ViewPoint, ViewPointSingularity} from '../../viewmap/ViewPoint';
 
-const PointSingularities = Object.values(PointSingularity)
-  .filter(singularity => singularity !== PointSingularity.None);
+const PointSingularities = Object.values(ViewPointSingularity)
+  .filter(singularity => singularity !== ViewPointSingularity.None);
 
 const PointSingularityColor = {
-  [PointSingularity.None]: "",
-  [PointSingularity.ImageIntersection]: "green",
-  [PointSingularity.MeshIntersection]: "red",
-  [PointSingularity.CurtainFold]: "blue",
-  [PointSingularity.Bifurcation]: "orange",
+  [ViewPointSingularity.None]: "",
+  [ViewPointSingularity.ImageIntersection]: "green",
+  [ViewPointSingularity.MeshIntersection]: "red",
+  [ViewPointSingularity.CurtainFold]: "blue",
+  [ViewPointSingularity.Bifurcation]: "orange",
 }
 
 export interface SingularityPointPassOptions {
@@ -52,7 +52,7 @@ export class SingularityPointPass extends DrawPass {
     // Update point visibility to avoid drawing point on hidden chains if only
     // visible chains are drawn
 
-    const pts = new Set<Point>();
+    const pts = new Set<ViewPoint>();
     for (const chain of viewmap.chains) {
       for (const p of chain.points) {
         p.visible = p.visible || chain.visibility === ChainVisibility.Visible;
@@ -79,7 +79,8 @@ export class SingularityPointPass extends DrawPass {
       color: "",
     };
 
-    const singularityPoints = viewmap.points.filter(p => p.singularity != PointSingularity.None);
+    const singularityPoints = Array.from(viewmap.viewPointMap.values())
+      .filter(p => p.singularity != ViewPointSingularity.None);
 
     for (const visibility of visibilities) {
 

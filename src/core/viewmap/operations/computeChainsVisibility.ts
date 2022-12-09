@@ -131,7 +131,7 @@ export function chainVisibilityWithRaycasting(
   }
 
   // Cast a ray from the middle of the segment to the camera
-  _rayOrigin.lerpVectors(edge.vertices[0].position, edge.vertices[1].position, ratio);
+  _rayOrigin.lerpVectors(edge.a.position, edge.b.position, ratio);
   _rayDirection.subVectors(camera.position, _rayOrigin).normalize();
   _raycaster.firstHitOnly = false;
   _raycaster.set(_rayOrigin, _rayDirection);

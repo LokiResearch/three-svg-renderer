@@ -12,15 +12,21 @@
  * Licence: Licence.md
  */
 
-import { Edge } from "../Edge";
-import { Point, PointSingularity } from "../Point";
-import { brute, bush } from 'isect';
+import { ViewEdge } from "../ViewEdge";
+import { 
+  // ViewPoint, 
+  ViewPointSingularity } from "../ViewPoint";
+import { brute, 
+  // bush 
+} from 'isect';
 import { Vector2, Vector3 } from "three";
-import { hashVector2 } from "../../../utils";
+// import { hashVector2 } from "../../../utils";
 import { Viewmap } from "../Viewmap";
-import { splitEdgeAt2dPosition, 
+import { 
+  // splitEdgeAt2dPosition, 
   splitEdgeAt3dPosition 
 } from "./splitEdge";
+import { setupViewPoint } from "./setupPoints";
 
 // const _u = new Vector2();
 // const _v = new Vector2();
@@ -29,15 +35,13 @@ const _vec = new Vector2();
 
 
 
-export function find2dSingularities_new(viewmap: Viewmap) {
+export function find2dSingularities(viewmap: Viewmap) {
 
-  const {edges, 
-    points
-  } = viewmap;
+  const {viewEdges} = viewmap;
 
-  const interAlgorithm = brute([...edges]);
+  const interAlgorithm = brute([...viewEdges]);
   let intersections = interAlgorithm.run() as Array<{
-    segments: Edge[],
+    segments: ViewEdge[],
     point: {x: number, y: number}
   }>;
 
@@ -50,9 +54,9 @@ export function find2dSingularities_new(viewmap: Viewmap) {
     // a.nature === EdgeNature.MeshIntersection || b.nature === EdgeNature.MeshIntersection);
   });
 
-  const edgeCutsMap = new Map<Edge, Edge[]>();
+  const edgeCutsMap = new Map<ViewEdge, ViewEdge[]>();
 
-  for (const edge of edges) {
+  for (const edge of viewEdges) {
     edgeCutsMap.set(edge, [edge]);
   }
 
@@ -61,19 +65,14 @@ export function find2dSingularities_new(viewmap: Viewmap) {
 
 
 
-  const splitEdge = (edge: Edge, pos3d: Vector3, cuts: Edge[]) => {
+  const splitEdge = (edge: ViewEdge, pos3d: Vector3, cuts: ViewEdge[]) => {
 
     const splitResult = splitEdgeAt3dPosition(viewmap, edge, pos3d);
 
     if (splitResult) {
       const {vertex, newEdge} = splitResult;
-      if (!vertex.point) {
-        vertex.point = new Point();
-        vertex.point.position.copy(_vec);
-        vertex.point.vertices.push(vertex);
-        points.push(vertex.point);
-      }
-      vertex.point.singularity = PointSingularity.ImageIntersection;
+      setupViewPoint(viewmap, vertex);
+      vertex.viewPoint.singularity = ViewPointSingularity.ImageIntersection;
 
       if (newEdge) {
         cuts.push(newEdge);
@@ -130,25 +129,25 @@ export function find2dSingularities_new(viewmap: Viewmap) {
       continue;
     }
 
-    // const d1 = pos1.distanceTo(viewmap.camera.position);
-    // const d2 = pos2.distanceTo(viewmap.camera.position);
+    const d1 = pos1.distanceTo(viewmap.camera.position);
+    const d2 = pos2.distanceTo(viewmap.camera.position);
 
-    splitEdge(edge1, pos1, edgeCuts1);
-    splitEdge(edge2, pos2, edgeCuts2);
+    // splitEdge(edge1, pos1, edgeCuts1);
+    // splitEdge(edge2, pos2, edgeCuts2);
   
-    // if (Math.abs(d1 - d2) < 1e-10) {
-    //   splitEdge(edge1, pos1, edgeCuts1);
-    //   splitEdge(edge2, pos2, edgeCuts2);
+    if (Math.abs(d1 - d2) < 1e-10) {
+      splitEdge(edge1, pos1, edgeCuts1);
+      splitEdge(edge2, pos2, edgeCuts2);
 
-    // } else if (d1 > d2) {
-    //   // nearEdge = edge2;
-    //   splitEdge(edge1, pos1, edgeCuts1);
+    } else if (d1 > d2) {
+      // nearEdge = edge2;
+      splitEdge(edge1, pos1, edgeCuts1);
 
-    // } else {
-    //   // nearEdge = edge1;
-    //   splitEdge(edge2, pos2, edgeCuts2);
+    } else {
+      // nearEdge = edge1;
+      splitEdge(edge2, pos2, edgeCuts2);
 
-    // }
+    }
 
     // if (nearEdge.nature === EdgeNature.Silhouette || 
     //   nearEdge.nature === EdgeNature.Boundary ||
@@ -166,123 +165,123 @@ export function find2dSingularities_new(viewmap: Viewmap) {
 
 
 
-export function find2dSingularities(viewmap: Viewmap) {
+// export function find2dSingularities(viewmap: Viewmap) {
 
-  const {edges, points} = viewmap;
+//   const {edges, points} = viewmap;
 
-  const hashPointMap = new Map<string, Point>();
+//   const hashPointMap = new Map<string, ViewPoint>();
   
-  for (const point of points) {
-    const hash = hashVector2(point.position);
-    hashPointMap.set(hash, point);
-  }
+//   for (const point of points) {
+//     const hash = hashVector2(point.position);
+//     hashPointMap.set(hash, point);
+//   }
 
   
-  const interAlgorithm = bush([...edges]);
-  let intersections = interAlgorithm.run();
+//   const interAlgorithm = bush([...edges]);
+//   let intersections = interAlgorithm.run();
 
-  // Keep only intersections of non connected edges
-  intersections = intersections.filter(i => 
-    !(i.segments[0] as Edge).isConnectedToEdgeIn3D(i.segments[1] as Edge)
-  );
+//   // Keep only intersections of non connected edges
+//   intersections = intersections.filter(i => 
+//     !(i.segments[0] as ViewEdge).isConnectedToEdgeIn3D(i.segments[1] as ViewEdge)
+//   );
 
 
-  const edgeCutsMap = new Map<Edge, Edge[]>();
+//   const edgeCutsMap = new Map<ViewEdge, ViewEdge[]>();
 
-  for (const intersection of intersections) {
+//   for (const intersection of intersections) {
 
-    const splitVertices = [];
-    const edges = intersection.segments as Edge[];
+//     const splitVertices = [];
+//     const edges = intersection.segments as ViewEdge[];
 
-    _vec.set(intersection.point.x, intersection.point.y);
+//     _vec.set(intersection.point.x, intersection.point.y);
 
-    for (const edge of edges) {
+//     for (const edge of edges) {
 
-      // Setup edge cuts if needed
-      let edgeCuts = edgeCutsMap.get(edge);
-      if (!edgeCuts) {
-        edgeCuts = [edge];
-        edgeCutsMap.set(edge, edgeCuts);
-      }
+//       // Setup edge cuts if needed
+//       let edgeCuts = edgeCutsMap.get(edge);
+//       if (!edgeCuts) {
+//         edgeCuts = [edge];
+//         edgeCutsMap.set(edge, edgeCuts);
+//       }
 
-      let i = 0;
-      let splitResult = null;
-      do {
-        splitResult = splitEdgeAt2dPosition(viewmap, edgeCuts[i], _vec);
-        i += 1;
-      } while(i < edgeCuts.length && splitResult === null);
+//       let i = 0;
+//       let splitResult = null;
+//       do {
+//         splitResult = splitEdgeAt2dPosition(viewmap, edgeCuts[i], _vec);
+//         i += 1;
+//       } while(i < edgeCuts.length && splitResult === null);
 
    
-      if (splitResult) {
-        splitVertices.push(splitResult.vertex);
+//       if (splitResult) {
+//         splitVertices.push(splitResult.vertex);
 
-        if (splitResult.newEdge) {
-          edgeCuts.push(splitResult.newEdge);
-        }
+//         if (splitResult.newEdge) {
+//           edgeCuts.push(splitResult.newEdge);
+//         }
 
-      } else {
-        console.error("Could not split the edge", edge, _vec, edgeCuts);
-      }
-    }
+//       } else {
+//         console.error("Could not split the edge", edge, _vec, edgeCuts);
+//       }
+//     }
 
-    // Get the vertices points if they exist
-    const points = new Array<Point>();
-    for (const v of splitVertices) {
-      if (v.point && !points.includes(v.point)) {
-        points.push(v.point);
-      }
-    }
+//     // Get the vertices points if they exist
+//     const points = new Array<ViewPoint>();
+//     for (const v of splitVertices) {
+//       if (v.point && !points.includes(v.point)) {
+//         points.push(v.point);
+//       }
+//     }
 
 
-    // Check if there is an existing point at that position
-    const hash = hashVector2(_vec);
-    const p = hashPointMap.get(hash);
-    if (p && !points.includes(p)) {
-      points.push(p);
-    }
+//     // Check if there is an existing point at that position
+//     const hash = hashVector2(_vec);
+//     const p = hashPointMap.get(hash);
+//     if (p && !points.includes(p)) {
+//       points.push(p);
+//     }
 
-    let newPoint;
-    if (points.length === 0) {
-      newPoint = new Point();
-      newPoint.position.copy(_vec);
-      viewmap.points.push(newPoint);
-    } else {
-      newPoint = mergePoints(viewmap, points);
-    }
+//     let newPoint;
+//     if (points.length === 0) {
+//       newPoint = new ViewPoint();
+//       newPoint.position.copy(_vec);
+//       viewmap.points.push(newPoint);
+//     } else {
+//       newPoint = mergePoints(viewmap, points);
+//     }
 
-    for (const v of splitVertices) {
-      v.point = newPoint;
-      if (!newPoint.vertices.includes(v)) {
-        newPoint.vertices.push(v);
-      }
-    }
+//     for (const v of splitVertices) {
+//       v.point = newPoint;
+//       if (!newPoint.vertices.includes(v)) {
+//         newPoint.vertices.push(v);
+//       }
+//     }
 
-    newPoint.singularity = PointSingularity.ImageIntersection;
-    hashPointMap.set(hash, newPoint);
-  }
-}
+//     newPoint.singularity = ViewPointSingularity.ImageIntersection;
+//     hashPointMap.set(hash, newPoint);
+//   }
+// }
 
-function mergePoints(viewmap: Viewmap, points: Array<Point>) {
+// function mergePoints(viewmap: Viewmap, points: Array<ViewPoint>) {
 
-  const pointKept = points[0];
+//   const pointKept = points[0];
 
-  for (let i=1; i<points.length; i++) {
+//   for (let i=1; i<points.length; i++) {
     
-    const p = points[i];
+//     const p = points[i];
 
-    for (const vertex of p.vertices) {
-      vertex.point = pointKept;
+//     for (const vertex of p.vertices) {
+//       vertex.point = pointKept;
 
-      if (!pointKept.vertices.includes(vertex)) {
-        pointKept.vertices.push(vertex);
-      }
-    }
+//       if (!pointKept.vertices.includes(vertex)) {
+//         pointKept.vertices.push(vertex);
+//       }
+//     }
 
-    viewmap.points.remove(p);
-  }
+//     viewmap.points.remove(p);
+//   }
 
-  return pointKept;
-}
+//   return pointKept;
+// }
 
 // export function find2dSingularities_old(
 //     viewmap: Viewmap){

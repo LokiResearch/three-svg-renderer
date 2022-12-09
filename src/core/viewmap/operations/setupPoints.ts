@@ -12,30 +12,56 @@
  * Licence: Licence.md
  */
 
-import { projectPoint } from "../../../utils";
-import { Point } from "../Point";
+import { hashVector2, projectPoint } from "../../../utils";
+import { ViewPoint } from "../ViewPoint";
 import { Viewmap } from "../Viewmap";
+import { DefaultViewPoint, ViewVertex } from "../ViewVertex";
+import { Vector2 } from "three";
+
+const _vec = new Vector2();
 
 /**
- * Assign a new {@link Point} to each vertex of the given edges if it hasn't one
+ * Assign a new {@link ViewPoint} to each vertex of the given edges if it hasn't one
  * @param edges 
  * @param camera 
  * @returns The new created points
  */
 export function setupPoints(viewmap: Viewmap) {
 
-  const {points, edges, camera, renderSize} = viewmap;
+  const {viewEdges} = viewmap;
 
-  for (const edge of edges) {
+  for (const edge of viewEdges) {
     for (const vertex of edge.vertices) {
-      if (!vertex.point) {
-        
-        vertex.point = new Point();
-        projectPoint(vertex.position, vertex.point.position, camera, renderSize);
-        vertex.point.vertices.push(vertex);
-
-        points.push(vertex.point);      
-      }
+      setupViewPoint(viewmap, vertex);
     }
   }
+}
+
+export function setupViewPoint(viewmap: Viewmap, vertex: ViewVertex) {
+
+  const {viewPointMap, camera, renderSize} = viewmap;
+
+  if (vertex.viewPoint === DefaultViewPoint) {
+
+    projectPoint(vertex.position, _vec, camera, renderSize);
+
+    const hash = hashVector2(_vec);
+    let viewPoint = viewPointMap.get(hash);
+
+    if (!viewPoint) {
+
+      viewPoint = new ViewPoint();
+      viewPoint.position.copy(_vec);
+      viewPoint.hash = hash;
+      viewPointMap.set(hash, viewPoint);
+      
+    }
+
+    vertex.viewPoint = viewPoint;
+    viewPoint.vertices.add(vertex);
+
+  }
+
+  return vertex.viewPoint;
+
 }

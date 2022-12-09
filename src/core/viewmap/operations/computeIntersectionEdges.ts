@@ -17,7 +17,7 @@ import {  Matrix4, Triangle, Vector3 } from "three";
 import { Vertex } from "three-mesh-halfedge";
 import { hashVector3 } from "../../../utils";
 import { SVGMesh } from "../../SVGMesh"
-import { Edge, EdgeNature } from "../Edge";
+import { ViewEdge, ViewEdgeNature } from "../ViewEdge";
 
 const matrix_ = new Matrix4();
 
@@ -40,7 +40,7 @@ export function computeIntersectionEdges(
   info.nbTests = 0;
   info.nbIntersections = 0;
 
-  const newEdges = new Array<Edge>();
+  const newEdges = new Array<ViewEdge>();
   const intersectionPoints = new Array<Vector3>();
   const hashVertexMap = new Map<string, Vertex>();
   const intersectionVertices = new Array<Vertex>();
@@ -70,7 +70,7 @@ export function computeIntersectionEdges(
             let vertex = hashVertexMap.get(hash);
             if (!vertex) {
               vertex = new Vertex();
-              vertex.edges = new Array<Edge>();
+              vertex.edges = new Array<ViewEdge>();
               vertex.position.copy(p);
               hashVertexMap.set(hash, vertex);
             }
@@ -88,8 +88,8 @@ export function computeIntersectionEdges(
             const v1 = intersectionVertices[i];
             const v2 = intersectionVertices[i+1];
 
-            const edge = new Edge(v1, v2);
-            edge.nature = EdgeNature.MeshIntersection;
+            const edge = new ViewEdge(v1, v2);
+            edge.nature = ViewEdgeNature.MeshIntersection;
             v1.edges.push(edge);
             v2.edges.push(edge);
             edge.meshes.push(meshA, meshB);

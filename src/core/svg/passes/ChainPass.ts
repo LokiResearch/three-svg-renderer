@@ -15,20 +15,20 @@ import {Viewmap} from '../../viewmap/Viewmap';
 import {Svg, G as SVGGroup, Element as SVGElement, Color as SVGColor,
 } from '@svgdotjs/svg.js';
 import {Chain, ChainVisibility} from '../../viewmap/Chain';
-import {EdgeNature} from '../../viewmap/Edge';
+import {ViewEdgeNature} from '../../viewmap/ViewEdge';
 import {getSVGPath, getSVGCircle, getSVGText} from '../svgutils';
 import { SVGMesh } from '../../SVGMesh';
 
-const EdgeNatures = Object.values(EdgeNature)
-  .filter(nature => nature !== EdgeNature.None);
+const EdgeNatures = Object.values(ViewEdgeNature)
+  .filter(nature => nature !== ViewEdgeNature.None);
 
 const EdgeNatureColor = {
-  [EdgeNature.None]: "",
-  [EdgeNature.Silhouette]: "red",
-  [EdgeNature.MeshIntersection]: "green",
-  [EdgeNature.Crease]: "violet",
-  [EdgeNature.Boundary]: "blue",
-  [EdgeNature.Material]: "Orange",
+  [ViewEdgeNature.None]: "",
+  [ViewEdgeNature.Silhouette]: "red",
+  [ViewEdgeNature.MeshIntersection]: "green",
+  [ViewEdgeNature.Crease]: "violet",
+  [ViewEdgeNature.Boundary]: "blue",
+  [ViewEdgeNature.Material]: "Orange",
 }
 
 export interface ChainPassOptions {
@@ -38,7 +38,7 @@ export interface ChainPassOptions {
    */
   useRandomColors?: boolean;
   /**
-   * Group chains by their {@link EdgeNature} in  different svg groups.
+   * Group chains by their {@link ViewEdgeNature} in  different svg groups.
    * @defaultValue `true`.
    */
   groupByNature?: boolean;

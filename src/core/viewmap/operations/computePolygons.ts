@@ -50,6 +50,7 @@ export async function computePolygons(
   const builder = new Arr2D.ArrangementBuilder();
   const arr2DPolygonlist = builder.getPolygons(points);
 
+
   const p = new Arr2D.Point();
   info.smallAreaIgnored = 0;
   info.insidePointErrors = 0;

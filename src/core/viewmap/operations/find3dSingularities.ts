@@ -15,15 +15,16 @@
 import { PerspectiveCamera } from "three";
 import { Vertex } from "three-mesh-halfedge";
 import { sameSide } from "../../../utils";
-import { EdgeNature } from "../Edge";
-import { Point, PointSingularity } from "../Point";
+import { ViewEdgeNature } from "../ViewEdge";
+import { ViewPoint, ViewPointSingularity } from "../ViewPoint";
 import { Viewmap } from "../Viewmap";
+import { ViewVertex } from "../ViewVertex";
 
 export function find3dSingularities(viewmap: Viewmap) {
   
-  const {points, camera} = viewmap;
+  const {viewPointMap, camera} = viewmap;
 
-  for (const point of points) {
+  for (const [,point] of viewPointMap) {
     point.singularity = singularityForPoint(point, camera);
   }
 }
@@ -37,21 +38,21 @@ export function find3dSingularities(viewmap: Viewmap) {
  * @returns 
  */
 export function singularityForPoint(
-    point: Point, camera: PerspectiveCamera) {
+    point: ViewPoint, camera: PerspectiveCamera) {
 
-  const natures = new Set<EdgeNature>();
+  const natures = new Set<ViewEdgeNature>();
 
   let concaveSilhouetteEdgeFound = false;
   let convexSilhouetteEdgeFound = false;
 
-  const edges = point.edges.filter(e => e.nature !== EdgeNature.None);
+  const edges = point.edges.filter(e => e.nature !== ViewEdgeNature.None);
 
   // Count the number of different natures connected to the vertex
   for (const edge of edges) {
 
     natures.add(edge.nature);
 
-    if (edge.faces.length > 1 && edge.nature === EdgeNature.Silhouette) {
+    if (edge.faces.length > 1 && edge.nature === ViewEdgeNature.Silhouette) {
       concaveSilhouetteEdgeFound ||= edge.isConcave;
       convexSilhouetteEdgeFound ||= !edge.isConcave;
     }
@@ -59,25 +60,26 @@ export function singularityForPoint(
 
   if (natures.size === 0) {
     console.error("No natures found around point", point);
+    return ViewPointSingularity.None;
   }
 
   // If the number of segment natures is 1 and there is more than 2 segments
   // connected to the point, then there is a bifurcation singularity
-  else if (natures.size === 1) {
+  if (natures.size === 1) {
     if(edges.length > 2 && (
-      natures.has(EdgeNature.Silhouette) || natures.has(EdgeNature.Boundary)
+      natures.has(ViewEdgeNature.Silhouette) || natures.has(ViewEdgeNature.Boundary)
     )) {
-      return PointSingularity.Bifurcation; 
+      return ViewPointSingularity.Bifurcation; 
     }
   }
 
   // If there are at least 2 edges of different natures connected to the vertex,
   // then there is a mesh intersection singularity
-  else if (natures.size > 1) {
-    if (natures.has(EdgeNature.Silhouette) && natures.has(EdgeNature.Boundary) ||
-      natures.has(EdgeNature.Silhouette) && natures.has(EdgeNature.MeshIntersection) ||
-      natures.has(EdgeNature.Boundary) && natures.has(EdgeNature.MeshIntersection)) {
-      return PointSingularity.MeshIntersection;
+  if (natures.size > 1) {
+    if (natures.has(ViewEdgeNature.Silhouette) && natures.has(ViewEdgeNature.Boundary) ||
+      natures.has(ViewEdgeNature.Silhouette) && natures.has(ViewEdgeNature.MeshIntersection) ||
+      natures.has(ViewEdgeNature.Boundary) && natures.has(ViewEdgeNature.MeshIntersection)) {
+      return ViewPointSingularity.MeshIntersection;
     }
   }
 
@@ -87,19 +89,22 @@ export function singularityForPoint(
   // there are at least one concave and one convex edges connected
   // if (!natures.has(EdgeNature.Boundary) &&
   if (concaveSilhouetteEdgeFound && convexSilhouetteEdgeFound) {
-    return PointSingularity.CurtainFold;
+    return ViewPointSingularity.CurtainFold;
   }
   
   // Curtain fold singularity can also occur on a Boundary edge where
   // one of the connected face overlaps the boundary edge
   // Note that at this stage of the pipeline, each point should only have
   // one associated vertex, hence the index 0
-  else if (natures.has(EdgeNature.Boundary) &&
-      isAnyFaceOverlappingBoundary(point.vertices[0], camera)) {
-    return PointSingularity.CurtainFold;
-  }
+  if (natures.has(ViewEdgeNature.Boundary)) {
+    for (const vv of point.vertices) {
+      if (isAnyFaceOverlappingBoundary(vv, camera)) {
+        return ViewPointSingularity.CurtainFold;
+      }
+    }
+  } 
 
-  return PointSingularity.None;
+  return ViewPointSingularity.None;
 
 }
 
@@ -117,56 +122,59 @@ export function *listBoundaryHalfedgesInOut(vertex: Vertex) {
  * @param camera 
  * @returns 
  */
-export function isAnyFaceOverlappingBoundary(vertex: Vertex, camera: PerspectiveCamera) {
+export function isAnyFaceOverlappingBoundary(viewVertex: ViewVertex, camera: PerspectiveCamera) {
 
-  // Get the farthest boundary halfedge from the camera and connected to the
-  // vertex
-  let farthestHalfedge = null;
-  let otherVertex = null;
-  let distance = -Infinity;
-  
-  for (const halfedge of listBoundaryHalfedgesInOut(vertex)) {
+  for (const vertex of viewVertex.vertices) {
 
-    let other;
-    if (halfedge.vertex === vertex) {
-      // Halfedge is starting from vertex
-      other = halfedge.next.vertex;
-    } else {
-      // Halfedge is arriving to vertex
-      other = halfedge.vertex;
+    // Get the farthest boundary halfedge from the camera and connected to the
+    // vertex
+    let farthestHalfedge = null;
+    let otherVertex = null;
+    let distance = -Infinity;
+    
+    for (const halfedge of listBoundaryHalfedgesInOut(vertex)) {
+
+      let other;
+      if (halfedge.vertex === vertex) {
+        // Halfedge is starting from vertex
+        other = halfedge.next.vertex;
+      } else {
+        // Halfedge is arriving to vertex
+        other = halfedge.vertex;
+      }
+      const d = other.position.distanceTo(camera.position);
+      if (d > distance) {
+        distance = d;
+        farthestHalfedge = halfedge;
+        otherVertex = other;
+      }
     }
-    const d = other.position.distanceTo(camera.position);
-    if (d > distance) {
-      distance = d;
-      farthestHalfedge = halfedge;
-      otherVertex = other;
-    }
-  }
 
-  if (farthestHalfedge && otherVertex) {
+    if (farthestHalfedge && otherVertex) {
 
-    // Iterate on each connected faces to vertex and check if it overlaps
-    // the farthest halfedge
-    const c = camera.position;
-    const p = vertex.position;
-    const e = otherVertex.position;
+      // Iterate on each connected faces to vertex and check if it overlaps
+      // the farthest halfedge
+      const c = camera.position;
+      const p = vertex.position;
+      const e = otherVertex.position;
 
-    const boundaryFace = farthestHalfedge.twin.face;
+      const boundaryFace = farthestHalfedge.twin.face;
 
-    if (boundaryFace) {
-      for (const halfedge of vertex.loopCW()) {
-        if (halfedge.face !== boundaryFace) {
+      if (boundaryFace) {
+        for (const halfedge of vertex.loopCW()) {
+          if (halfedge.face !== boundaryFace) {
 
-          const q = halfedge.next.vertex.position;
-          const r = halfedge.next.vertex.position;
+            const q = halfedge.next.vertex.position;
+            const r = halfedge.next.vertex.position;
 
-          if (!sameSide(p,q,r,c,e) && sameSide(c,p,q,e,r) && sameSide(c,p,r,e,q)) {
-            return true;
+            if (!sameSide(p,q,r,c,e) && sameSide(c,p,q,e,r) && sameSide(c,p,r,e,q)) {
+              return true;
+            }
           }
         }
+      } else {
+        console.error("Boundary halfedge twin has no connected face");
       }
-    } else {
-      console.error("Boundary halfedge twin has no connected face");
     }
   }
   return false;

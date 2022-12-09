@@ -15,7 +15,7 @@
 import { Line3, Vector3 } from "three";
 import { Face, Vertex } from "three-mesh-halfedge";
 import { intersectLines } from "../../../utils";
-import { Edge } from "../Edge";
+import { ViewEdge } from "../ViewEdge";
 import { Viewmap } from "../Viewmap";
 import { splitEdgeAt3dPosition, 
   splitEdgeWithVertex
@@ -56,7 +56,7 @@ export function insertFaceEdge(
     }
   }
 
-  const edge = new Edge(v1, v2);
+  const edge = new ViewEdge(v1, v2);
   v1.edges.push(edge);
   v2.edges.push(edge);
 
@@ -121,7 +121,7 @@ export function insertFaceEdge(
 
 export function createVertex(position: Vector3) {
   const v = new Vertex();
-  v.edges = new Array<Edge>();
+  v.edges = new Array<ViewEdge>();
   v.position.copy(position);
   return v;
 }
