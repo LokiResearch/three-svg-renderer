@@ -235,7 +235,7 @@ function drawChain(
     style.color = EdgeNatureColor[chain.nature];
   }
 
-  const path = getSVGPath(chain.points, [], false, style);
+  const path = getSVGPath(chain.vertices, [], false, style);
   parent.add(path);
 
   if (options.drawRaycastPoint) {

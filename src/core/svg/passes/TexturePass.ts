@@ -316,15 +316,15 @@ function getCVTransformMatrix(
 
   // Get the coordinates in pixels of the four screen corners
   const vertices = Array.from(mesh.hes.vertices);
-  const points = vertices.map(vertex => vertex.point);
+  const viewVertices = vertices.map(vertex => vertex.viewVertex);
 
-  for (const point of points) {
-    minX = Math.min(minX, point.x);
-    minY = Math.min(minY, point.y);
-    maxX = Math.max(maxX, point.x);
-    maxY = Math.max(maxY, point.y);
-    dstPointsArray.push(point.x);
-    dstPointsArray.push(point.y);
+  for (const vertex of viewVertices) {
+    minX = Math.min(minX, vertex.x);
+    minY = Math.min(minY, vertex.y);
+    maxX = Math.max(maxX, vertex.x);
+    maxY = Math.max(maxY, vertex.y);
+    dstPointsArray.push(vertex.x);
+    dstPointsArray.push(vertex.y);
   }
 
   // Recenter the projection on top left corner of the object

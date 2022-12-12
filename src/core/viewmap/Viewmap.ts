@@ -19,12 +19,12 @@ import { computePolygons, PolygonsInfo } from './operations/computePolygons';
 import { createChains } from './operations/createChains';
 import { find3dSingularities } from './operations/find3dSingularities';
 import { setupEdges } from './operations/setupEdges';
-import { ViewPoint } from './ViewPoint';
+// import { ViewPoint } from './ViewPoint_';
 import { Polygon } from './Polygon';
 import { find2dSingularities } from './operations/find2dSingularities';
 import { AssignPolygonInfo, assignPolygons } from './operations/assignPolygons';
 import { ChainVisibilityInfo, computeChainsVisibility } from './operations/computeChainsVisibility';
-import { setupPoints } from './operations/setupPoints';
+// import { setupPoints } from './operations/setupPoints_';
 import { 
   computeMeshIntersections, 
   MeshIntersectionInfo } from './operations/computeMeshIntersections';
@@ -36,10 +36,10 @@ declare module 'three-mesh-halfedge' {
     edges: ViewEdge[];
   }
 
-  // export interface Vertex {
-  //   point: ViewPoint;
-  //   edges: ViewEdge[];
-  // }
+  export interface Vertex {
+    viewVertex: ViewVertex;
+  }
+
 }
 
 export interface ViewmapOptions {
@@ -102,7 +102,7 @@ export class Viewmap {
   readonly meshes = new Array<SVGMesh>();
   
   readonly viewEdges = new Array<ViewEdge>();
-  readonly viewPointMap = new Map<string, ViewPoint>();
+  // readonly viewPointMap = new Map<string, ViewPoint>();
   readonly viewVertexMap = new Map<string, ViewVertex>();
 
   readonly chains = new Array<Chain>();
@@ -126,7 +126,7 @@ export class Viewmap {
   clear() {
     this.meshes.clear();
     this.viewEdges.clear();
-    this.viewPointMap.clear();
+    // this.viewPointMap.clear();
     this.viewVertexMap.clear();
     this.chains.clear();
     this.polygons.clear();
@@ -280,14 +280,14 @@ export class Viewmap {
     /**
      * Setup points
      */
-    actions.push({
-      name: "Project 3d points on image plane",
-      process: async() => {
-        const startTime = Date.now();
-        setupPoints(this);
-        info.times.setupPoints = Date.now() - startTime;
-      }
-    });
+    // actions.push({
+    //   name: "Project 3d points on image plane",
+    //   process: async() => {
+    //     const startTime = Date.now();
+    //     setupPoints(this);
+    //     info.times.setupPoints = Date.now() - startTime;
+    //   }
+    // });
 
     /**
      * Find singularities in the 3D space

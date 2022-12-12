@@ -38,9 +38,9 @@ export async function computePolygons(
   const points = new Arr2D.PointList();
   let a, b;
   for (const chain of visibleChains) {
-    a = new Arr2D.Point(chain.points[0].x, chain.points[0].y);
-    for (let i=1; i<chain.points.length; i++) {
-      b = new Arr2D.Point(chain.points[i].x, chain.points[i].y);
+    a = new Arr2D.Point(chain.vertices[0].pos2d.x, chain.vertices[0].pos2d.y);
+    for (let i=1; i<chain.vertices.length; i++) {
+      b = new Arr2D.Point(chain.vertices[i].pos2d.x, chain.vertices[i].pos2d.y);
       points.push_back(a);
       points.push_back(b);
       a = b;

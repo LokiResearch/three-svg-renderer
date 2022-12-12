@@ -12,7 +12,7 @@
  * Licence: Licence.md
  */
 
-export { ViewPoint, ViewPointSingularity } from './ViewPoint';
+export { ViewPoint, ViewPointSingularity } from './_old/ViewPoint_';
 export { ViewEdge, ViewEdgeNature } from './ViewEdge';
 export { ViewVertex } from './ViewVertex';
 export { Chain, ChainVisibility } from './Chain';

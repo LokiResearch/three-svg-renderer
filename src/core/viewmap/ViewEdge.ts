@@ -10,10 +10,10 @@
 
 // LICENCE: Licence.md
 
-import { Vector2, Vector3 } from 'three';
+import { Vector2 } from 'three';
 import { Face, Halfedge } from 'three-mesh-halfedge';
 import { SVGMesh } from '../SVGMesh';
-import { ViewPoint } from './ViewPoint';
+// import { ViewPoint } from './ViewPoint_';
 import { ViewVertex } from './ViewVertex';
 
 /**
@@ -34,11 +34,11 @@ export enum ViewEdgeNature {
   Material = "Material",
 }
 
-const _u2 = new Vector2();
-const _v2 = new Vector2();
+// const _u2 = new Vector2();
+// const _v2 = new Vector2();
 
-const _u = new Vector3();
-const _v = new Vector3();
+// const _u = new Vector3();
+// const _v = new Vector3();
 // const _cross = new Vector3();
 
 export class ViewEdge {
@@ -95,16 +95,16 @@ export class ViewEdge {
     return [this.a, this.b];
   }
 
-  get points() {
-    return [this.a.viewPoint, this.b.viewPoint];
-  }
+  // get points() {
+  //   return [this.a.viewPoint, this.b.viewPoint];
+  // }
 
   get from(): Vector2 {
-    return this.a.viewPoint.position;
+    return this.a.pos2d;
   }
 
   get to(): Vector2 {
-    return this.b.viewPoint.position;
+    return this.b.pos2d;
   }
 
   // get faces(): Face[] {
@@ -147,29 +147,29 @@ export class ViewEdge {
     }
   }
 
-  otherPoint(point: ViewPoint) {
-    if (point === this.a.viewPoint) {
-      return this.b.viewPoint;
-    } else {
-      return this.a.viewPoint;
-    }
-  }
+  // otherPoint(point: ViewPoint) {
+  //   if (point === this.a.viewPoint) {
+  //     return this.b.viewPoint;
+  //   } else {
+  //     return this.a.viewPoint;
+  //   }
+  // }
 
   hasVertex(vertex: ViewVertex) {
     return this.a === vertex || this.b === vertex;
   }
 
-  hasPoint(point: ViewPoint) {
-    return this.a.viewPoint === point || this.b.viewPoint === point;
-  }
+  // hasPoint(point: ViewPoint) {
+  //   return this.a.viewPoint === point || this.b.viewPoint === point;
+  // }
 
-  isConnectedToEdgeIn3D(edge: ViewEdge) {
+  isConnectedTo(edge: ViewEdge) {
     return this.hasVertex(edge.a) || this.hasVertex(edge.b);
   }
 
-  isConnectedToEdgeIn2D(edge: ViewEdge) {
-    return this.hasPoint(edge.a.viewPoint) || this.hasPoint(edge.b.viewPoint);
-  }
+  // isConnectedToEdgeIn2D(edge: ViewEdge) {
+  //   return this.hasPoint(edge.a.viewPoint) || this.hasPoint(edge.b.viewPoint);
+  // }
 
 
 
@@ -185,38 +185,38 @@ export class ViewEdge {
 
 
 
-  contains2dPosition(position: Vector2, tolerance = 1e-10) {
+  // contains2dPosition(position: Vector2, tolerance = 1e-10) {
     
-    if (this.a.viewPoint.matchesPosition(position, tolerance)) {
-      return 0;
-    }
-    if (this.b.viewPoint.matchesPosition(position, tolerance)) {
-      return 1;
-    }
+  //   if (this.a.viewPoint.matchesPosition(position, tolerance)) {
+  //     return 0;
+  //   }
+  //   if (this.b.viewPoint.matchesPosition(position, tolerance)) {
+  //     return 1;
+  //   }
   
-    _u2.subVectors(position, this.a.viewPoint.position);
-    _v2.subVectors(this.b.viewPoint.position, this.a.viewPoint.position);
+  //   _u2.subVectors(position, this.a.viewPoint.position);
+  //   _v2.subVectors(this.b.viewPoint.position, this.a.viewPoint.position);
   
-    // Check points are aligned
-    const cross = _u2.cross(_v2);
-    if (cross > 1e-10 || cross < -1e-10) {
-      return null;
-    }
+  //   // Check points are aligned
+  //   const cross = _u2.cross(_v2);
+  //   if (cross > 1e-10 || cross < -1e-10) {
+  //     return null;
+  //   }
   
-    const lengthU = _u2.length();
-    const lengthV = _v2.length();
+  //   const lengthU = _u2.length();
+  //   const lengthV = _v2.length();
   
-    if (lengthU > lengthV) {
-      return null;
-    }
+  //   if (lengthU > lengthV) {
+  //     return null;
+  //   }
   
-    // Check points order
-    if (_u.dot(_v) < -1e10) {
-      return null;
-    }
+  //   // Check points order
+  //   if (_u.dot(_v) < -1e10) {
+  //     return null;
+  //   }
 
-    return lengthU/lengthV;
-  }
+  //   return lengthU/lengthV;
+  // }
 
   // normalAtPosition(point: Vector3, target: Vector3) {
   //   _u.subVectors(this.vertices[0].position, point);

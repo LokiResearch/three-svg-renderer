@@ -14,14 +14,13 @@
 
 import { Line3, Vector3 } from "three";
 import { Face } from "three-mesh-halfedge";
-import { hashVector3, intersectLines } from "../../../utils";
+import { intersectLines } from "../../../utils";
 import { SVGMesh } from "../../SVGMesh";
 import { ViewEdge, ViewEdgeNature } from "../ViewEdge";
 import { Viewmap } from "../Viewmap";
-import { ViewVertex } from "../ViewVertex";
-// import { insertFaceEdge, splitFaceEdges } from "./insertFaceEdge";
+import { createViewVertex } from "./createViewVertex";
 import { TriIntersectionInfo, meshIntersectionCb } from "./meshIntersectionCb";
-import { splitEdgeAt3dPosition } from "./splitEdge";
+import { splitViewEdge3d } from "./splitEdge";
 
 
 export class MeshIntersectionInfo {
@@ -36,7 +35,7 @@ export function computeMeshIntersections(
     viewmap: Viewmap,
     info = new MeshIntersectionInfo()) {
 
-  const {meshes, viewVertexMap} = viewmap;
+  const {meshes} = viewmap;
 
   info.nbMeshesTested = 0;
   info.nbIntersections = 0;
@@ -70,83 +69,133 @@ export function computeMeshIntersections(
 
   const _line = new Line3();
   const _inter = new Vector3();
+  const _lineDir = new Vector3();
+  const _dir = new Vector3();
 
   const intersectCallback = (
       meshA: SVGMesh, meshB: SVGMesh, line: Line3, 
-      _faceA: Face, _faceB: Face) => {
+      faceA: Face, faceB: Face) => {
+  
+    const faceEdges = new Set([...faceA.edges, ...faceB.edges]);
 
-    const hash1 = hashVector3(line.start);
-    let v1 = viewVertexMap.get(hash1);
-    if (!v1) {
-      v1 = new ViewVertex();
-      v1.position.copy(line.start);
-      v1.hash = hash1;
-      viewVertexMap.set(hash1, v1);
-    }
 
-    const hash2 = hashVector3(line.end);
-    let v2 = viewVertexMap.get(hash2);
-    if (!v2) {
-      v2 = new ViewVertex();
-      v2.position.copy(line.end);
-      v2.hash = hash2;
-      viewVertexMap.set(hash2, v2);
-    }
+    const v1 = createViewVertex(viewmap, line.start);
+    const v2 = createViewVertex(viewmap, line.end);
 
-    const edge = new ViewEdge(v1, v2);
-    edge.nature = ViewEdgeNature.MeshIntersection;
-    edge.meshes.push(meshA, meshB);
-    v1.viewEdges.add(edge);
-    v2.viewEdges.add(edge);
-    
-    viewmap.viewEdges.push(edge);
+    const intersectVertices = [v1, v2];
+ 
+    for (const e of faceEdges) {
 
-    for (const faceEdge of [..._faceA.edges, ..._faceB.edges]) {
-
-      _line.set(faceEdge.a.position, faceEdge.b.position);
+      _line.set(e.a.pos3d, e.b.pos3d);
 
       if (intersectLines(_line, line, _inter)) {
-        splitEdgeAt3dPosition(viewmap, faceEdge, _inter); 
-        splitEdgeAt3dPosition(viewmap, edge, _inter);
-        // const split = splitEdgeAt3dPosition(viewmap, faceEdge, _inter); 
+        const splitResult = splitViewEdge3d(viewmap, e, _inter);
 
-        // if (split) {
-
-        //   split.vertex
-
-
-        // }
+        if (splitResult) {
+          if (!intersectVertices.includes(splitResult.viewVertex)) {
+            intersectVertices.push(splitResult.viewVertex);
+          }
+        } else {
+          console.error("Intersection but split failed");
+        }
 
       }
-
-
-
-
     }
 
+    // Sort point along the line
+    _dir.subVectors(line.end, line.start);
+    intersectVertices.sort((a,b) => {
+      _dir.subVectors(b.pos3d, a.pos3d);
+      return _dir.dot(_lineDir)
+    });
 
-    // const edges = insertFaceEdge(viewmap, faceA, line);
-    // info.nbEdgesAdded += edges.length;
+    // Create new edges
+    for (let i = 0; i<intersectVertices.length-1; i++) {
 
-    // for (const edge of edges) {
-      
-    //   if (edge.nature === EdgeNature.None) {
-    //     edge.nature = EdgeNature.MeshIntersection;
-    //   }
-      
-    //   if (!edge.meshes.includes(meshA)) {
-    //     edge.meshes.push(meshA);
-    //   }
+      const v1 = intersectVertices[i];
+      const v2 = intersectVertices[i+1];
 
-    //   if (!edge.meshes.includes(meshB)) {
-    //     edge.meshes.push(meshB);
-    //   }
+      const viewEdge = new ViewEdge(v1, v2);
+      viewEdge.nature = ViewEdgeNature.MeshIntersection;
+      viewEdge.meshes.push(meshA, meshB);
+      viewEdge.faces.push(faceA, faceB);
 
-    //   splitFaceEdges(viewmap, faceB, edge.a.position);
-    //   splitFaceEdges(viewmap, faceB, edge.b.position);
-      
-    // }
+      v1.viewEdges.push(viewEdge);
+      v2.viewEdges.push(viewEdge);
+
+      faceA.edges.push(viewEdge);
+      faceB.edges.push(viewEdge);
+
+      viewmap.viewEdges.push(viewEdge);
+    }
+     
   }
+
+
+
+
+
+  // const intersectCallback_old = (
+  //     meshA: SVGMesh, meshB: SVGMesh, line: Line3, 
+  //     faceA: Face, faceB: Face) => {
+
+  //   const v1 = createViewVertex(viewmap, line.start);
+  //   const v2 = createViewVertex(viewmap, line.end);
+
+  //   const edge = new ViewEdge(v1, v2);
+  //   edge.nature = ViewEdgeNature.MeshIntersection;
+  //   edge.meshes.push(meshA, meshB);
+  //   v1.viewEdges.push(edge);
+  //   v2.viewEdges.push(edge);
+    
+  //   viewmap.viewEdges.push(edge);
+
+  //   for (const faceEdge of [...faceA.edges, ...faceB.edges]) {
+
+  //     _line.set(faceEdge.a.pos3d, faceEdge.b.pos3d);
+
+  //     if (intersectLines(_line, line, _inter)) {
+  //       splitViewEdge3d(viewmap, faceEdge, _inter); 
+  //       splitViewEdge3d(viewmap, edge, _inter);
+  //       // const split = splitEdgeAt3dPosition(viewmap, faceEdge, _inter); 
+
+  //       // if (split) {
+
+  //       //   split.vertex
+
+
+  //       // }
+
+  //     }
+  //   }
+
+  //   edge.faces.push(faceA, faceB);
+  //   faceA.edges.push(edge);
+  //   faceB.edges.push(edge);
+
+
+  //   // const edges = insertFaceEdge(viewmap, faceA, line);
+  //   // info.nbEdgesAdded += edges.length;
+
+  //   // for (const edge of edges) {
+      
+  //   //   if (edge.nature === EdgeNature.None) {
+  //   //     edge.nature = EdgeNature.MeshIntersection;
+  //   //   }
+      
+  //   //   if (!edge.meshes.includes(meshA)) {
+  //   //     edge.meshes.push(meshA);
+  //   //   }
+
+  //   //   if (!edge.meshes.includes(meshB)) {
+  //   //     edge.meshes.push(meshB);
+  //   //   }
+
+  //   //   splitFaceEdges(viewmap, faceB, edge.a.position);
+  //   //   splitFaceEdges(viewmap, faceB, edge.b.position);
+      
+  //   // }
+  // }
 
 
   for (let i=0; i<meshes.length-1; i++) {

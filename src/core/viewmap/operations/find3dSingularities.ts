@@ -16,16 +16,15 @@ import { PerspectiveCamera } from "three";
 import { Vertex } from "three-mesh-halfedge";
 import { sameSide } from "../../../utils";
 import { ViewEdgeNature } from "../ViewEdge";
-import { ViewPoint, ViewPointSingularity } from "../ViewPoint";
 import { Viewmap } from "../Viewmap";
-import { ViewVertex } from "../ViewVertex";
+import { ViewVertex, ViewVertexSingularity } from "../ViewVertex";
 
 export function find3dSingularities(viewmap: Viewmap) {
   
-  const {viewPointMap, camera} = viewmap;
+  const {viewVertexMap, camera} = viewmap;
 
-  for (const [,point] of viewPointMap) {
-    point.singularity = singularityForPoint(point, camera);
+  for (const [, viewVertex] of viewVertexMap) {
+    viewVertex.singularity = singularityForPoint(viewVertex, camera);
   }
 }
 
@@ -38,14 +37,14 @@ export function find3dSingularities(viewmap: Viewmap) {
  * @returns 
  */
 export function singularityForPoint(
-    point: ViewPoint, camera: PerspectiveCamera) {
+    viewVertex: ViewVertex, camera: PerspectiveCamera) {
 
   const natures = new Set<ViewEdgeNature>();
 
   let concaveSilhouetteEdgeFound = false;
   let convexSilhouetteEdgeFound = false;
 
-  const edges = point.edges.filter(e => e.nature !== ViewEdgeNature.None);
+  const edges = viewVertex.viewEdges.filter(e => e.nature !== ViewEdgeNature.None);
 
   // Count the number of different natures connected to the vertex
   for (const edge of edges) {
@@ -59,8 +58,8 @@ export function singularityForPoint(
   }
 
   if (natures.size === 0) {
-    console.error("No natures found around point", point);
-    return ViewPointSingularity.None;
+    console.error("No natures found around vertex", viewVertex);
+    return ViewVertexSingularity.None;
   }
 
   // If the number of segment natures is 1 and there is more than 2 segments
@@ -69,17 +68,17 @@ export function singularityForPoint(
     if(edges.length > 2 && (
       natures.has(ViewEdgeNature.Silhouette) || natures.has(ViewEdgeNature.Boundary)
     )) {
-      return ViewPointSingularity.Bifurcation; 
+      return ViewVertexSingularity.Bifurcation; 
     }
   }
 
   // If there are at least 2 edges of different natures connected to the vertex,
   // then there is a mesh intersection singularity
   if (natures.size > 1) {
-    if (natures.has(ViewEdgeNature.Silhouette) && natures.has(ViewEdgeNature.Boundary) ||
-      natures.has(ViewEdgeNature.Silhouette) && natures.has(ViewEdgeNature.MeshIntersection) ||
-      natures.has(ViewEdgeNature.Boundary) && natures.has(ViewEdgeNature.MeshIntersection)) {
-      return ViewPointSingularity.MeshIntersection;
+    if (natures.has(ViewEdgeNature.Silhouette) ||
+        natures.has(ViewEdgeNature.Boundary) ||
+        natures.has(ViewEdgeNature.MeshIntersection)) {
+      return ViewVertexSingularity.MeshIntersection;
     }
   }
 
@@ -89,7 +88,7 @@ export function singularityForPoint(
   // there are at least one concave and one convex edges connected
   // if (!natures.has(EdgeNature.Boundary) &&
   if (concaveSilhouetteEdgeFound && convexSilhouetteEdgeFound) {
-    return ViewPointSingularity.CurtainFold;
+    return ViewVertexSingularity.CurtainFold;
   }
   
   // Curtain fold singularity can also occur on a Boundary edge where
@@ -97,14 +96,12 @@ export function singularityForPoint(
   // Note that at this stage of the pipeline, each point should only have
   // one associated vertex, hence the index 0
   if (natures.has(ViewEdgeNature.Boundary)) {
-    for (const vv of point.vertices) {
-      if (isAnyFaceOverlappingBoundary(vv, camera)) {
-        return ViewPointSingularity.CurtainFold;
-      }
+    if (isAnyFaceOverlappingBoundary(viewVertex, camera)) {
+      return ViewVertexSingularity.CurtainFold;
     }
   } 
 
-  return ViewPointSingularity.None;
+  return ViewVertexSingularity.None;
 
 }
 

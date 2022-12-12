@@ -13,22 +13,23 @@
  */
 
 import { 
-  // Vector2, 
+  Vector2, 
   Vector3 } from "three";
 // import { Vertex } from "three-mesh-halfedge";
-import { hashVector3 } from "../../../utils";
+import { hashVector2, hashVector3 } from "../../../utils";
 import { ViewEdge } from "../ViewEdge";
 import { Viewmap } from "../Viewmap";
 import { ViewVertex } from "../ViewVertex";
+import { createViewVertex } from "./createViewVertex";
 
 const _u = new Vector3();
 const _v = new Vector3();
 
-// const _vec3 = new Vector3();
-// const _u2 = new Vector2();
-// const _v2 = new Vector2();
+const _vec3 = new Vector3();
+const _u2 = new Vector2();
+const _v2 = new Vector2();
 
-export function splitEdgeAt3dPosition(
+export function splitViewEdge3d(
     viewmap: Viewmap,
     edge: ViewEdge,
     position: Vector3,
@@ -45,21 +46,21 @@ export function splitEdgeAt3dPosition(
 
   const hash = hashVector3(position);
   
-  if (edge.a.hash === hash) {
+  if (edge.a.hash3d === hash) {
     return {
-      vertex: edge.a,
-      newEdge: null
+      viewVertex: edge.a,
+      viewEdge: null
     };
   }
-  if (edge.b.hash === hash) {
+  if (edge.b.hash3d === hash) {
     return {
-      vertex: edge.b,
-      newEdge: null
+      viewVertex: edge.b,
+      viewEdge: null
     };
   }
 
-  _u.subVectors(position, edge.a.position);
-  _v.subVectors(edge.b.position, edge.a.position);
+  _u.subVectors(position, edge.a.pos3d);
+  _v.subVectors(edge.b.pos3d, edge.a.pos3d);
 
 
   const cross = _u.cross(_v);
@@ -79,83 +80,68 @@ export function splitEdgeAt3dPosition(
     return null;
   }
 
-  // Now that we know point is between a and b, we can find the 3d position
-  // of the new vertex that cuts the edge
-
-  let vertex = viewmap.viewVertexMap.get(hash);
-  if (!vertex) {
-    vertex = new ViewVertex();
-    vertex.position.copy(position);
-    vertex.hash = hash;
-    viewmap.viewVertexMap.set(hash, vertex);
-  }
-
-  const newEdge = splitEdgeWithVertex(viewmap, edge, vertex);
+  const viewVertex = createViewVertex(viewmap, position);
+  const viewEdge = splitViewEdgeWithViewVertex(viewmap, edge, viewVertex);
 
   return {
-    vertex: vertex,
-    newEdge: newEdge
+    viewVertex: viewVertex,
+    viewEdge: viewEdge
   };
 }
 
-// export function splitEdgeAt2dPosition(
-//     viewmap: Viewmap,
-//     edge: ViewEdge,
-//     position: Vector2,
-//     tolerance = 1e-10) {
+export function splitViewEdge2d(
+    viewmap: Viewmap,
+    edge: ViewEdge,
+    position: Vector2) {
+  // tolerance = 1e-10) {
 
+  const hash = hashVector2(position);
   
-//   if (edge.a.point.matchesPosition(position, tolerance)) {
-//     return {
-//       vertex: edge.a,
-//       newEdge: null
-//     };
-//   }
-//   if (edge.b.point.matchesPosition(position, tolerance)) {
-//     return {
-//       vertex: edge.b,
-//       newEdge: null
-//     };
-//   }
+  if (edge.a.hash2d === hash) {
+    return {
+      viewVertex: edge.a,
+      viewEdge: null
+    };
+  }
+  if (edge.b.hash2d === hash) {
+    return {
+      viewVertex: edge.b,
+      viewEdge: null
+    };
+  }
 
-//   _u2.subVectors(position, edge.a.point.position);
-//   _v2.subVectors(edge.b.point.position, edge.a.point.position);
+  _u2.subVectors(position, edge.a.pos2d);
+  _v2.subVectors(edge.b.pos2d, edge.a.pos2d);
 
-//   // Check points are aligned
-//   const cross = _u2.cross(_v2);
-//   if (cross > 1e-10 || cross < -1e-10) {
-//     return null;
-//   }
+  // Check points are aligned
+  const cross = _u2.cross(_v2);
+  if (cross > 1e-10 || cross < -1e-10) {
+    return null;
+  }
 
-//   const lengthU = _u2.length();
-//   const lengthV = _v2.length();
+  const lengthU = _u2.length();
+  const lengthV = _v2.length();
 
-//   if (lengthU > lengthV) {
-//     return null;
-//   }
+  if (lengthU > lengthV) {
+    return null;
+  }
 
-//   // Check points order
-//   if (_u.dot(_v) < -1e10) {
-//     return null;
-//   }
+  // Check points order
+  if (_u.dot(_v) < -1e10) {
+    return null;
+  }
 
-//   _vec3.lerpVectors(edge.a.position, edge.b.position, lengthU/lengthV);
-  
-//   // Now that we know point is between a and b, we can find the 3d position
-//   // of the new vertex that cuts the edge
-//   const vertex = new Vertex();
-//   vertex.edges = new Array<ViewEdge>();
-//   vertex.position.copy(_vec3);
+  _vec3.lerpVectors(edge.a.pos3d, edge.b.pos3d, lengthU/lengthV);
+  const viewVertex = createViewVertex(viewmap, _vec3);
+  const viewEdge = splitViewEdgeWithViewVertex(viewmap, edge, viewVertex);
 
-//   const newEdge = splitEdgeWithVertex(viewmap, edge, vertex);
+  return {
+    viewVertex: viewVertex,
+    viewEdge: viewEdge
+  };
+}
 
-//   return {
-//     vertex: vertex,
-//     newEdge: newEdge
-//   };
-// }
-
-export function splitEdgeWithVertex(
+export function splitViewEdgeWithViewVertex(
     viewmap: Viewmap,
     edge: ViewEdge,
     vertex: ViewVertex) {
@@ -175,11 +161,11 @@ export function splitEdgeWithVertex(
   newEdge.a = vertex;
   newEdge.b = b;
 
-  vertex.viewEdges.add(edge);
-  vertex.viewEdges.add(newEdge);
+  vertex.viewEdges.push(edge);
+  vertex.viewEdges.push(newEdge);
 
-  b.viewEdges.delete(edge);
-  b.viewEdges.add(newEdge);
+  b.viewEdges.remove(edge);
+  b.viewEdges.push(newEdge);
 
   for (const face of newEdge.faces) {
     face.edges.push(newEdge);

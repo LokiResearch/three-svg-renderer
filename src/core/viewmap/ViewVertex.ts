@@ -12,23 +12,63 @@
  * Licence: Licence.md
  */
 
-import { Vector3 } from "three";
+import { Vector2, Vector3 } from "three";
 import { Vertex } from "three-mesh-halfedge";
+import { vectors2Equal, vectors3Equal } from "../../utils";
 import { ViewEdge } from "./ViewEdge";
-import { ViewPoint } from "./ViewPoint";
 
-export const DefaultViewPoint = new ViewPoint();
+export enum ViewVertexSingularity {
+  None = "None",
+  ImageIntersection = "ImageIntersection",
+  MeshIntersection = "MeshIntersection",
+  CurtainFold = "CurtainFold",
+  Bifurcation = "Bifurcation",
+}
 
 export class ViewVertex {
 
-  hash = "";
+  hash3d = "";
+  hash2d = "";
 
-  viewPoint = DefaultViewPoint;
+  singularity = ViewVertexSingularity.None;
 
   readonly vertices = new Set<Vertex>();
   
-  readonly position = new Vector3();
+  readonly pos3d = new Vector3();
+  readonly pos2d = new Vector2();
 
-  readonly viewEdges = new Set<ViewEdge>();
+  readonly viewEdges = new Array<ViewEdge>();
+
+  visible = false;
+
+
+  commonViewEdgeWith(other: ViewVertex) {
+    for (const viewEdge of this.viewEdges) {
+      if (other.viewEdges.includes(viewEdge)) {
+        return viewEdge;
+      }
+    }
+    return null;
+  }
+
+  isConnectedTo(other: ViewVertex) {
+    return this.commonViewEdgeWith(other) != null;
+  }
+
+  matches3dPosition(position: Vector3, tolerance = 1e-10) {
+    return vectors3Equal(this.pos3d, position, tolerance);
+  }
+
+  matches2dPosition(position: Vector2, tolerance = 1e-10) {
+    return vectors2Equal(this.pos2d, position, tolerance);
+  }
+
+  get x() {
+    return this.pos2d.x;
+  }
+
+  get y() {
+    return this.pos2d.y;
+  }
 
 }

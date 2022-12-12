@@ -15,14 +15,13 @@
 import { SVGMesh } from "../../SVGMesh";
 import { Chain } from "../Chain";
 import { ViewEdge } from "../ViewEdge";
-import { ViewPoint, ViewPointSingularity } from "../ViewPoint";
 import { Viewmap } from "../Viewmap";
+import { ViewVertex, ViewVertexSingularity } from "../ViewVertex";
 
 
 // See chaining section of https://hal.inria.fr/hal-02189483
 export function createChains(viewmap: Viewmap) {
 
-  console.log(viewmap);
   const {viewEdges, chains} = viewmap;
   const remainingEdges = new Set(viewEdges);
 
@@ -36,15 +35,15 @@ export function createChains(viewmap: Viewmap) {
     chain.addEdge(startEdge);
 
     // Search for connected edges from one direction
-    for (const startPoint of startEdge.points) {
-      let point = startPoint;
-      let edge = nextChainEdgeFromPoint(startEdge, point, remainingEdges, currentObject);
+    for (const startViewVertex of startEdge.vertices) {
+      let current = startViewVertex;
+      let edge = nextChainEdge(startEdge, current, remainingEdges, currentObject);
 
       while (edge) {
         remainingEdges.delete(edge);
         chain.addEdge(edge);
-        point = edge.otherPoint(point);
-        edge = nextChainEdgeFromPoint(edge, point, remainingEdges, currentObject);
+        current = edge.otherVertex(current);
+        edge = nextChainEdge(edge, current, remainingEdges, currentObject);
       }
     }
     chains.push(chain);
@@ -52,31 +51,31 @@ export function createChains(viewmap: Viewmap) {
   }
 }
 
-export function nextChainEdgeFromPoint(
+export function nextChainEdge(
     currentEdge: ViewEdge,
-    point: ViewPoint,
+    viewVertex: ViewVertex,
     remainingEdges: Set<ViewEdge>,
     obj: SVGMesh) : ViewEdge | null {
 
   // If point is a singularity, chaining stops
-  if (point.singularity !== ViewPointSingularity.None) {
+  if (viewVertex.singularity !== ViewVertexSingularity.None) {
     return null;
   }
 
   // TODO: Taking into account the nature of the current segment and geometric
   // properties to build longer chains
-  for (const edge of point.edges) {
+  for (const viewEdge of viewVertex.viewEdges) {
 
     const takeEdge = 
       // Take edge only if it has not been assigned yet
-      remainingEdges.has(edge) &&
+      remainingEdges.has(viewEdge) &&
       // Next edge must have the same nature of the current edge
-      edge.nature === currentEdge.nature &&
+      viewEdge.nature === currentEdge.nature &&
       // Next edge must be part of the same object
-      edge.meshes.includes(obj);
+      viewEdge.meshes.includes(obj);
 
     if (takeEdge) {
-      return edge;
+      return viewEdge;
     }
   }
   return null;

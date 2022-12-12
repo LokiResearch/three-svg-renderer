@@ -1,7 +1,7 @@
 import {Vector2} from 'three';
-import {ViewEdge} from './ViewEdge';
-import { vectors2Equal } from '../../utils';
-import { ViewVertex } from './ViewVertex';
+import {ViewEdge} from '../ViewEdge';
+import { vectors2Equal } from '../../../utils';
+import { ViewVertex } from '../ViewVertex';
 
 export enum ViewPointSingularity {
   None = "None",

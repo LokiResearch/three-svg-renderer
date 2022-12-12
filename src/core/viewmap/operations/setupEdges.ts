@@ -12,13 +12,12 @@
  * Licence: Licence.md
  */
 
-import { Halfedge, Vertex } from "three-mesh-halfedge";
-import { frontSide, hashVector3 } from "../../../utils";
+import { Halfedge } from "three-mesh-halfedge";
+import { frontSide } from "../../../utils";
 import { ViewEdge, ViewEdgeNature } from "../ViewEdge";
 import { Viewmap } from "../Viewmap";
-import { ViewVertex } from "../ViewVertex";
 import { PerspectiveCamera, Vector3 } from "three";
-
+import { createViewVertex } from "./createViewVertex";
 
 export interface ViewEdgeNatureOptions {
   creaseAngle?: {min: number, max: number};
@@ -38,11 +37,8 @@ export function setupEdges(
     viewmap: Viewmap,
     options: ViewEdgeNatureOptions) {
   
-  const {viewEdges, camera, meshes, viewVertexMap} = viewmap;
+  const {viewEdges, camera, meshes} = viewmap;
   const handledHalfedges = new Set<Halfedge>();
-
-  const _viewVertices = new Array<ViewVertex>(2);
-  const _vertices = new Array<Vertex>(2);
 
   for (const mesh of meshes) {
 
@@ -60,37 +56,29 @@ export function setupEdges(
 
         if (props.nature !== ViewEdgeNature.None) {
 
-          _vertices[0] = halfedge.vertex;
-          _vertices[1] = halfedge.twin.vertex;
+          const meshv1 = halfedge.vertex;
+          const meshv2 = halfedge.twin.vertex;
 
           // Get the viewmap points from the vertices or create them
-          for (let i=0; i<2; i++) {
+          const v1 = createViewVertex(viewmap, meshv1.position);
+          const v2 = createViewVertex(viewmap, meshv2.position);
 
-            const hash = hashVector3(_vertices[i].position);
-            let viewVertex = viewVertexMap.get(hash);
-            if (!viewVertex) {
-              viewVertex = new ViewVertex();
-              viewVertex.position.copy(_vertices[i].position);
-              viewVertex.hash = hash;
-              viewVertexMap.set(hash, viewVertex);
-            }
-            _viewVertices[i] = viewVertex;
-          }
+          meshv1.viewVertex = v1;
+          meshv2.viewVertex = v2;
 
           // Point stores a set of vertices, so unicity is guaranted
-          _viewVertices[0].vertices.add(_vertices[0]);
-          _viewVertices[1].vertices.add(_vertices[1]);
+          v1.vertices.add(meshv1);
+          v2.vertices.add(meshv2);
 
-    
-          const viewEdge = new ViewEdge(_viewVertices[0], _viewVertices[1], halfedge);
+          const viewEdge = new ViewEdge(v1, v2, halfedge);
           viewEdge.nature = props.nature;
           viewEdge.faceAngle = props.faceAngle;
           viewEdge.isConcave = props.isConcave;
           viewEdge.isBack = props.isBack;
           viewEdge.meshes.push(mesh);
           
-          _viewVertices[0].viewEdges.add(viewEdge);
-          _viewVertices[1].viewEdges.add(viewEdge);
+          v1.viewEdges.push(viewEdge);
+          v2.viewEdges.push(viewEdge);
 
           if (halfedge.face) {
             halfedge.face.edges.push(viewEdge);
