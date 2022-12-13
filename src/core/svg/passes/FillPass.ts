@@ -14,13 +14,12 @@ import {DrawPass} from './DrawPass';
 import {Viewmap} from '../../viewmap/Viewmap';
 import {Svg, Element as SVGElement, Color as SVGColor,
   G as SVGGroup} from '@svgdotjs/svg.js';
-import {getSVGPath, getSVGCircle, getSVGText} from '../svgutils';
+import {getSVGPath, getSVGCircle} from '../svgutils';
 import {Polygon} from '../../viewmap/Polygon';
 
 export interface FillPassOptions {
   drawRaycastPoint?: boolean;
 
-  drawPolygonId?: boolean;
   /** 
    * Use a random color for each polygon in the svg. Overwrites 
    * {@link useFixedColor} if `true`. 
@@ -53,7 +52,6 @@ export interface FillStyle {
 export class FillPass extends DrawPass {
   readonly options: Required<FillPassOptions> = {
     drawRaycastPoint: false,
-    drawPolygonId: false,
     useRandomColors: false,
     useFixedColor: false,
   };
@@ -115,11 +113,6 @@ function drawPolygon(
   if (options.drawRaycastPoint) {
     drawPolygonRaycastPoint(parent, polygon);
   }
-
-  if (options.drawPolygonId) {
-    drawPolygonId(parent, polygon, style);
-  }
-
 }
 
 function drawPolygonRaycastPoint(parent: SVGElement, polygon: Polygon) {
@@ -130,23 +123,4 @@ function drawPolygonRaycastPoint(parent: SVGElement, polygon: Polygon) {
   const point = getSVGCircle(cx, cy, 2, strokeStyle, fillStyle);
   point.id('raycast-point');
   parent.add(point);
-}
-
-function drawPolygonId(parent: SVGElement, polygon: Polygon, style: FillStyle) {
-  const fontStyle = {size: 8};
-  const delta = 10;
-  const x = polygon.insidePoint.x + delta;
-  const y = polygon.insidePoint.y + delta;
-
-  const text = getSVGText(String(polygon.id), x, y, fontStyle)
-  const box = text.bbox();
-
-  const cx = x + box.width/2;
-  const cy = y + box.height/2;
-
-  const circle = getSVGCircle(cx, cy, 0.85*box.width, {}, style);
-  circle.id('polygon-id');
-  circle.add(text);
-
-  parent.add(circle);
 }

@@ -43,7 +43,7 @@ export function setupEdges(
   for (const mesh of meshes) {
 
     for (const face of mesh.hes.faces) {
-      face.edges = new Array<ViewEdge>();
+      face.viewEdges = new Array<ViewEdge>();
     }
 
     for (const halfedge of mesh.hes.halfedges) {
@@ -81,12 +81,12 @@ export function setupEdges(
           v2.viewEdges.push(viewEdge);
 
           if (halfedge.face) {
-            halfedge.face.edges.push(viewEdge);
+            halfedge.face.viewEdges.push(viewEdge);
             viewEdge.faces.push(halfedge.face);
           }
 
           if (halfedge.twin.face) {
-            halfedge.twin.face.edges.push(viewEdge);
+            halfedge.twin.face.viewEdges.push(viewEdge);
             viewEdge.faces.push(halfedge.twin.face);
           }
 

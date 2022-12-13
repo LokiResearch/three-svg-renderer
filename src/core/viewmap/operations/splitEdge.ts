@@ -32,9 +32,7 @@ const _v2 = new Vector2();
 export function splitViewEdge3d(
     viewmap: Viewmap,
     edge: ViewEdge,
-    position: Vector3,
-    // tolerance = 1e-10
-) {
+    position: Vector3) {
 
   /**
    *  We consider that position is on the infinite line formed by a and b
@@ -46,13 +44,25 @@ export function splitViewEdge3d(
 
   const hash = hashVector3(position);
   
-  if (edge.a.hash3d === hash) {
+  // if (edge.a.hash3d === hash) {
+  if (edge.a.matches3dPosition(position)) {
+
+    if (edge.a.hash3d !== hash) {
+      console.log("Different hash", edge.a, position, hash);
+    }
+
     return {
       viewVertex: edge.a,
       viewEdge: null
     };
   }
-  if (edge.b.hash3d === hash) {
+  // if (edge.b.hash3d === hash) {
+  if (edge.b.matches3dPosition(position)) {
+
+    if (edge.b.hash3d !== hash) {
+      console.log("Different hash", edge.b, position, hash);
+    }
+
     return {
       viewVertex: edge.b,
       viewEdge: null
@@ -97,13 +107,25 @@ export function splitViewEdge2d(
 
   const hash = hashVector2(position);
   
-  if (edge.a.hash2d === hash) {
+  // if (edge.a.hash2d === hash) {
+  if (edge.a.matches2dPosition(position)) {
+
+    if (edge.a.hash2d !== hash) {
+      console.log("Different hash", edge.a, position, hash);
+    }
+
     return {
       viewVertex: edge.a,
       viewEdge: null
     };
   }
-  if (edge.b.hash2d === hash) {
+  // if (edge.b.hash2d === hash) {
+  if (edge.b.matches2dPosition(position)) {
+
+    if (edge.b.hash2d !== hash) {
+      console.log("Different hash", edge.b, position, hash);
+    }
+
     return {
       viewVertex: edge.b,
       viewEdge: null
@@ -168,7 +190,7 @@ export function splitViewEdgeWithViewVertex(
   b.viewEdges.push(newEdge);
 
   for (const face of newEdge.faces) {
-    face.edges.push(newEdge);
+    face.viewEdges.push(newEdge);
   }
 
   viewmap.viewEdges.push(newEdge);

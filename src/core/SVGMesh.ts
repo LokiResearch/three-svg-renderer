@@ -12,8 +12,8 @@
 
 import {Mesh, Material, Color, Vector3} from 'three';
 import {HalfedgeDS} from 'three-mesh-halfedge';
-import {MeshBVH, MeshBVHOptions, acceleratedRaycast, SAH} from 'three-mesh-bvh';
-import {computeMorphedGeometry, disposeMesh} from '../utils/trigeometry';
+import {MeshBVH, MeshBVHOptions, acceleratedRaycast, CENTER} from 'three-mesh-bvh';
+import {computeMorphedGeometry, disposeMesh} from '../utils/buffergeometry';
 
 type ColorMaterial = Material & {color: Color};
 
@@ -64,7 +64,7 @@ export class SVGMesh {
     // Setup BVH
     const bvhOptions = {
       maxLeafTris: 1,
-      strategy: SAH,
+      strategy: CENTER,
       ...options?.bvhOptions
     }
 

@@ -12,6 +12,6 @@
  * Licence: Licence.md
  */
 
-export * from './trigeometry';
+export * from './buffergeometry';
 export * from './geometry';
 export * from './orientationtests';

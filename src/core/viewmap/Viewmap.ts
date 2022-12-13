@@ -33,7 +33,7 @@ import { ViewVertex } from './ViewVertex';
 declare module 'three-mesh-halfedge' {
 
   export interface Face {
-    edges: ViewEdge[];
+    viewEdges: ViewEdge[];
   }
 
   export interface Vertex {
@@ -278,18 +278,6 @@ export class Viewmap {
     });
 
     /**
-     * Setup points
-     */
-    // actions.push({
-    //   name: "Project 3d points on image plane",
-    //   process: async() => {
-    //     const startTime = Date.now();
-    //     setupPoints(this);
-    //     info.times.setupPoints = Date.now() - startTime;
-    //   }
-    // });
-
-    /**
      * Find singularities in the 3D space
      */
     actions.push({
@@ -378,20 +366,6 @@ export class Viewmap {
         info.times.assignPolygons = Date.now() - startTime;
       }
     });
-
-
-    // actions.push({
-    //   name: "Converting coordinates",
-    //   process: async() => {
-
-    //     for (const p of this.points) {
-    //       NDCPointToImage(p.position, p.position, this.renderSize);
-    //     }
-
-
-
-    //   }
-    // });
 
     return actions;
   }

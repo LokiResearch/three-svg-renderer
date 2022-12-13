@@ -17,6 +17,12 @@ import { hashVector2, hashVector3, projectPoint } from "../../../utils";
 import { Viewmap } from "../Viewmap";
 import { ViewVertex } from "../ViewVertex";
 
+/**
+ * Creates a ViewVertex at the given position if no one already exist
+ * @param viewmap 
+ * @param pos3d 
+ * @returns 
+ */
 export function createViewVertex(viewmap: Viewmap, pos3d: Vector3) {
 
   const {camera, viewVertexMap, renderSize} = viewmap;

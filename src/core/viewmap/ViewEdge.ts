@@ -34,12 +34,11 @@ export enum ViewEdgeNature {
   Material = "Material",
 }
 
-// const _u2 = new Vector2();
-// const _v2 = new Vector2();
-
-// const _u = new Vector3();
-// const _v = new Vector3();
-// const _cross = new Vector3();
+export const VisibilityIndicatingNatures = new Set([
+  ViewEdgeNature.Silhouette,
+  ViewEdgeNature.Boundary,
+  ViewEdgeNature.MeshIntersection,
+]);
 
 export class ViewEdge {
 
@@ -95,10 +94,6 @@ export class ViewEdge {
     return [this.a, this.b];
   }
 
-  // get points() {
-  //   return [this.a.viewPoint, this.b.viewPoint];
-  // }
-
   get from(): Vector2 {
     return this.a.pos2d;
   }
@@ -106,17 +101,6 @@ export class ViewEdge {
   get to(): Vector2 {
     return this.b.pos2d;
   }
-
-  // get faces(): Face[] {
-  //   const faces = [];
-  //   if (this.halfedge?.face) {
-  //     faces.push(this.halfedge.face);
-  //   }
-  //   if (this.halfedge?.twin.face) {
-  //     faces.push(this.halfedge.twin.face);
-  //   }
-  //   return faces;
-  // }
 
   toJSON() {
 
@@ -138,7 +122,6 @@ export class ViewEdge {
     return edge;
   }
 
-
   otherVertex(vertex: ViewVertex) {
     if (vertex === this.a) {
       return this.b;
@@ -147,90 +130,13 @@ export class ViewEdge {
     }
   }
 
-  // otherPoint(point: ViewPoint) {
-  //   if (point === this.a.viewPoint) {
-  //     return this.b.viewPoint;
-  //   } else {
-  //     return this.a.viewPoint;
-  //   }
-  // }
-
   hasVertex(vertex: ViewVertex) {
     return this.a === vertex || this.b === vertex;
   }
 
-  // hasPoint(point: ViewPoint) {
-  //   return this.a.viewPoint === point || this.b.viewPoint === point;
-  // }
-
   isConnectedTo(edge: ViewEdge) {
     return this.hasVertex(edge.a) || this.hasVertex(edge.b);
   }
-
-  // isConnectedToEdgeIn2D(edge: ViewEdge) {
-  //   return this.hasPoint(edge.a.viewPoint) || this.hasPoint(edge.b.viewPoint);
-  // }
-
-
-
-  // contains3dPosition(position: Vector3, tolerance = 1e-10) {
-
-  //   _u.subVectors(this.b.position, this.a.position);
-  //   _v.subVectors(position, this.a.position);
-  //   // _cross.crossVectors(_u, _v);
-  //   const r = _u.dot(_v)/_v.length();
-  //   return tolerance <= r && r <= 1-tolerance; 
-  //   // return _cross.length() < tolerance && _u.dot(_v)/dot < 0;
-  // }
-
-
-
-  // contains2dPosition(position: Vector2, tolerance = 1e-10) {
-    
-  //   if (this.a.viewPoint.matchesPosition(position, tolerance)) {
-  //     return 0;
-  //   }
-  //   if (this.b.viewPoint.matchesPosition(position, tolerance)) {
-  //     return 1;
-  //   }
-  
-  //   _u2.subVectors(position, this.a.viewPoint.position);
-  //   _v2.subVectors(this.b.viewPoint.position, this.a.viewPoint.position);
-  
-  //   // Check points are aligned
-  //   const cross = _u2.cross(_v2);
-  //   if (cross > 1e-10 || cross < -1e-10) {
-  //     return null;
-  //   }
-  
-  //   const lengthU = _u2.length();
-  //   const lengthV = _v2.length();
-  
-  //   if (lengthU > lengthV) {
-  //     return null;
-  //   }
-  
-  //   // Check points order
-  //   if (_u.dot(_v) < -1e10) {
-  //     return null;
-  //   }
-
-  //   return lengthU/lengthV;
-  // }
-
-  // normalAtPosition(point: Vector3, target: Vector3) {
-  //   _u.subVectors(this.vertices[0].position, point);
-  //   _v.subVectors(this.vertices[0].position, this.vertices[1].position);
-  //   const ratio = _u.length() / _v.length();
-  //   return target.lerpVectors(this.vertices[0].normal, this.vertices[1].normal, ratio);
-  // }
-
-  // position3dFromPosition2d(position: Vector2, target: Vector3) {
-  //   _vec2a.subVectors(this.a.point.position, position);
-  //   _vec2b.subVectors(this.b.point.position, this.a.point.position);
-  //   const ratio = _vec2a.length() / _vec2b.length();
-  //   return target.lerpVectors(this.a.position, this.b.position, ratio);
-  // }
 
 }
 

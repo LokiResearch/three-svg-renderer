@@ -22,39 +22,20 @@ import { SVGMesh } from '../../SVGMesh';
 const EdgeNatures = Object.values(ViewEdgeNature)
   .filter(nature => nature !== ViewEdgeNature.None);
 
-const EdgeNatureColor = {
-  [ViewEdgeNature.None]: "",
-  [ViewEdgeNature.Silhouette]: "red",
-  [ViewEdgeNature.MeshIntersection]: "green",
-  [ViewEdgeNature.Crease]: "violet",
-  [ViewEdgeNature.Boundary]: "blue",
-  [ViewEdgeNature.Material]: "Orange",
-}
-
 export interface ChainPassOptions {
   /** 
    * Draw each chains in the svg with random colors. 
    * @defaultValue `false`
    */
   useRandomColors?: boolean;
-  /**
-   * Group chains by their {@link ViewEdgeNature} in  different svg groups.
-   * @defaultValue `true`.
-   */
-  groupByNature?: boolean;
-  /**
-   * Draw the chain id next to the associated contour in the svg.
-   * @defaultValue `false`
-   */
-  drawChainId?: boolean; 
+  
   /**
    * Draw the raycasting point used to determine visibility in the svg.
    * @defaultValue `false`
    */
   drawRaycastPoint?: boolean;
-  /**
-   * Draw the chains using color depending on their nature
-   */
+  
+  /** Draw the chains using color depending on their nature */
   colorByNature?: boolean;
 
   /**
@@ -63,6 +44,26 @@ export interface ChainPassOptions {
    */
   drawLegend?: boolean;
 
+
+  filter?: ViewEdgeNature[];
+
+  natureOrder?: {
+    [ViewEdgeNature.None]: 0,
+    [ViewEdgeNature.Silhouette]: number,
+    [ViewEdgeNature.Boundary]: number,
+    [ViewEdgeNature.MeshIntersection]: number,
+    [ViewEdgeNature.Crease]: number,
+    [ViewEdgeNature.Material]: number,
+  };
+
+  natureColor?: {
+    [ViewEdgeNature.None]: "",
+    [ViewEdgeNature.Silhouette]: string,
+    [ViewEdgeNature.MeshIntersection]: string,
+    [ViewEdgeNature.Crease]: string,
+    [ViewEdgeNature.Boundary]: string,
+    [ViewEdgeNature.Material]: string,
+  }
 }
 
 export interface StrokeStyle {
@@ -106,12 +107,33 @@ export interface StrokeStyle {
 export abstract class ChainPass extends DrawPass {
   /** Options of the draw pass */
   readonly options: Required<ChainPassOptions> = {
-    drawChainId: false,
     drawRaycastPoint: false,
     useRandomColors: false,
-    groupByNature: true,
     colorByNature: false,
     drawLegend: false,
+    filter: [
+      ViewEdgeNature.Silhouette,
+      ViewEdgeNature.Boundary,
+      ViewEdgeNature.MeshIntersection,
+      ViewEdgeNature.Crease,
+      ViewEdgeNature.Material
+    ],
+    natureOrder: {
+      [ViewEdgeNature.None]: 0,
+      [ViewEdgeNature.Silhouette]: 5,
+      [ViewEdgeNature.Boundary]: 4,
+      [ViewEdgeNature.MeshIntersection]: 3,
+      [ViewEdgeNature.Crease]: 2,
+      [ViewEdgeNature.Material]: 1,
+    },
+    natureColor: {
+      [ViewEdgeNature.None]: "",
+      [ViewEdgeNature.Silhouette]: "red",
+      [ViewEdgeNature.MeshIntersection]: "green",
+      [ViewEdgeNature.Crease]: "violet",
+      [ViewEdgeNature.Boundary]: "blue",
+      [ViewEdgeNature.Material]: "Orange",
+    }
   }
   /** Style to apply to the strokes */
   readonly strokeStyle: StrokeStyle = {
@@ -126,8 +148,7 @@ export abstract class ChainPass extends DrawPass {
 
   constructor(
       strokeStyle: StrokeStyle = {},
-      options: ChainPassOptions = {}, 
-  ) {
+      options: ChainPassOptions = {}) {
     super();
 
     Object.assign(this.strokeStyle, strokeStyle);
@@ -139,8 +160,7 @@ export class VisibleChainPass extends ChainPass {
 
   constructor(
       strokeStyle: StrokeStyle = {},
-      options: Partial<ChainPassOptions> = {}, 
-  ) {
+      options: Partial<ChainPassOptions> = {}) {
     super(strokeStyle, options);
   }
 
@@ -161,8 +181,7 @@ export class HiddenChainPass extends ChainPass {
 
   constructor(
       strokeStyle: StrokeStyle = {},
-      options: Partial<ChainPassOptions> = {}, 
-  ) {
+      options: Partial<ChainPassOptions> = {}) {
     super({color: "#FF0000", dasharray: "2,2", ...strokeStyle}, options);
   }
 
@@ -184,35 +203,33 @@ function drawChains(
     parent: SVGElement,
     meshes: SVGMesh[],
     chains: Chain[],
-    options: ChainPassOptions,
+    options: Required<ChainPassOptions>,
     style: StrokeStyle = {},
 ) {
+
+  // Filter and order natures
+  const natures = EdgeNatures.filter(n => options.filter.includes(n));
+  natures.sort((n1, n2) => options.natureOrder[n1] - options.natureOrder[n2]);
+
   // Group the contours by mesh
   for (const mesh of meshes) {
     const objectChains = chains.filter(c => c.object === mesh);
     const objectGroup = new SVGGroup({id: mesh.name});
     parent.add(objectGroup);
 
-    // Group the contours by nature if required
-    if (options.groupByNature) {
-      for (const nature of EdgeNatures) {
-        const natureChains = objectChains.filter(c => c.nature === nature);
-        const natureGroup = new SVGGroup({id: nature});
-        objectGroup.add(natureGroup);
+    for (const nature of EdgeNatures) {
+      const natureChains = objectChains.filter(c => c.nature === nature);
+      const natureGroup = new SVGGroup({id: nature});
+      objectGroup.add(natureGroup);
 
-        for (const chain of natureChains) {
-          drawChain(natureGroup, chain, options, style);
-        }
-      }
-    } else {
-      for (const chain of objectChains) {
-        drawChain(objectGroup, chain, options, style);
+      for (const chain of natureChains) {
+        drawChain(natureGroup, chain, options, style);
       }
     }
   }
 
   if (options.drawLegend) {
-    parent.add(getLegend());
+    parent.add(getLegend(options));
   }
 
 }
@@ -220,7 +237,7 @@ function drawChains(
 function drawChain(
     parent: SVGElement, 
     chain: Chain,
-    options: ChainPassOptions,
+    options: Required<ChainPassOptions>,
     style: StrokeStyle = {}
 ) {
 
@@ -232,7 +249,7 @@ function drawChain(
   }
 
   if (options.colorByNature) {
-    style.color = EdgeNatureColor[chain.nature];
+    style.color = options.natureColor[chain.nature];
   }
 
   const path = getSVGPath(chain.vertices, [], false, style);
@@ -240,10 +257,6 @@ function drawChain(
 
   if (options.drawRaycastPoint) {
     drawContourRaycastPoint(parent, chain);
-  }
-
-  if (options.drawChainId) {
-    drawContourId(parent, chain, style);
   }
 }
 
@@ -257,32 +270,14 @@ function drawContourRaycastPoint(parent: SVGElement, chain: Chain) {
   parent.add(point);
 }
 
-function drawContourId(parent: SVGElement, chain: Chain, style: StrokeStyle) {
-  const fontStyle = {size: 8};
-  const delta = 10;
-  const x = chain.raycastPoint.x + delta;
-  const y = chain.raycastPoint.y + delta;
-
-  const text = getSVGText(String(chain.id), x, y, fontStyle)
-  const box = text.bbox();
-
-  const cx = x + box.width/2;
-  const cy = y + box.height/2;
-  const circle = getSVGCircle(cx, cy, 0.85*box.width, {}, style);
-  circle.id('contour-id');
-  circle.add(text);
-
-  parent.add(circle);
-}
-
-function getLegend() {
+function getLegend(options: Required<ChainPassOptions>) {
   const legend = new SVGGroup({id: "edges-nature-legend"});
   
   legend.add(getSVGText("Natures", 10, 140, {size: 15, anchor: 'start'}))
 
   let y = 170;
   for (const nature of EdgeNatures) {
-    const fillColor = EdgeNatureColor[nature];
+    const fillColor = options.natureColor[nature];
     
     legend.add(getSVGCircle(15, y, 8, {color: "black"}, {color: fillColor}));
     legend.add(getSVGText(nature, 30, y-10, {size: 15, anchor: 'start'}));

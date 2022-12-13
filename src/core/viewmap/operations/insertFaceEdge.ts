@@ -64,7 +64,7 @@ export function insertFaceEdge(
   // connected with yet and get all the intersection vertices
   const splitVertices = new Array<ViewVertex>();
 
-  const faceEdgesCopy = [...face.edges];
+  const faceEdgesCopy = [...face.viewEdges];
 
   for (const faceEdge of faceEdgesCopy) {
 
@@ -97,7 +97,7 @@ export function insertFaceEdge(
 
   // Update face refs beforce spliting
   viewmap.viewEdges.push(viewEdge);
-  face.edges.push(viewEdge);
+  face.viewEdges.push(viewEdge);
   viewEdge.faces.push(face);
 
   // Order the vertices along the edge
@@ -126,7 +126,7 @@ export function splitFaceEdges(
     position: Vector3) {
   // tolerance = 1e-10) {
 
-  for (const edge of face.edges) {
+  for (const edge of face.viewEdges) {
 
     const splitResult = splitViewEdge3d(viewmap, edge, position);
 
@@ -141,7 +141,7 @@ export function splitFaceEdges(
 
     if (neighborFace) {
 
-      for (const edge of neighborFace.edges) {
+      for (const edge of neighborFace.viewEdges) {
 
         const splitResult = splitViewEdge3d(viewmap, edge, position);
         

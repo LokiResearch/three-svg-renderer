@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import * as THREE from 'three';
 import { FillPass, HiddenChainPass, SingularityPointPass, SVGMesh, 
   SVGRenderer, VisibleChainPass, SVGRenderInfo} from '../src/index';
-import { BoxBufferGeometry, BufferGeometry, Mesh, MeshStandardMaterial, SphereBufferGeometry, Vector3 } from 'three';
+import { BoxBufferGeometry, BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, SphereBufferGeometry, Vector3 } from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {debounce} from 'throttle-debounce';
 import { Svg } from '@svgdotjs/svg.js';
@@ -11,11 +11,16 @@ import { Svg } from '@svgdotjs/svg.js';
 
 const resourcesURL = window.location+"../../../resources/";
 
+let nbTriangles = 0;
+let nbObjects = 0;
+let nbVertices = 0;
+
 const possibleObjects = {
+  "pig": "pig",
+  "vincent": "vincent",
   "cube": "cube",
   "cubes": "cubes",
   "spheres": "spheres",
-  "pig": "pig",
   "torusknot": "torusknot",
 }
 
@@ -36,13 +41,10 @@ svgRenderer.addPass(singularityPass);
 
 const params = {
   autoRender: false,
-  scene: "cubes",
+  scene: "pig",
   ignoreVisibility: false,
   prettify: false,
 }
-visibleChainPass.options.colorByNature = true;
-visibleChainPass.strokeStyle.width = 1;
-singularityPass.enabled = true;
 
 const bgColor = 0x555555;
 
@@ -115,8 +117,6 @@ for (const {c_params, gui_root} of chains_gui_params) {
   options_gui = gui_root.addFolder("Options");
   options = c_params.options;
   options_gui.add(options, "useRandomColors").onChange(generateSVG);
-  options_gui.add(options, "drawChainId").onChange(generateSVG);
-  options_gui.add(options, "groupByNature").onChange(generateSVG);
   options_gui.add(options, "drawRaycastPoint").onChange(generateSVG);
   options_gui.add(options, "drawLegend").onChange(generateSVG);
   options_gui.add(options, "colorByNature").onChange(generateSVG);
@@ -137,7 +137,6 @@ options_gui = gui_root.addFolder("Options");
 options = fillPass.options;
 options_gui.add(options, "useRandomColors").onChange(generateSVG);
 options_gui.add(options, "useFixedColor").onChange(generateSVG);
-options_gui.add(options, "drawPolygonId").onChange(generateSVG);
 options_gui.add(options, "drawRaycastPoint").onChange(generateSVG);
 
 /**
@@ -212,7 +211,7 @@ const meshMaterial = new THREE.MeshPhongMaterial({
   flatShading: true,
 });
 
-function setupScene() {
+async function setupScene() {
   scene.clear();
   scene.add(ambientLight)
   scene.add(camera);
@@ -222,7 +221,8 @@ function setupScene() {
     scene.add(new Mesh(new THREE.TorusKnotGeometry(), meshMaterial));
     break;
   case "pig":
-    loadGLTFObject(resourcesURL+"pig.gltf")
+  case "vincent":
+    await loadGLTFObject(resourcesURL+params.scene+".gltf");
     break;
   case "cubes":
     setupSceneObjects(new BoxBufferGeometry());
@@ -235,15 +235,40 @@ function setupScene() {
     scene.add(new Mesh(new THREE.BoxGeometry(), meshMaterial));
   }
 
+  nbObjects = 0;
+  nbTriangles = 0;
+  nbVertices = 0;
+  scene.traverse(obj => {
+    const m = obj as Mesh;
+    if (m.isMesh) {
+      console.log(m);
+
+      nbObjects += 1;
+      const geometry = m.geometry;
+
+      nbVertices += geometry.attributes.position.count;
+
+      if (geometry.index !== null) {
+        nbTriangles += geometry.index.count / 3;
+      } else {
+        nbTriangles += geometry.attributes.position.count / 3;
+      }
+
+      convertMaterial(m);
+    }
+  })
+
   render();
+  params.autoRender && generateSVG();
 }
 
 const loader = new GLTFLoader();
 function loadGLTFObject(url: string) {
-  loader.load(url, function (gltf) {
-    scene.add(gltf.scene);
-    render();
-    params.autoRender && generateSVG();
+  return new Promise<void>((resolve) => {
+    loader.load(url, function (gltf) {
+      scene.add(gltf.scene);
+      resolve();
+    });
   });
 }
 
@@ -271,6 +296,7 @@ const debouncedGenerateSVG = debounce(500, () => {
       clearHTMLElement(svgDomElement);
       newSvg.addTo(svgDomElement);
       console.info(info);
+      updateInfo(info.renderingTime);
     }
   });
 });
@@ -293,15 +319,35 @@ function clearHTMLElement(e: HTMLElement) {
   }
 }
 
-function updateInfo() {
+function updateInfo(renderTime = 0) {
 
-  const div = document.getElementById('info');
-  if (!div) {
-    return;
+  let div = document.getElementById('sceneinfo');
+  if (div) {
+    div.innerHTML = `
+      scene:
+      <br>objects: ${nbObjects}
+      <br>vertices: ${nbVertices}
+      <br>triangles: ${nbTriangles}
+    `;
   }
-  const {x,y,z} = camera.position;
-  div.innerHTML = `Camera: (${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)})`;
 
+  div = document.getElementById('viewmapinfo');
+  if (div) {
+    div.innerHTML = `
+    svg:
+    <br>viewEdges: ${svgRenderer.viewmap.viewEdges.length}
+    <br>chains: ${svgRenderer.viewmap.chains.length}
+    <br>polygons: ${svgRenderer.viewmap.polygons.length}
+    <br>renderTime(ms): ${renderTime}
+    `;
+  }
+
+  div = document.getElementById('extrainfo');
+  if (div) {
+    const {x,y,z} = camera.position;
+    div.innerHTML = 
+      `<br>camera: (${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)})`;
+  }
 }
 
 function setupSceneObjects(geometry: BufferGeometry) {
@@ -323,6 +369,38 @@ function setupSceneObjects(geometry: BufferGeometry) {
       scene.add(c);
     }
   }
+}
+
+function convertMaterial(mesh: Mesh) {
+  
+  if (Array.isArray(mesh.material)) {
+
+    mesh.material = mesh.material.map(m => {
+
+      if (m.type === 'MeshBasicMaterial') {
+        const bm = m as MeshBasicMaterial;
+        return new MeshPhongMaterial({
+          flatShading: true,
+          color: bm.color,
+        })
+      }
+
+      return m;
+
+    })
+    
+
+  } else {
+
+    if (mesh.material.type === 'MeshBasicMaterial') {
+      const bm = mesh.material as MeshBasicMaterial;
+      mesh.material = new MeshPhongMaterial({
+        flatShading: true,
+        color: bm.color,
+      })
+    }
+  }
+
 }
 
 autoRenderChanged();

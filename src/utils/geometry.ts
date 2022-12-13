@@ -64,24 +64,34 @@ export function imagePointToNDC(point: Vector2, target: Vector2, size: SizeLike)
 }
 
 export function hashVector3(vec: Vector3, multiplier = 1e10) {
-  return `${hashNumber(vec.x, multiplier)}-${hashNumber(vec.y, multiplier)}-${hashNumber(vec.z, multiplier)}`;
+  const gap = 1e-3/multiplier;
+  return `${hashNumber(vec.x+gap, multiplier)},` +
+         `${hashNumber(vec.y+gap, multiplier)},` +
+         `${hashNumber(vec.z+gap, multiplier)}`;
 }
 
 export function hashVector2(vec: Vector2, multiplier = 1e10) {
-  return `${hashNumber(vec.x, multiplier)}-${hashNumber(vec.y, multiplier)}`;
+  const gap = 1e-3/multiplier;
+  return `${hashNumber(vec.x+gap, multiplier)},` +
+         `${hashNumber(vec.y+gap, multiplier)}`;
 }
 
 function hashNumber(value: number, multiplier = 1e10) {
-  return ~ ~ (value * multiplier);
+  // return (~ ~ (value*multiplier));
+  return Math.trunc(value*multiplier);
 }
 
 /**
- * Test wether
+ * Checks wether lines intersect and computes the intersection point.
  * 
- * @see https://github.com/josdejong/mathjs/blob/c51d263d9cc35f17058e2de02d0b32489e96a57d/src/function/geometry/intersect.js#L141
+ * Adapted from mathjs
  * 
- * @param line1 
- * @param line2 
+ * @param line1 First segment/line
+ * @param line2 Second segment/line
+ * @param target Destination of the intersection point
+ * @param infiniteLine Wether to consider segments as infinite lines. Default, false
+ * @param tolerance Tolerance from which points are considred equal
+ * @returns true if lines intersect, false otherwise
  */
 export function intersectLines(
     line1: Line3,

@@ -19,7 +19,6 @@ import { Viewmap } from "../Viewmap";
 const _raycaster = new Raycaster();
 const _rayDirection = new Vector3();
 const _rayOrigin = new Vector3();
-const _rayOriginProj = new Vector3();
 
 export class ChainVisibilityInfo {
   nbTests = Infinity;
@@ -101,7 +100,7 @@ export function chainVisibilityWithGeometry(chain: Chain) {
 
 
 /**
- * Return contour visibility via raycasting. If contour is empty, returns hidden
+ * Determines chain visibility via casting a rayfrom the chain to the camera
  * @param contour 
  * @param camera 
  * @param objects 
@@ -114,47 +113,44 @@ export function chainVisibilityWithRaycasting(
     objects: Array<Mesh>,
     tolerance = 1e-5) {
 
-  // const testRatios = [2/5, 3/5, 4/5];
+  const testRatios = [0.33, 0.66];
 
-  // for (const ratio of testRatios) {
+  /**
+   * if chain is hidden, send a second ray to be sure
+   */
+  for (const ratio of testRatios) {
 
-  //   const edge = chain.edges[Math.floor(ratio*chain.edges.length)];
+    const edge = chain.edges[Math.floor(ratio*chain.edges.length)];
 
-  const ratio = 0.5;
+    if (!edge) {
+      console.error("Contour has no edges");
+      return false;
+    }
 
-  // Get the middle segment from the contour
-  const edge = chain.middleEdge();
+    // Cast a ray from the middle of the segment to the camera
+    _rayOrigin.lerpVectors(edge.a.pos3d, edge.b.pos3d, 0.5);
+    _rayDirection.subVectors(camera.position, _rayOrigin).normalize();
+    _raycaster.firstHitOnly = false;
+    _raycaster.set(_rayOrigin, _rayDirection);
 
-  if (!edge) {
-    console.error("Contour has no edges");
-    return false;
+    // Get the projection of the origin of the ray cast
+    chain.raycastPoint.lerpVectors(edge.a.pos2d, edge.b.pos2d, 0.5);
+
+    // Compute total distance in case of mathematical imprecision
+    const intersections = _raycaster.intersectObjects(objects, false);
+
+    let totalDistance = 0;
+    for (const intersection of intersections) {
+      totalDistance += intersection.distance;
+    }
+
+    if (totalDistance < tolerance) {
+      chain.visibility = ChainVisibility.Visible;
+      return true;
+    } else {
+      chain.visibility = ChainVisibility.Hidden;
+    }
   }
-
-  // Cast a ray from the middle of the segment to the camera
-  _rayOrigin.lerpVectors(edge.a.pos3d, edge.b.pos3d, ratio);
-  _rayDirection.subVectors(camera.position, _rayOrigin).normalize();
-  _raycaster.firstHitOnly = false;
-  _raycaster.set(_rayOrigin, _rayDirection);
-
-  // Get the projection of the origin of the ray cast
-  _rayOriginProj.copy(_rayOrigin).project(camera);
-  chain.raycastPoint.set(_rayOriginProj.x, _rayOriginProj.y);
-
-  // Compute total distance in case of mathematical imprecision
-  const intersections = _raycaster.intersectObjects(objects, false);
-
-  let totalDistance = 0;
-  for (const intersection of intersections) {
-    totalDistance += intersection.distance;
-  }
-
-  if (totalDistance < tolerance) {
-    chain.visibility = ChainVisibility.Visible;
-    // return true;
-  } else {
-    chain.visibility = ChainVisibility.Hidden;
-  }
-  // }
   return true;
 
 }

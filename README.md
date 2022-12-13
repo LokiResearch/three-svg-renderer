@@ -73,7 +73,14 @@ renderer.generateSVG(meshes, camera, {w: 1000, h:1000})
 
 ## References
 
+#### Papers
+
 - Pierre Bénard, Aaron Hertzmann. Line drawings from 3D models: a tutorial. Foundations and Trends in Computer Graphics and Vision, Now Publishers, 2019, 11 (1-2), pp.159. [https://hal.inria.fr/hal-02189483](https://hal.inria.fr/hal-02189483)
 - Elmar Eisemann, Holger Winnenmöller, John C. Hart, David Salesin. Stylized Vector Art from 3D Models with Region Support. Computer Graphics Forum, Wiley, 2008, Special Issue: Proceedings of the 19th Eurographics Symposium on Rendering 2008, 27 (4), pp.1199--1207. [https://hal.inria.fr/inria-00345295](https://hal.inria.fr/inria-00345295)
 - Stéphane Grabli, Emmanuel Turquin, Frédo Durand, François X. Sillion. Programmable Style for NPR Line Drawing. Rendering Techniques 2004 (Eurographics Symposium on Rendering), 2004, Norrköping, Sweden. [https://hal.inria.fr/inria-00510169](https://hal.inria.fr/inria-00510169)
+
+
+#### Objects
+
+- Thanks to Blender for the character model Vincent [[link]](https://studio.blender.org/characters/5718a967c379cf04929a4247/v1/)
 

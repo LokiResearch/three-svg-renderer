@@ -26,6 +26,12 @@ export class PolygonsInfo{
   insidePointErrors = Infinity;
 }
 
+/**
+ * Computes the polygons formed by the projection of the ViewEdges on the image
+ * plane
+ * @param viewmap 
+ * @param info 
+ */
 export async function computePolygons(
     viewmap: Viewmap,
     info = new PolygonsInfo()) {
@@ -49,7 +55,6 @@ export async function computePolygons(
 
   const builder = new Arr2D.ArrangementBuilder();
   const arr2DPolygonlist = builder.getPolygons(points);
-
 
   const p = new Arr2D.Point();
   info.smallAreaIgnored = 0;
