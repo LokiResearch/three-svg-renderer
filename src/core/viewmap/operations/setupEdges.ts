@@ -54,7 +54,7 @@ export function setupEdges(
 
         const props = propsForViewEdge(halfedge, camera, options);
 
-        if (props.nature !== ViewEdgeNature.None) {
+        if (props) {
 
           const meshv1 = halfedge.vertex;
           const meshv2 = halfedge.twin.vertex;
@@ -70,8 +70,7 @@ export function setupEdges(
           v1.vertices.add(meshv1);
           v2.vertices.add(meshv2);
 
-          const viewEdge = new ViewEdge(v1, v2, halfedge);
-          viewEdge.nature = props.nature;
+          const viewEdge = new ViewEdge(v1, v2, props.nature, halfedge);
           viewEdge.faceAngle = props.faceAngle;
           viewEdge.isConcave = props.isConcave;
           viewEdge.isBack = props.isBack;
@@ -96,14 +95,13 @@ export function setupEdges(
     }
   }
 }
-
 export function propsForViewEdge(
     halfedge: Halfedge,
     camera: PerspectiveCamera,
     options?: ViewEdgeNatureOptions) {
 
   const props = {
-    nature: ViewEdgeNature.None,
+    nature: ViewEdgeNature.Silhouette,
     faceAngle: 0,
     isConcave: false,
     isBack: false,
@@ -117,6 +115,7 @@ export function propsForViewEdge(
   // If halfedge only has one connected face, then it is a boundary
   if (!halfedge.face || !halfedge.twin.face) {
     props.nature = ViewEdgeNature.Boundary;
+    return props;
   } else {
     const faceAFront = halfedge.face.isFront(camera.position);
     const faceBFront = halfedge.twin.face.isFront(camera.position);
@@ -140,12 +139,14 @@ export function propsForViewEdge(
     if (faceAFront !== faceBFront) {
       
       props.nature = ViewEdgeNature.Silhouette;
+      return props;
     
     } else if(opt.creaseAngle.min <= props.faceAngle && 
               props.faceAngle <= opt.creaseAngle.max) {
       props.nature = ViewEdgeNature.Crease;
+      return props;
     }
   }
 
-  return props;
+  return null;
 }

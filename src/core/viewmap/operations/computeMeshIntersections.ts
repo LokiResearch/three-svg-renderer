@@ -91,8 +91,7 @@ export function computeMeshIntersections(
       const v1 = intersectionViewVertices[i];
       const v2 = intersectionViewVertices[i+1];
 
-      const viewEdge = new ViewEdge(v1, v2);
-      viewEdge.nature = ViewEdgeNature.MeshIntersection;
+      const viewEdge = new ViewEdge(v1, v2, ViewEdgeNature.MeshIntersection);
       viewEdge.meshes.push(meshA, meshB);
       viewEdge.faces.push(faceA, faceB);
 
@@ -104,7 +103,6 @@ export function computeMeshIntersections(
 
       viewmap.viewEdges.push(viewEdge);
     }
-     
   }
 
   // Apply the callback for every pair of meshes

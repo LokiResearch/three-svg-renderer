@@ -41,16 +41,20 @@ import { SVGRenderer, FillPass, VisibleChainPass, HiddenChainPass, SVGMesh } fro
   // This pass will draw visible chains of meshes on top of fills
   // using black color and solid line of width 1
   const visibleChainPass = new VisibleChainPass({
-    color: "#000000",
-    width: 1
+    defaultStyle: {
+      color: "#000000",
+      width: 1
+    }
   });
 
   // This pass will draw hidden chains on top of visible and fills
   // using red color, dash line of width 1
   const hiddenChainPass = new HiddenChainPass({
-    color: "#FF0000",
-    width: 1,
-    dasharray: "2,2"
+    defaultStyle: {
+      color: "#FF0000",
+      width: 1,
+      dasharray: "2,2"
+    }
   });
 
   renderer.addPass(fillPass);

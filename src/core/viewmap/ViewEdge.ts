@@ -20,8 +20,8 @@ import { ViewVertex } from './ViewVertex';
  * Possible values for the edge nature in the viemap.
  */
 export enum ViewEdgeNature {
-  /** Edge is standard */
-  None = "None",
+  // /** Edge is standard */
+  // None = "None",
   /** Edge is connected to front-facing and a back-facing face */
   Silhouette = "Silhouette",
   /** Edge is only connected to one face */
@@ -46,7 +46,7 @@ export class ViewEdge {
    * Halfedge on which the edge is based on
    * @defaultValue null
    */
-  halfedge: Halfedge | null;
+  halfedge?: Halfedge;
 
   /**
    * List of the meshes the Edge belongs to
@@ -57,7 +57,7 @@ export class ViewEdge {
    * Nature of the edge
    * @defautValue EdgeNature.None 
    */
-  nature = ViewEdgeNature.None;
+  nature: ViewEdgeNature;
 
   /** 
    * Angle between to the connected faces.
@@ -84,10 +84,11 @@ export class ViewEdge {
   a: ViewVertex;
   b: ViewVertex;
 
-  constructor(a: ViewVertex, b: ViewVertex, halfedge?: Halfedge) {
+  constructor(a: ViewVertex, b: ViewVertex, nature: ViewEdgeNature, halfedge?: Halfedge) {
     this.a = a;
     this.b = b;
-    this.halfedge = halfedge ?? null;
+    this.nature = nature;
+    this.halfedge = halfedge;
   }
 
   get vertices() {
@@ -111,13 +112,11 @@ export class ViewEdge {
   }
 
   clone() {
-    const edge =  new ViewEdge(this.a, this.b);
-    edge.nature = this.nature;
+    const edge =  new ViewEdge(this.a, this.b, this.nature, this.halfedge);
     edge.faceAngle = this.faceAngle;
     edge.isBack = this.isBack;
     edge.isConcave = this.isConcave;
     edge.meshes.push(...this.meshes);
-    edge.halfedge = this.halfedge;
     edge.faces.push(...this.faces);
     return edge;
   }

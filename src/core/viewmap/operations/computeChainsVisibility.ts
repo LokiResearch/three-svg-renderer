@@ -113,44 +113,35 @@ export function chainVisibilityWithRaycasting(
     objects: Array<Mesh>,
     tolerance = 1e-5) {
 
-  const testRatios = [0.33, 0.66];
+  const edge = chain.middleEdge();
 
-  /**
-   * if chain is hidden, send a second ray to be sure
-   */
-  for (const ratio of testRatios) {
-
-    const edge = chain.edges[Math.floor(ratio*chain.edges.length)];
-
-    if (!edge) {
-      console.error("Contour has no edges");
-      return false;
-    }
-
-    // Cast a ray from the middle of the segment to the camera
-    _rayOrigin.lerpVectors(edge.a.pos3d, edge.b.pos3d, 0.5);
-    _rayDirection.subVectors(camera.position, _rayOrigin).normalize();
-    _raycaster.firstHitOnly = false;
-    _raycaster.set(_rayOrigin, _rayDirection);
-
-    // Get the projection of the origin of the ray cast
-    chain.raycastPoint.lerpVectors(edge.a.pos2d, edge.b.pos2d, 0.5);
-
-    // Compute total distance in case of mathematical imprecision
-    const intersections = _raycaster.intersectObjects(objects, false);
-
-    let totalDistance = 0;
-    for (const intersection of intersections) {
-      totalDistance += intersection.distance;
-    }
-
-    if (totalDistance < tolerance) {
-      chain.visibility = ChainVisibility.Visible;
-      return true;
-    } else {
-      chain.visibility = ChainVisibility.Hidden;
-    }
+  if (!edge) {
+    console.error("Contour has no edges");
+    chain.visibility = ChainVisibility.Visible;
+    return;
   }
-  return true;
+
+  // Cast a ray from the middle of the segment to the camera
+  _rayOrigin.lerpVectors(edge.a.pos3d, edge.b.pos3d, 0.5);
+  _rayDirection.subVectors(camera.position, _rayOrigin).normalize();
+  _raycaster.firstHitOnly = false;
+  _raycaster.set(_rayOrigin, _rayDirection);
+
+  // Get the projection of the origin of the ray cast
+  chain.raycastPoint.lerpVectors(edge.a.pos2d, edge.b.pos2d, 0.5);
+
+  // Compute total distance in case of mathematical imprecision
+  const intersections = _raycaster.intersectObjects(objects, false);
+
+  let totalDistance = 0;
+  for (const intersection of intersections) {
+    totalDistance += intersection.distance;
+  }
+
+  if (totalDistance < tolerance) {
+    chain.visibility = ChainVisibility.Visible;
+  } else {
+    chain.visibility = ChainVisibility.Hidden;
+  }
 
 }

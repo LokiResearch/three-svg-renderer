@@ -44,10 +44,8 @@ export function singularityForPoint(
   let concaveSilhouetteEdgeFound = false;
   let convexSilhouetteEdgeFound = false;
 
-  const edges = viewVertex.viewEdges.filter(e => e.nature !== ViewEdgeNature.None);
-
   // Count the number of different natures connected to the vertex
-  for (const edge of edges) {
+  for (const edge of viewVertex.viewEdges) {
 
     natures.add(edge.nature);
 
@@ -65,7 +63,7 @@ export function singularityForPoint(
   // If the number of segment natures is 1 and there is more than 2 segments
   // connected to the point, then there is a bifurcation singularity
   if (natures.size === 1) {
-    if(edges.length > 2 && (
+    if(viewVertex.viewEdges.length > 2 && (
       natures.has(ViewEdgeNature.Silhouette) || natures.has(ViewEdgeNature.Boundary)
     )) {
       return ViewVertexSingularity.Bifurcation; 

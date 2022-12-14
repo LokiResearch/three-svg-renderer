@@ -43,6 +43,7 @@ const params = {
   autoRender: false,
   scene: "pig",
   ignoreVisibility: false,
+  colorChainsByNature: false,
   prettify: false,
 }
 
@@ -91,76 +92,60 @@ scene.add(camera);
 
 const gui = new GUI();
 gui.add(params, 'scene', possibleObjects).onChange(setupScene);
-let gui_root: GUI;
-let style_gui: GUI;
-let options_gui: GUI;
-let options, style;
 
 /**
  * Chains Pass
  */
 const chains_gui_params = [
-  {c_params: visibleChainPass, gui_root: gui.addFolder("Visible Chains")},
-  {c_params: hiddenChainPass, gui_root: gui.addFolder("Hidden Chains")}
+  {pass: visibleChainPass, chain_gui: gui.addFolder("Visible Chains")},
+  {pass: hiddenChainPass, chain_gui: gui.addFolder("Hidden Chains")}
 ]
-for (const {c_params, gui_root} of chains_gui_params) {
+for (const {pass, chain_gui} of chains_gui_params) {
 
-  gui_root.add(c_params, 'enabled').onChange(generateSVG);
-  
-  style_gui = gui_root.addFolder("Style");
-  style = c_params.strokeStyle;
-  style_gui.addColor(style, "color").onChange(generateSVG);
-  style_gui.add(style, "width", 0, 20, 0.5).onChange(generateSVG);
-  style_gui.add(style, "dasharray").onChange(generateSVG);
-  style_gui.add(style, "opacity", 0, 1, 0.05).onChange(generateSVG);
-  
-  options_gui = gui_root.addFolder("Options");
-  options = c_params.options;
-  options_gui.add(options, "useRandomColors").onChange(generateSVG);
-  options_gui.add(options, "drawRaycastPoint").onChange(generateSVG);
-  options_gui.add(options, "drawLegend").onChange(generateSVG);
-  options_gui.add(options, "colorByNature").onChange(generateSVG);
+  chain_gui.add(pass, 'enabled').onChange(paramChanged);
+  chain_gui.addColor(pass.options.defaultStyle, "color").onChange(paramChanged);
+  chain_gui.add(pass.options.defaultStyle, "width", 0, 20, 0.5).onChange(paramChanged);
+  chain_gui.add(pass.options.defaultStyle, "dasharray").onChange(paramChanged);
+  chain_gui.add(pass.options.defaultStyle, "opacity", 0, 1, 0.05).onChange(paramChanged);
+  chain_gui.add(pass.options, "useRandomColors").onChange(paramChanged);
+  chain_gui.add(pass.options, "drawRaycastPoint").onChange(paramChanged);
 }
 
 /**
  * Fill Pass
  */
-gui_root = gui.addFolder("Fill");
-gui_root.add(fillPass, 'enabled').onChange(generateSVG);
-
-style_gui = gui_root.addFolder("Style");
-style = fillPass.fillStyle;
-style_gui.addColor(style, "color").onChange(generateSVG);
-style_gui.add(style, "opacity", 0, 1, 0.05).onChange(generateSVG);
-
-options_gui = gui_root.addFolder("Options");
-options = fillPass.options;
-options_gui.add(options, "useRandomColors").onChange(generateSVG);
-options_gui.add(options, "useFixedColor").onChange(generateSVG);
-options_gui.add(options, "drawRaycastPoint").onChange(generateSVG);
+const fill_gui = gui.addFolder("Fill");
+fill_gui.add(fillPass, 'enabled').onChange(paramChanged);
+fill_gui.add(fillPass.options, "useRandomColors").onChange(paramChanged);
+fill_gui.add(fillPass.options, "useFixedStyle").onChange(paramChanged);
+fill_gui.add(fillPass.options, "drawRaycastPoint").onChange(paramChanged);
+fill_gui.addColor(fillPass.options.fillStyle, "color").onChange(paramChanged);
+fill_gui.add(fillPass.options.fillStyle, "opacity", 0, 1, 0.05).onChange(paramChanged);
 
 /**
  * Debug options
  */
 const debug_gui = gui.addFolder("Debug");
 
-debug_gui.add(params, "ignoreVisibility").onChange(generateSVG);
+debug_gui.add(params, "ignoreVisibility").onChange(paramChanged);
+debug_gui.add(params, "colorChainsByNature").onChange(colorChainsByNature);
+
 
 /**
  * Singularity point
  */
-gui_root = debug_gui.addFolder("Singularity Points");
-gui_root.add(singularityPass, 'enabled').onChange(generateSVG);
+const sing_gui = debug_gui.addFolder("Singularity Points");
+sing_gui.add(singularityPass, 'enabled').onChange(paramChanged);
 
-options_gui = gui_root.addFolder("Options");
-options = singularityPass.options;
-options_gui.add(options, "drawLegend").onChange(generateSVG);
-options_gui.add(options, "pointSize", 0, 20, 0.5).onChange(generateSVG);
-options_gui.add(options, "drawVisiblePoints").onChange(generateSVG);
-options_gui.add(options, "drawHiddenPoints").onChange(generateSVG);
+sing_gui.add(singularityPass.options, "drawLegend").onChange(paramChanged);
+sing_gui.add(singularityPass.options, "pointSize", 0, 20, 0.5).onChange(paramChanged);
+sing_gui.add(singularityPass.options, "drawVisiblePoints").onChange(paramChanged);
+sing_gui.add(singularityPass.options, "drawHiddenPoints").onChange(paramChanged);
 
-gui_root = gui.addFolder("Export");
-gui_root.add(params, 'prettify');
+/**
+ * Options
+ */
+gui.add(params, 'prettify', "prettify SVG");
 
 gui.add(params, 'autoRender').onChange(autoRenderChanged);
 gui.add({'Render SVG':generateSVG}, 'Render SVG');
@@ -290,6 +275,8 @@ const debouncedGenerateSVG = debounce(500, () => {
 
   svgRenderer.viewmap.options.ignoreVisibility = params.ignoreVisibility;
 
+
+
   svgRenderer.generateSVG(svgMeshes, camera, {w: W, h: H}, info).then(newSvg => {
     svg = newSvg;
     if (svgDomElement) {
@@ -301,8 +288,33 @@ const debouncedGenerateSVG = debounce(500, () => {
   });
 });
 
+function paramChanged() {
+  if (params.autoRender) {
+    generateSVG();
+  }
+}
+
 function generateSVG() {
   debouncedGenerateSVG();
+}
+
+function colorChainsByNature() {
+
+  visibleChainPass.options.styles.Boundary.color = params.colorChainsByNature ? "blue" : undefined;
+  visibleChainPass.options.styles.Silhouette.color = params.colorChainsByNature ? "red" : undefined;
+  visibleChainPass.options.styles.MeshIntersection.color = params.colorChainsByNature ? "green" : undefined;
+  visibleChainPass.options.styles.Crease.color = params.colorChainsByNature ? "Orange" : undefined;
+  visibleChainPass.options.styles.Material.color = params.colorChainsByNature ? "purple" : undefined;
+
+  hiddenChainPass.options.styles.Boundary.color = params.colorChainsByNature ? "blue" : undefined;
+  hiddenChainPass.options.styles.Silhouette.color = params.colorChainsByNature ? "red" : undefined;
+  hiddenChainPass.options.styles.MeshIntersection.color = params.colorChainsByNature ? "green" : undefined;
+  hiddenChainPass.options.styles.Crease.color = params.colorChainsByNature ? "Orange" : undefined;
+  hiddenChainPass.options.styles.Material.color = params.colorChainsByNature ? "purple" : undefined;
+
+  visibleChainPass.options.drawLegend = (visibleChainPass.enabled || hiddenChainPass.enabled) && params.colorChainsByNature;
+
+  generateSVG();
 }
 
 function exportSVG() {
