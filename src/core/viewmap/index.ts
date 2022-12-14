@@ -13,7 +13,7 @@
  */
 
 export { ViewEdge, ViewEdgeNature } from './ViewEdge';
-export { ViewVertex } from './ViewVertex';
+export { ViewVertex, ViewVertexSingularity } from './ViewVertex';
 export { Chain, ChainVisibility } from './Chain';
 export { Polygon } from './Polygon';
 export {

@@ -12,24 +12,8 @@
  * Licence: Licence.md
  */
 
-export {
-  DrawPass
-} from "./DrawPass";
-export {
-  FillStyle,
-  FillPass,
-  FillPassOptions
-} from "./FillPass";
-export {
-  SingularityPointPass,
-  SingularityPointPassOptions
-} from "./SingularityPointPass";
-export {
-  TexturePass
-} from "./TexturePass";
-export {
-  StrokeStyle,
-  VisibleChainPass,
-  HiddenChainPass,
-  ChainPassOptions
-} from "./ChainPass";
+export { DrawPass } from "./DrawPass";
+export { FillStyle, FillPass, FillPassOptions } from "./FillPass";
+export { SingularityPointPass, SingularityPointPassOptions } from "./SingularityPointPass";
+export { TexturePass } from "./TexturePass";
+export { StrokeStyle, VisibleChainPass, HiddenChainPass, ChainPassOptions, ChainPass} from "./ChainPass";

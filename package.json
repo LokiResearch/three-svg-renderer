@@ -8,7 +8,7 @@
     "vector-graphics",
     "3D"
   ],
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": {
     "name": "Axel Antoine",
     "email": "ax.antoine@gmail.com",
@@ -22,6 +22,10 @@
     "build",
     "src"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LokiResearch/three-svg-renderer.git"
+  },
   "scripts": {
     "build": "rollup -c",
     "build-examples": "rollup -c --environment examples",
@@ -29,8 +33,7 @@
     "dev": "rollup -cw",
     "dev-examples": "rollup -cw --environment examples",
     "test": "jest",
-    "lint": "eslint src examples",
-    "prepublishOnly": "npm run build"
+    "lint": "eslint src examples"
   },
   "peerDependencies": {
     "three": ">= 0.141.0"
