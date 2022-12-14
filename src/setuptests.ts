@@ -2,7 +2,7 @@
  * Author: Axel Antoine
  * mail: ax.antoine@gmail.com
  * website: http://axantoine.com
- * Created on Thu Oct 20 2022
+ * Created on Tue Dec 06 2022
  *
  * Loki, Inria project-team with Université de Lille
  * within the Joint Research Unit UMR 9189 
@@ -12,6 +12,4 @@
  * Licence: Licence.md
  */
 
-export * from './buffergeometry';
-export * from './geometry';
-export * from './orientationtests';
+import './utils/testutils';

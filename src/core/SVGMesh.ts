@@ -10,16 +10,15 @@
 
 // LICENCE: Licence.md
 
-import {Mesh, Material, BufferGeometry, Color, Vector3, Raycaster, Intersection} from 'three';
-import {HalfEdgeStructure, HalfEdgeStructureOptions} from 'three-mesh-halfedge';
-import {MeshBVH, CENTER, MeshBVHOptions, acceleratedRaycast} from 'three-mesh-bvh';
-import {computeMorphedGeometry} from '../utils/geometry';
+import {Mesh, Material, Color, Vector3} from 'three';
+import {HalfedgeDS} from 'three-mesh-halfedge';
+import {MeshBVH, MeshBVHOptions, acceleratedRaycast, CENTER} from 'three-mesh-bvh';
+import {computeMorphedGeometry, disposeMesh} from '../utils/buffergeometry';
 
 type ColorMaterial = Material & {color: Color};
 
 export interface SVGMeshOptions {
   bvhOptions?: MeshBVHOptions;
-  hesOptions?: HalfEdgeStructureOptions;
 }
 
 /**
@@ -44,29 +43,23 @@ export interface SVGTexture {
  */
 export class SVGMesh {
 
-  readonly threeMesh: Mesh;
-  readonly morphGeometry: BufferGeometry;
-  readonly hes: HalfEdgeStructure;
+  readonly sourceMesh: Mesh;
+  readonly threeMesh = new Mesh();
+  readonly hes: HalfedgeDS;
   readonly bvh: MeshBVH;
   drawFills = true;
   drawVisibleContours = true;
   drawHiddenContours = true;
   isUsingBVHForRaycasting = false;
   texture?: SVGTexture;
-  private readonly _originalRaycastFunc: typeof Mesh.prototype.raycast;
 
   constructor(mesh: Mesh, options: SVGMeshOptions = {}) {
-    this.threeMesh = mesh;
-    this.morphGeometry = new BufferGeometry();
-    this._originalRaycastFunc = mesh.raycast;
-    this.updateMorphGeometry();
+    this.sourceMesh = mesh;
+    this.threeMesh.copy(mesh);
+    this.threeMesh.geometry = this.sourceMesh.geometry.clone();
 
     // Setup HES
-    const hesOptions = {
-      hashNormals: false,
-      ...options?.hesOptions
-    };
-    this.hes = new HalfEdgeStructure(this.morphGeometry, hesOptions);
+    this.hes = new HalfedgeDS();
 
     // Setup BVH
     const bvhOptions = {
@@ -75,7 +68,9 @@ export class SVGMesh {
       ...options?.bvhOptions
     }
 
-    this.bvh = new MeshBVH(this.morphGeometry, bvhOptions);
+    this.bvh = new MeshBVH(this.threeMesh.geometry, bvhOptions);
+    this.threeMesh.raycast = acceleratedRaycast;
+    this.threeMesh.geometry.boundsTree = this.bvh;
   }
 
   /**
@@ -87,9 +82,8 @@ export class SVGMesh {
     this.texture = texture;
   }
 
-
   updateMorphGeometry() {
-    computeMorphedGeometry(this.threeMesh, this.morphGeometry);
+    computeMorphedGeometry(this.sourceMesh, this.threeMesh.geometry);
   }
 
   updateBVH(updateMorphGeometry = true) {
@@ -99,7 +93,7 @@ export class SVGMesh {
 
   updateHES(updateMorphGeometry = true) {
     updateMorphGeometry && this.updateMorphGeometry();
-    this.hes.build();
+    this.hes.setFromGeometry(this.threeMesh.geometry);
   }
 
   localToWorld(target: Vector3): Vector3 {
@@ -109,7 +103,7 @@ export class SVGMesh {
   colorForFaceIndex(faceIndex: number): null | Color {
 
     if (Array.isArray(this.material)) {
-      for (const group of this.morphGeometry.groups) {
+      for (const group of this.threeMesh.geometry.groups) {
         if (group.start <= faceIndex &&
             faceIndex < (group.start + group.count) &&
             group.materialIndex != undefined &&
@@ -123,27 +117,7 @@ export class SVGMesh {
   }
 
   dispose() {
-    this.morphGeometry.dispose();
-    this.useBVHRaycast(false);
-  }
-
-  useBVHRaycast(use: boolean) {
-
-    this.isUsingBVHForRaycasting = use;
-
-    if (use) {
-
-      const bvh = this.bvh;
-
-      this.threeMesh.raycast = function(raycaster: Raycaster, intersects: Intersection[]) {
-        const oldBVH = this.geometry.boundsTree;
-        this.geometry.boundsTree = bvh;
-        acceleratedRaycast.call(this, raycaster, intersects);
-        this.geometry.boundsTree = oldBVH;
-      }
-    } else {
-      this.threeMesh.raycast = this._originalRaycastFunc;
-    }
+    disposeMesh(this.threeMesh);
   }
 
   get material() { return this.threeMesh.material; }

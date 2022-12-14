@@ -11,50 +11,50 @@
 // LICENCE: Licence.md
 
 import {Vector2} from 'three';
-import {Edge} from './Edge';
-import {Point} from './Point';
+import {ViewEdge} from './ViewEdge';
 import { SVGMesh } from '../SVGMesh';
+import { ViewVertex } from './ViewVertex';
 
-export enum ContourVisibility {
+export enum ChainVisibility {
   Unknown = "Unknown",
   Hidden = "Hidden",
   Visible = "Visible",
 }
 
-export class Contour {
+export class Chain {
   id: number;
   object: SVGMesh;
   raycastPoint = new Vector2();
-  edges = new Array<Edge>();
-  points = new Array<Point>();
-  visibility: ContourVisibility = ContourVisibility.Unknown;
+  edges = new Array<ViewEdge>();
+  vertices = new Array<ViewVertex>();
+  visibility: ChainVisibility = ChainVisibility.Unknown;
 
   constructor(id: number, object: SVGMesh) {
     this.id = id;
     this.object = object;
   }
 
-  get head(): Point {
-    return this.points[0]
+  get head(): ViewVertex {
+    return this.vertices[0];
   }
 
-  get tail(): Point {
-    return this.points[this.points.length -1];
+  get tail(): ViewVertex {
+    return this.vertices[this.vertices.length -1];
   }
 
-  get size(): number {
-    return this.points.length;
+  get size() {
+    return this.vertices.length;
   }
 
   get nature() {
     return this.edges[0].nature;
   }
 
-  middlePoint(): Point {
-    return this.points[Math.floor(this.points.length/2)];
+  middlePoint(): ViewVertex {
+    return this.vertices[Math.floor(this.vertices.length/2)];
   }
 
-  middleEdge(): Edge | null {
+  middleEdge(): ViewEdge | null {
     if (this.edges.length === 0) {
       return null;
     } else {
@@ -62,19 +62,19 @@ export class Contour {
     }
   }
 
-  addEdge(edge: Edge): void {
+  addEdge(edge: ViewEdge): void {
     if (this.edges.length == 0) {
       this.edges.push(edge);
-      this.points.push(edge.vertices[0].point);
-      this.points.push(edge.vertices[1].point);
+      this.vertices.push(edge.a);
+      this.vertices.push(edge.b);
     } else {
-      if (edge.hasPoint(this.head)) {
+      if (edge.hasVertex(this.head)) {
         // Put vertex and segment in the head of the lists
-        this.points.unshift(edge.otherPoint(this.head));
+        this.vertices.unshift(edge.otherVertex(this.head));
         this.edges.unshift(edge);
-      } else if (edge.hasPoint(this.tail)) {
+      } else if (edge.hasVertex(this.tail)) {
         // Put vertex and segment in the tail of the lists
-        this.points.push(edge.otherPoint(this.tail));
+        this.vertices.push(edge.otherVertex(this.tail));
         this.edges.push(edge);
       }
     }

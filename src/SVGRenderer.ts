@@ -12,23 +12,28 @@
 
 import {PerspectiveCamera} from 'three';
 import {
-  Viewmap, ViewmapBuildInfo, ViewmapBuildOptions,
+  Viewmap, ViewmapBuildInfo, ViewmapOptions,
   SVGDrawHandler, SVGDrawInfo, SVGDrawOptions, DrawPass
 } from './core';
 import {SVGMesh} from './core/SVGMesh';
 import {Svg} from '@svgdotjs/svg.js';
+import format from 'xml-formatter';
 
-export interface SVGRenderOptions {
-  updateMeshes?: boolean;
-  viewmap?: ViewmapBuildOptions;
-  svg?: SVGDrawOptions;
+export interface ExportOptions {
+  prettify?: boolean;
 }
 
 export class SVGRenderInfo {
   resolution = {w: Infinity, h: Infinity};
   renderingTime = Infinity;
-  readonly viewmapBuildInfo = new ViewmapBuildInfo();
   readonly svgDrawInfo = new SVGDrawInfo();
+  readonly viewmapInfo = new ViewmapBuildInfo();
+}
+
+export interface ProgressInfo {
+  currentStepName: string;
+  currentStep: number;
+  totalSteps: number;
 }
 
 /**
@@ -36,9 +41,16 @@ export class SVGRenderInfo {
  */
 export class SVGRenderer {
 
-  readonly viewmap = new Viewmap ();
-  readonly drawHandler = new SVGDrawHandler();
+  readonly viewmap;
+  readonly drawHandler;
 
+
+  constructor(vOptions?: ViewmapOptions, sOptions?: SVGDrawOptions) {
+    this.viewmap = new Viewmap(vOptions);
+    this.drawHandler = new SVGDrawHandler(sOptions);
+  }
+
+  
   /**
    * Render a SVG file from the given meshes and returns it.
    * @param meshes Mehses to render
@@ -52,9 +64,7 @@ export class SVGRenderer {
       meshes: Array<SVGMesh>,
       camera: PerspectiveCamera,
       size: {w: number, h: number},
-      options: SVGRenderOptions = {},
-      info = new SVGRenderInfo(),
-  ): Promise<Svg> {
+      info = new SVGRenderInfo()): Promise<Svg> {
 
     const renderStartTime = Date.now();
 
@@ -64,7 +74,7 @@ export class SVGRenderer {
 
     // Viewmap Build
     await this.viewmap.build(
-      meshes, camera, renderSize, options.viewmap, info.viewmapBuildInfo
+      meshes, camera, renderSize, info.viewmapInfo
     );
 
     // SVG Buid
@@ -101,6 +111,29 @@ export class SVGRenderer {
   clearPasses() {
     this.drawHandler.passes.clear();
   }
+
+
+  static exportSVG(svg: Svg, filename: string, options?: ExportOptions) {
+
+    const opt = {
+      prettify: false,
+      ...options,
+    }
+
+    let text = svg.svg();
+    if (opt.prettify) {
+      text = format(text, {});
+    }
+    const svgBlob = new Blob([text], {type:"image/svg+xml;charset=utf-8"});
+    const svgUrl = URL.createObjectURL(svgBlob);
+    const downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = filename;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
+
 
 
   

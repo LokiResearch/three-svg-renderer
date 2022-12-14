@@ -57,7 +57,6 @@ const lib_cfg = {
 };
 
 const examples = ['RendererDemo', 'TextureDemo'];
-// const examples = ['RendererDemo'];
 const examples_cfg = []
 
 for (const example of examples) {

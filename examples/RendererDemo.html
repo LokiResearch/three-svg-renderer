@@ -27,6 +27,17 @@
               display: flex;
           }
 
+          #info {
+            position: absolute;
+            bottom: 1em;
+            left: 1em;
+            color: white;
+          }
+
+          .infosection {
+            padding-top: 0.3em;
+          }
+
           #scene {
             width: 50%;
             height: 100%;
@@ -40,7 +51,14 @@
   </head>
   <body>
   <div id="scene">
-
+    <div id="info">
+      <div class="infosection" id="sceneinfo">
+      </div>
+      <div class="infosection" id="viewmapinfo">
+      </div>
+      <div class="infosection" id="extrainfo">
+      </div>
+    </div>
   </div>
   <div id="svgoutput">
 

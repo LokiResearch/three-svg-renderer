@@ -12,13 +12,13 @@
  * Licence: Licence.md
  */
 
-export { Point, PointSingularity } from './Point';
-export { Edge, EdgeNature } from './Edge';
-export { Contour, ContourVisibility } from './Contour';
+export { ViewEdge, ViewEdgeNature } from './ViewEdge';
+export { ViewVertex } from './ViewVertex';
+export { Chain, ChainVisibility } from './Chain';
 export { Polygon } from './Polygon';
 export {
   Viewmap,
   ViewmapBuildInfo,
-  ViewmapBuildOptions,
-  SurfaceIntersectionInfo
+  ProgressInfo,
+  ViewmapOptions,
 } from './Viewmap';

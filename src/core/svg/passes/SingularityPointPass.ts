@@ -13,19 +13,19 @@
 import {DrawPass} from './DrawPass';
 import {Viewmap} from '../../viewmap/Viewmap';
 import {Svg, G as SVGGroup} from '@svgdotjs/svg.js';
-import {ContourVisibility} from '../../viewmap/Contour';
+import {ChainVisibility} from '../../viewmap/Chain';
 import {getSVGCircle, getSVGText} from '../svgutils';
-import {PointSingularity} from '../../viewmap/Point';
+import { ViewVertexSingularity } from '../../viewmap/ViewVertex';
 
-const PointSingularities = Object.values(PointSingularity)
-  .filter(singularity => singularity !== PointSingularity.None);
+const ViewVertexSingularities = Object.values(ViewVertexSingularity)
+  .filter(singularity => singularity !== ViewVertexSingularity.None);
 
-const PointSingularityColor = {
-  [PointSingularity.None]: "",
-  [PointSingularity.ImageIntersection]: "green",
-  [PointSingularity.MeshIntersection]: "red",
-  [PointSingularity.CurtainFold]: "blue",
-  [PointSingularity.Bifurcation]: "orange",
+const ViewVertexSingularityColor = {
+  [ViewVertexSingularity.None]: "",
+  [ViewVertexSingularity.ImageIntersection]: "green",
+  [ViewVertexSingularity.MeshIntersection]: "red",
+  [ViewVertexSingularity.CurtainFold]: "blue",
+  [ViewVertexSingularity.Bifurcation]: "orange",
 }
 
 export interface SingularityPointPassOptions {
@@ -49,11 +49,12 @@ export class SingularityPointPass extends DrawPass {
   }
 
   async draw(svg: Svg, viewmap: Viewmap) {
-    // Update point visibility to avoid drawing point on hidden contours if only
-    // visible contours are drawn
-    for (const contour of viewmap.contours) {
-      for (const p of contour.points) {
-        p.visible = p.visible || contour.visibility === ContourVisibility.Visible;
+    // Update point visibility to avoid drawing point on hidden chains if only
+    // visible chains are drawn
+
+    for (const chain of viewmap.chains) {
+      for (const p of chain.vertices) {
+        p.visible = p.visible || chain.visibility === ChainVisibility.Visible;
       }
     }
 
@@ -76,29 +77,31 @@ export class SingularityPointPass extends DrawPass {
       color: "",
     };
 
+    const singularityPoints = Array.from(viewmap.viewVertexMap.values())
+      .filter(p => p.singularity != ViewVertexSingularity.None);
+
     for (const visibility of visibilities) {
 
       const visibilityGroup = new SVGGroup({id: visibility? "visible" : "hidden"})
       group.add(visibilityGroup);
 
-      for (const singularity of PointSingularities) {
+      for (const singularity of ViewVertexSingularities) {
         
-        const points = viewmap.singularityPoints
+        const points = singularityPoints
           .filter(p => p.singularity === singularity && p.visible === visibility);
 
         const singularityGroup = new SVGGroup({id: singularity});
         visibilityGroup.add(singularityGroup);
 
-        fillStyle.color = PointSingularityColor[singularity];
+        fillStyle.color = ViewVertexSingularityColor[singularity];
         for (const p of points) {
-          const svgPoint = getSVGCircle(p.x, p.y, this.options.pointSize, strokeStyle, fillStyle);
+          const svgPoint = getSVGCircle(p.pos2d.x, p.pos2d.y, this.options.pointSize, strokeStyle, fillStyle);
           singularityGroup.add(svgPoint);
         }
       }
     }
 
-    if (this.options.drawLegend &&
-      (this.options.drawVisiblePoints || this.options.drawHiddenPoints)) {
+    if (this.options.drawLegend) {
       group.add(getLegend());
     }
   }
@@ -110,8 +113,8 @@ function getLegend() {
   legend.add(getSVGText("Singularities", 10, 10, {size: 15, anchor: 'start'}))
 
   let y = 40;
-  for (const singularity of PointSingularities) {
-    const fillColor = PointSingularityColor[singularity];
+  for (const singularity of ViewVertexSingularities) {
+    const fillColor = ViewVertexSingularityColor[singularity];
     
     legend.add(getSVGCircle(15, y, 8, {color: "black"}, {color: fillColor}));
     legend.add(getSVGText(singularity, 30, y-10, {size: 15, anchor: 'start'}));

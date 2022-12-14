@@ -21,6 +21,9 @@ module.exports = {
     "indent": ["error", 2, {
       "FunctionDeclaration": {"parameters": 2},
       "FunctionExpression": {"parameters": 2}
+    }],
+    '@typescript-eslint/no-namespace': ["error", {
+      "allowDeclarations": true
     }]
   }
 };

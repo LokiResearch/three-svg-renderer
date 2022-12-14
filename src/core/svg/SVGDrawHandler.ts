@@ -11,7 +11,7 @@
 // LICENCE: Licence.md 
 
 import {Viewmap} from '../viewmap/Viewmap';
-import {SizeLike} from '../../utils/math';
+import {SizeLike} from '../../utils/geometry';
 import {Svg} from '@svgdotjs/svg.js';
 import '@svgdotjs/svg.topath.js';
 import { DrawPass } from './passes/DrawPass';
@@ -28,18 +28,17 @@ export class SVGDrawInfo {
 }
 
 export interface SVGDrawOptions {
-  prettifySVG: boolean;
+  prettifySVG?: boolean;
 }
 
 export class SVGDrawHandler {
-  readonly options: SVGDrawOptions;
+  readonly options: Required<SVGDrawOptions> = {
+    prettifySVG: false,
+  };
   readonly passes = new Array<DrawPass>();
 
-  constructor(options: Partial<SVGDrawOptions> = {}) {
-    this.options = {
-      prettifySVG: false,
-      ...options
-    };
+  constructor(options?: SVGDrawOptions) {
+    Object.assign(this.options, options);
   }
 
   async drawSVG(

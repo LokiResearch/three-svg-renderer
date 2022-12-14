@@ -12,6 +12,6 @@
  * Licence: Licence.md
  */
 
-export { SVGRenderer, SVGRenderOptions, SVGRenderInfo } from "./SVGRenderer";
+export { SVGRenderer, SVGRenderInfo } from "./SVGRenderer";
 export * from './core';
 export {PointLike, SizeLike, RectLike} from './utils';

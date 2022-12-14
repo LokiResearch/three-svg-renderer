@@ -11,9 +11,8 @@
 // LICENCE: Licence.md 
 
 import { DrawPass } from "./DrawPass";
-import { PerspectiveCamera, Vector2 } from "three";
 import cv, {Mat as CVMat} from "opencv-ts";
-import { PointLike, SizeLike, RectLike, projectPointImage, round } from '../../../utils';
+import { PointLike, RectLike, round } from '../../../utils';
 import { SVGMesh, SVGTexture } from "../../SVGMesh";
 
 import {
@@ -82,12 +81,7 @@ export class TexturePass extends DrawPass {
   
   async draw(svg: Svg, viewmap: Viewmap) {
 
-    const {camera, meshes, polygons} = viewmap;
-
-    const renderSize = {
-      w: NumberAliasToNumber(svg.width()), 
-      h: NumberAliasToNumber(svg.height())
-    };
+    const {meshes, polygons} = viewmap;
     
     /**
      * Gather meshes with texture
@@ -149,9 +143,9 @@ export class TexturePass extends DrawPass {
       
       let svgTexture: SVGElement;
       if (mesh.texture.url.startsWith('data:image/svg+xml;base64,')) {
-        svgTexture = await getSVGTexture(camera, renderSize, mesh);
+        svgTexture = await getSVGTexture(mesh);
       } else {
-        svgTexture = await getImageTexture(camera, renderSize, mesh);
+        svgTexture = await getImageTexture(mesh);
       }
 
       // Draw a clipping path using the polygons
@@ -169,11 +163,7 @@ export class TexturePass extends DrawPass {
   }
 }
 
-async function getImageTexture(
-    camera: PerspectiveCamera,
-    renderSize: SizeLike,
-    mesh: SVGMeshWithTexture
-) {
+async function getImageTexture(mesh: SVGMeshWithTexture) {
 
   const imgEl = document.createElement('img');
   imgEl.src = mesh.texture.url;
@@ -181,7 +171,7 @@ async function getImageTexture(
 
   // Get the transformation matrix and the output size;
   const imgRect = {x: 0, y: 0, w: srcImageMatrix.cols, h: srcImageMatrix.rows};
-  const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, imgRect, mesh);
+  const {matrix, outRect} = getCVTransformMatrix(imgRect, mesh);
 
   const dstImageMatrix = new cv.Mat();
   const dSize = new cv.Size(outRect.w, outRect.h);
@@ -210,11 +200,7 @@ async function getImageTexture(
   });
 }
 
-async function getSVGTexture(
-    camera: PerspectiveCamera,
-    renderSize: SizeLike,
-    mesh: SVGMeshWithTexture
-) {
+async function getSVGTexture(mesh: SVGMeshWithTexture) {
 
   return new Promise<SVGGroup>((resolve, reject) => {
     
@@ -231,8 +217,7 @@ async function getSVGTexture(
         for(const child of svg.children()) {
           try {
             const ignoredElements = new Array<SVGElement>();
-            transformSVG(
-              child, camera, renderSize, mesh, undefined, ignoredElements);
+            transformSVG(child, mesh, undefined, ignoredElements);
               
             console.info(`SVG Transform: ${ignoredElements.length} elements ignored.`, ignoredElements);
 
@@ -254,50 +239,34 @@ function svgContentFromDataURL(dataUrl: string) {
 
     if (dataUrl.startsWith('data:image/svg+xml;base64,')) {
 
-      fetch(dataUrl)
-        .then(value => {
-          value.blob()
-            .then(blob => {
-              const reader = new FileReader();
+      fetch(dataUrl).then(value => {
+        value.blob()
+          .then(blob => {
+            const reader = new FileReader();
 
-              reader.onloadend = () => {
-                resolve(reader.result as string);
-              }
+            reader.onloadend = () => {
+              resolve(reader.result as string);
+            }
 
-              reader.onerror = () => {
-                reject("Couldn't read content");
-              }
+            reader.onerror = () => {
+              reject("Couldn't read content");
+            }
 
-              reader.readAsText(blob);
-            })
-            .catch(() => {
-              reject("Couldn't create blob");
-            });
-        })
-        .catch(() => {
-          reject("Couldn't fetch data ");
-        });
-
-      // Remove the header
-      // const encodedString = dataUrl.replace('data:image/svg+xml;base64,','');
-
-      // // Convert from base64 to utf8
-      // const buffer = Buffer.from(encodedString, 'base64');
-      // return buffer.toString('utf8');
+            reader.readAsText(blob);
+          })
+          .catch(() => {
+            reject("Couldn't create blob");
+          });
+      }).catch(() => {
+        reject("Couldn't fetch data ");
+      });
     } else {
       reject("Data not svg xml based");
     }
-
-
   });
 }
 
-function getCVTransformMatrix(
-    camera: PerspectiveCamera,
-    renderSize: SizeLike,
-    srcRect: RectLike,
-    mesh: SVGMesh,
-) {
+function getCVTransformMatrix(srcRect: RectLike, mesh: SVGMesh) {
 
   let minX = Infinity;
   let minY = Infinity;
@@ -313,18 +282,16 @@ function getCVTransformMatrix(
   const dstPointsArray = new Array<number>();
 
   // Get the coordinates in pixels of the four screen corners
-  const vertices = mesh.hes.vertices;
-  const corners = vertices.map(vertex => {
-    return projectPointImage(vertex.position, new Vector2(), camera, renderSize);
-  });
+  const vertices = Array.from(mesh.hes.vertices);
+  const viewVertices = vertices.map(vertex => vertex.viewVertex);
 
-  for (const corner of corners) {
-    minX = Math.min(minX, corner.x);
-    minY = Math.min(minY, corner.y);
-    maxX = Math.max(maxX, corner.x);
-    maxY = Math.max(maxY, corner.y);
-    dstPointsArray.push(corner.x);
-    dstPointsArray.push(corner.y);
+  for (const vertex of viewVertices) {
+    minX = Math.min(minX, vertex.x);
+    minY = Math.min(minY, vertex.y);
+    maxX = Math.max(maxX, vertex.x);
+    maxY = Math.max(maxY, vertex.y);
+    dstPointsArray.push(vertex.x);
+    dstPointsArray.push(vertex.y);
   }
 
   // Recenter the projection on top left corner of the object
@@ -349,8 +316,6 @@ function getCVTransformMatrix(
 
 function transformSVG(
     element: SVGElement,
-    camera: PerspectiveCamera,
-    renderSize: SizeLike,
     mesh: SVGMesh,
     transformMatrix?: CVMat,
     ignoredElements?: SVGElement[],
@@ -369,7 +334,7 @@ function transformSVG(
       throw("Embedded SVG has no visible dimension: i.e no width/height or viewbox properties.");
     }
 
-    const {matrix, outRect} = getCVTransformMatrix(camera, renderSize, inRect, mesh);
+    const {matrix, outRect} = getCVTransformMatrix(inRect, mesh);
     svg.x(outRect.x);
     svg.y(outRect.y);
     svg.width(outRect.w);
@@ -399,7 +364,7 @@ function transformSVG(
   }
 
   for (const child of element.children()) {
-    transformSVG(child, camera, renderSize, mesh, transformMatrix, ignoredElements);
+    transformSVG(child, mesh, transformMatrix, ignoredElements);
   }
 
   // Delete OpenCV Matrix if the top element has finished its transform
