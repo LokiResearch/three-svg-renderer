@@ -3,7 +3,7 @@
 [![npm release](https://img.shields.io/npm/v/three-mesh-renderer)](https://www.npmjs.com/package/three-mesh-renderer)
 [![build](https://img.shields.io/github/workflow/status/LokiResearch/three-svg-renderer/build)](https://github.com/LokiResearch/three-mesh-renderer/actions)
 [![Documentation](https://img.shields.io/badge/view-Documentation-blue?label=Open)](https://lokiresearch.github.io/three-svg-renderer/doc/index.html)
-[![License](https://img.shields.io/badge/License-MIT-green)](#license)
+[![License](https://img.shields.io/badge/License-GPL-green)](#license)
 
 An **experimental** three.js SVG renderer written in Typescript to render 3D scenes as Vector Graphics. The renderer analyzes the geometry in the scene, builds a viewmap of the mesh edges and computes the visible and hidden contours to draw. 
 
