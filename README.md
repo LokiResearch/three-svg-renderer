@@ -1,7 +1,7 @@
 # three-svg-renderer
 
 [![npm release](https://img.shields.io/npm/v/three-svg-renderer)](https://www.npmjs.com/package/three-svg-renderer)
-[![build](https://img.shields.io/github/workflow/status/LokiResearch/three-svg-renderer/build)](https://github.com/LokiResearch/three-mesh-renderer/actions)
+[![build](https://img.shields.io/github/actions/workflow/status/LokiResearch/three-svg-renderer/build.yml?branch=main)](https://img.shields.io/github/actions/workflow/status/LokiResearch/three-svg-renderer/build.yml?branch=main)
 [![Documentation](https://img.shields.io/badge/view-Documentation-blue?label=Open)](https://lokiresearch.github.io/three-svg-renderer/doc/index.html)
 [![License](https://img.shields.io/badge/License-GPL-green)](#license)
 
