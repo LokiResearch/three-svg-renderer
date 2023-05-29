@@ -45,7 +45,7 @@
     "arrangement-2d-js": "github:LokiResearch/arrangement-2d-js",
     "fast-triangle-triangle-intersection": "^1.0.7",
     "flatbush": "^4.0.0",
-    "isect": "^3.0.0",
+    "isect": "^3.0.1",
     "opencv-ts": "^1.3.6",
     "three-mesh-bvh": "^0.5.14",
     "three-mesh-halfedge": "^1.0.3",
