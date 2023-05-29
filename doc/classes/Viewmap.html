@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Viewmap | three-svg-rendering</title><meta name="description" content="Documentation for three-svg-rendering"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Viewmap | three-svg-renderer</title><meta name="description" content="Documentation for three-svg-renderer"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,13 +6,13 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="" class="title">three-svg-rendering</a></div>
+<li class="state failure">The search index is not available</li></ul><a href="" class="title">three-svg-renderer</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-8 col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">three-svg-rendering</a></li>
+<li><a href="../modules.html">three-svg-renderer</a></li>
 <li><a href="Viewmap.html">Viewmap</a></li></ul>
 <h1>Class Viewmap</h1></div>
 <section class="tsd-panel tsd-hierarchy">
@@ -20,7 +20,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">Viewmap</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/core/viewmap/Viewmap.ts#L85">src/core/viewmap/Viewmap.ts:85</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L100">core/viewmap/Viewmap.ts:100</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -33,75 +33,93 @@
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Properties</h3>
 <div class="tsd-index-list"><a href="Viewmap.html#camera" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-1024-path"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)" id="icon-1024-text"></path></svg><span>camera</span></a>
-<a href="Viewmap.html#contours" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>contours</span></a>
-<a href="Viewmap.html#edges" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>edges</span></a>
+<a href="Viewmap.html#chains" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>chains</span></a>
 <a href="Viewmap.html#meshes" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>meshes</span></a>
-<a href="Viewmap.html#points" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>points</span></a>
+<a href="Viewmap.html#options" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>options</span></a>
 <a href="Viewmap.html#polygons" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>polygons</span></a>
-<a href="Viewmap.html#polygonsRaycastPoints" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>polygons<wbr/>Raycast<wbr/>Points</span></a>
-<a href="Viewmap.html#singularityPoints" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>singularity<wbr/>Points</span></a>
+<a href="Viewmap.html#renderSize" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>render<wbr/>Size</span></a>
+<a href="Viewmap.html#viewEdges" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>view<wbr/>Edges</span></a>
+<a href="Viewmap.html#viewVertexMap" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>view<wbr/>Vertex<wbr/>Map</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Methods</h3>
 <div class="tsd-index-list"><a href="Viewmap.html#build" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>build</span></a>
+<a href="Viewmap.html#buildAsync" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>build<wbr/>Async</span></a>
 <a href="Viewmap.html#clear" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>clear</span></a>
+<a href="Viewmap.html#hiddenChains" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>hidden<wbr/>Chains</span></a>
+<a href="Viewmap.html#setupActions" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>setup<wbr/>Actions</span></a>
+<a href="Viewmap.html#visibleChains" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>visible<wbr/>Chains</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Constructors</h2>
 <section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class"><a id="constructor" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" id="icon-anchor-a"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" id="icon-anchor-b"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" id="icon-anchor-c"></path></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="constructor.new_Viewmap">new <wbr/>Viewmap<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Viewmap.html" class="tsd-signature-type" data-tsd-kind="Class">Viewmap</a><a href="#constructor.new_Viewmap" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="constructor.new_Viewmap">new <wbr/>Viewmap<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/ViewmapOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">ViewmapOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Viewmap.html" class="tsd-signature-type" data-tsd-kind="Class">Viewmap</a><a href="#constructor.new_Viewmap" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<h4 class="tsd-returns-title">Returns <a href="Viewmap.html" class="tsd-signature-type" data-tsd-kind="Class">Viewmap</a></h4></li></ul></section></section>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> options: <a href="../interfaces/ViewmapOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">ViewmapOptions</a></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Viewmap.html" class="tsd-signature-type" data-tsd-kind="Class">Viewmap</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L122">core/viewmap/Viewmap.ts:122</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="camera" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>camera</span><a href="#camera" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">camera<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PerspectiveCamera</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/core/viewmap/Viewmap.ts#L87">src/core/viewmap/Viewmap.ts:87</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="contours" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>contours</span><a href="#contours" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">contours<span class="tsd-signature-symbol">:</span> <a href="Contour.html" class="tsd-signature-type" data-tsd-kind="Class">Contour</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L110">core/viewmap/Viewmap.ts:110</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="chains" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>chains</span><a href="#chains" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">chains<span class="tsd-signature-symbol">:</span> <a href="Chain.html" class="tsd-signature-type" data-tsd-kind="Class">Chain</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/core/viewmap/Viewmap.ts#L92">src/core/viewmap/Viewmap.ts:92</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="edges" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>edges</span><a href="#edges" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">edges<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="Edge.html" class="tsd-signature-type" data-tsd-kind="Class">Edge</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
-<ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/core/viewmap/Viewmap.ts#L89">src/core/viewmap/Viewmap.ts:89</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L108">core/viewmap/Viewmap.ts:108</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="meshes" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>meshes</span><a href="#meshes" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">meshes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="SVGMesh.html" class="tsd-signature-type" data-tsd-kind="Class">SVGMesh</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>meshes</span><a href="#meshes" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">meshes<span class="tsd-signature-symbol">:</span> <a href="SVGMesh.html" class="tsd-signature-type" data-tsd-kind="Class">SVGMesh</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/core/viewmap/Viewmap.ts#L88">src/core/viewmap/Viewmap.ts:88</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="points" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>points</span><a href="#points" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">points<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="Point.html" class="tsd-signature-type" data-tsd-kind="Class">Point</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L102">core/viewmap/Viewmap.ts:102</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="options" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>options</span><a href="#options" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Required</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ViewmapOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">ViewmapOptions</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/core/viewmap/Viewmap.ts#L90">src/core/viewmap/Viewmap.ts:90</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L112">core/viewmap/Viewmap.ts:112</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="polygons" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>polygons</span><a href="#polygons" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>polygons</span><a href="#polygons" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">polygons<span class="tsd-signature-symbol">:</span> <a href="Polygon.html" class="tsd-signature-type" data-tsd-kind="Class">Polygon</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/core/viewmap/Viewmap.ts#L94">src/core/viewmap/Viewmap.ts:94</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="polygonsRaycastPoints" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>polygons<wbr/>Raycast<wbr/>Points</span><a href="#polygonsRaycastPoints" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">polygons<wbr/>Raycast<wbr/>Points<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Vector2</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L109">core/viewmap/Viewmap.ts:109</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="renderSize" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>render<wbr/>Size</span><a href="#renderSize" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">render<wbr/>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span><br/><span>    </span>h<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>w<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol"> = ...</span></div>
+<div class="tsd-type-declaration">
+<h4>Type declaration</h4>
+<ul class="tsd-parameters">
+<li class="tsd-parameter">
+<h5>h<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5></li>
+<li class="tsd-parameter">
+<h5>w<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/core/viewmap/Viewmap.ts#L93">src/core/viewmap/Viewmap.ts:93</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="singularityPoints" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>singularity<wbr/>Points</span><a href="#singularityPoints" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">singularity<wbr/>Points<span class="tsd-signature-symbol">:</span> <a href="Point.html" class="tsd-signature-type" data-tsd-kind="Class">Point</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L111">core/viewmap/Viewmap.ts:111</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="viewEdges" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>view<wbr/>Edges</span><a href="#viewEdges" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">view<wbr/>Edges<span class="tsd-signature-symbol">:</span> <a href="ViewEdge.html" class="tsd-signature-type" data-tsd-kind="Class">ViewEdge</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/core/viewmap/Viewmap.ts#L91">src/core/viewmap/Viewmap.ts:91</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L104">core/viewmap/Viewmap.ts:104</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="viewVertexMap" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>view<wbr/>Vertex<wbr/>Map</span><a href="#viewVertexMap" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">view<wbr/>Vertex<wbr/>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="ViewVertex.html" class="tsd-signature-type" data-tsd-kind="Class">ViewVertex</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L106">core/viewmap/Viewmap.ts:106</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="build" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>build</span><a href="#build" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="build.build-1">build<span class="tsd-signature-symbol">(</span>meshes<span class="tsd-signature-symbol">: </span><a href="SVGMesh.html" class="tsd-signature-type" data-tsd-kind="Class">SVGMesh</a><span class="tsd-signature-symbol">[]</span>, camera<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PerspectiveCamera</span>, renderSize<span class="tsd-signature-symbol">: </span><a href="../interfaces/SizeLike.html" class="tsd-signature-type" data-tsd-kind="Interface">SizeLike</a>, buildOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/ViewmapBuildOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">ViewmapBuildOptions</a>, info<span class="tsd-signature-symbol">?: </span><a href="ViewmapBuildInfo.html" class="tsd-signature-type" data-tsd-kind="Class">ViewmapBuildInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ViewmapBuildInfo.html" class="tsd-signature-type" data-tsd-kind="Class">ViewmapBuildInfo</a><span class="tsd-signature-symbol">&gt;</span><a href="#build.build-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="build.build-1">build<span class="tsd-signature-symbol">(</span>meshes<span class="tsd-signature-symbol">: </span><a href="SVGMesh.html" class="tsd-signature-type" data-tsd-kind="Class">SVGMesh</a><span class="tsd-signature-symbol">[]</span>, camera<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PerspectiveCamera</span>, renderSize<span class="tsd-signature-symbol">: </span><a href="../interfaces/SizeLike.html" class="tsd-signature-type" data-tsd-kind="Interface">SizeLike</a>, info<span class="tsd-signature-symbol">?: </span><a href="ViewmapBuildInfo.html" class="tsd-signature-type" data-tsd-kind="Class">ViewmapBuildInfo</a>, progressCallback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>progress<span class="tsd-signature-symbol">: </span><a href="../interfaces/ProgressInfo.html" class="tsd-signature-type" data-tsd-kind="Interface">ProgressInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#build.build-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -113,12 +131,53 @@
 <li>
 <h5>renderSize: <a href="../interfaces/SizeLike.html" class="tsd-signature-type" data-tsd-kind="Interface">SizeLike</a></h5></li>
 <li>
-<h5>buildOptions: <a href="../interfaces/ViewmapBuildOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">ViewmapBuildOptions</a><span class="tsd-signature-symbol"> = {}</span></h5></li>
+<h5>info: <a href="ViewmapBuildInfo.html" class="tsd-signature-type" data-tsd-kind="Class">ViewmapBuildInfo</a><span class="tsd-signature-symbol"> = ...</span></h5></li>
 <li>
-<h5>info: <a href="ViewmapBuildInfo.html" class="tsd-signature-type" data-tsd-kind="Class">ViewmapBuildInfo</a><span class="tsd-signature-symbol"> = ...</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ViewmapBuildInfo.html" class="tsd-signature-type" data-tsd-kind="Class">ViewmapBuildInfo</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> progressCallback: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>progress<span class="tsd-signature-symbol">: </span><a href="../interfaces/ProgressInfo.html" class="tsd-signature-type" data-tsd-kind="Interface">ProgressInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></h5>
+<ul class="tsd-parameters">
+<li class="tsd-parameter-signature">
+<ul class="tsd-signatures tsd-kind-type-literal">
+<li class="tsd-signature"><span class="tsd-signature-symbol">(</span>progress<span class="tsd-signature-symbol">: </span><a href="../interfaces/ProgressInfo.html" class="tsd-signature-type" data-tsd-kind="Interface">ProgressInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>progress: <a href="../interfaces/ProgressInfo.html" class="tsd-signature-type" data-tsd-kind="Interface">ProgressInfo</a></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></li></ul></li></ul></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/core/viewmap/Viewmap.ts#L105">src/core/viewmap/Viewmap.ts:105</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L135">core/viewmap/Viewmap.ts:135</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="buildAsync" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>build<wbr/>Async</span><a href="#buildAsync" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+<li class="tsd-signature tsd-anchor-link" id="buildAsync.buildAsync-1">build<wbr/>Async<span class="tsd-signature-symbol">(</span>idx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, actions<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ViewmapAction</span><span class="tsd-signature-symbol">[]</span>, info<span class="tsd-signature-symbol">: </span><a href="ViewmapBuildInfo.html" class="tsd-signature-type" data-tsd-kind="Class">ViewmapBuildInfo</a>, progressCallback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>progress<span class="tsd-signature-symbol">: </span><a href="../interfaces/ProgressInfo.html" class="tsd-signature-type" data-tsd-kind="Interface">ProgressInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#buildAsync.buildAsync-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>idx: <span class="tsd-signature-type">number</span></h5></li>
+<li>
+<h5>actions: <span class="tsd-signature-type">ViewmapAction</span><span class="tsd-signature-symbol">[]</span></h5></li>
+<li>
+<h5>info: <a href="ViewmapBuildInfo.html" class="tsd-signature-type" data-tsd-kind="Class">ViewmapBuildInfo</a></h5></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> progressCallback: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>progress<span class="tsd-signature-symbol">: </span><a href="../interfaces/ProgressInfo.html" class="tsd-signature-type" data-tsd-kind="Interface">ProgressInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></h5>
+<ul class="tsd-parameters">
+<li class="tsd-parameter-signature">
+<ul class="tsd-signatures tsd-kind-type-literal">
+<li class="tsd-signature"><span class="tsd-signature-symbol">(</span>progress<span class="tsd-signature-symbol">: </span><a href="../interfaces/ProgressInfo.html" class="tsd-signature-type" data-tsd-kind="Interface">ProgressInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>progress: <a href="../interfaces/ProgressInfo.html" class="tsd-signature-type" data-tsd-kind="Interface">ProgressInfo</a></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></li></ul></li></ul></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L161">core/viewmap/Viewmap.ts:161</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="clear" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>clear</span><a href="#clear" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -126,7 +185,36 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/core/viewmap/Viewmap.ts#L96">src/core/viewmap/Viewmap.ts:96</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L126">core/viewmap/Viewmap.ts:126</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="hiddenChains" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>hidden<wbr/>Chains</span><a href="#hiddenChains" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="hiddenChains.hiddenChains-1">hidden<wbr/>Chains<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Chain.html" class="tsd-signature-type" data-tsd-kind="Class">Chain</a><span class="tsd-signature-symbol">[]</span><a href="#hiddenChains.hiddenChains-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<h4 class="tsd-returns-title">Returns <a href="Chain.html" class="tsd-signature-type" data-tsd-kind="Class">Chain</a><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L377">core/viewmap/Viewmap.ts:377</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="setupActions" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>setup<wbr/>Actions</span><a href="#setupActions" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+<li class="tsd-signature tsd-anchor-link" id="setupActions.setupActions-1">setup<wbr/>Actions<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">?: </span><a href="ViewmapBuildInfo.html" class="tsd-signature-type" data-tsd-kind="Class">ViewmapBuildInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ViewmapAction</span><span class="tsd-signature-symbol">[]</span><a href="#setupActions.setupActions-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>info: <a href="ViewmapBuildInfo.html" class="tsd-signature-type" data-tsd-kind="Class">ViewmapBuildInfo</a><span class="tsd-signature-symbol"> = ...</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ViewmapAction</span><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L191">core/viewmap/Viewmap.ts:191</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="visibleChains" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>visible<wbr/>Chains</span><a href="#visibleChains" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="visibleChains.visibleChains-1">visible<wbr/>Chains<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Chain.html" class="tsd-signature-type" data-tsd-kind="Class">Chain</a><span class="tsd-signature-symbol">[]</span><a href="#visibleChains.visibleChains-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<h4 class="tsd-returns-title">Returns <a href="Chain.html" class="tsd-signature-type" data-tsd-kind="Class">Chain</a><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/core/viewmap/Viewmap.ts#L373">core/viewmap/Viewmap.ts:373</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -146,7 +234,7 @@
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li><a href="../modules.html">three-<wbr/>svg-<wbr/>rendering</a>
+<li><a href="../modules.html">three-<wbr/>svg-<wbr/>renderer</a>
 <ul></ul></li></ul></div></details></nav>
 <nav class="tsd-navigation secondary menu-sticky">
 <ul>
@@ -154,15 +242,19 @@
 <ul>
 <li class="tsd-kind-constructor tsd-parent-kind-class"><a href="Viewmap.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-512-path"></use><use href="#icon-512-text"></use></svg>constructor</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#camera" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>camera</a></li>
-<li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#contours" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>contours</a></li>
-<li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#edges" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>edges</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#chains" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>chains</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#meshes" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>meshes</a></li>
-<li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#points" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>points</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#options" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>options</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#polygons" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>polygons</a></li>
-<li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#polygonsRaycastPoints" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>polygons<wbr/>Raycast<wbr/>Points</a></li>
-<li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#singularityPoints" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>singularity<wbr/>Points</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#renderSize" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>render<wbr/>Size</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#viewEdges" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>view<wbr/>Edges</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class"><a href="Viewmap.html#viewVertexMap" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>view<wbr/>Vertex<wbr/>Map</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="Viewmap.html#build" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>build</a></li>
-<li class="tsd-kind-method tsd-parent-kind-class"><a href="Viewmap.html#clear" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>clear</a></li></ul></li></ul></nav></div></div>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="Viewmap.html#buildAsync" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>build<wbr/>Async</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="Viewmap.html#clear" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>clear</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="Viewmap.html#hiddenChains" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>hidden<wbr/>Chains</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="Viewmap.html#setupActions" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>setup<wbr/>Actions</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="Viewmap.html#visibleChains" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>visible<wbr/>Chains</a></li></ul></li></ul></nav></div></div>
 <div class="container tsd-generator">
 <p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>

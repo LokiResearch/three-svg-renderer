@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>SVGRenderer | three-svg-rendering</title><meta name="description" content="Documentation for three-svg-rendering"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>SVGRenderer | three-svg-renderer</title><meta name="description" content="Documentation for three-svg-renderer"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,13 +6,13 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="" class="title">three-svg-rendering</a></div>
+<li class="state failure">The search index is not available</li></ul><a href="" class="title">three-svg-renderer</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-8 col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">three-svg-rendering</a></li>
+<li><a href="../modules.html">three-svg-renderer</a></li>
 <li><a href="SVGRenderer.html">SVGRenderer</a></li></ul>
 <h1>Class SVGRenderer</h1></div>
 <section class="tsd-panel tsd-hierarchy">
@@ -20,7 +20,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">SVGRenderer</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/SVGRenderer.ts#L34">src/SVGRenderer.ts:34</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/SVGRenderer.ts#L42">SVGRenderer.ts:42</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -37,38 +37,50 @@
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Methods</h3>
-<div class="tsd-index-list"><a href="SVGRenderer.html#addDrawPass" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>add<wbr/>Draw<wbr/>Pass</span></a>
-<a href="SVGRenderer.html#clearDrawPasses" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>clear<wbr/>Draw<wbr/>Passes</span></a>
+<div class="tsd-index-list"><a href="SVGRenderer.html#addPass" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>add<wbr/>Pass</span></a>
+<a href="SVGRenderer.html#clearPasses" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>clear<wbr/>Passes</span></a>
 <a href="SVGRenderer.html#generateSVG" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>generateSVG</span></a>
-<a href="SVGRenderer.html#removeDrawPass" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>remove<wbr/>Draw<wbr/>Pass</span></a>
+<a href="SVGRenderer.html#removePass" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>remove<wbr/>Pass</span></a>
+<a href="SVGRenderer.html#exportSVG" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>exportSVG</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Constructors</h2>
 <section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class"><a id="constructor" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" id="icon-anchor-a"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" id="icon-anchor-b"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" id="icon-anchor-c"></path></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="constructor.new_SVGRenderer">new SVGRenderer<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SVGRenderer.html" class="tsd-signature-type" data-tsd-kind="Class">SVGRenderer</a><a href="#constructor.new_SVGRenderer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="constructor.new_SVGRenderer">new SVGRenderer<span class="tsd-signature-symbol">(</span>vOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/ViewmapOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">ViewmapOptions</a>, sOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/SVGDrawOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">SVGDrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SVGRenderer.html" class="tsd-signature-type" data-tsd-kind="Class">SVGRenderer</a><a href="#constructor.new_SVGRenderer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<h4 class="tsd-returns-title">Returns <a href="SVGRenderer.html" class="tsd-signature-type" data-tsd-kind="Class">SVGRenderer</a></h4></li></ul></section></section>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> vOptions: <a href="../interfaces/ViewmapOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">ViewmapOptions</a></h5></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> sOptions: <a href="../interfaces/SVGDrawOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">SVGDrawOptions</a></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="SVGRenderer.html" class="tsd-signature-type" data-tsd-kind="Class">SVGRenderer</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/SVGRenderer.ts#L48">SVGRenderer.ts:48</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="drawHandler" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>draw<wbr/>Handler</span><a href="#drawHandler" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">draw<wbr/>Handler<span class="tsd-signature-symbol">:</span> <a href="SVGDrawHandler.html" class="tsd-signature-type" data-tsd-kind="Class">SVGDrawHandler</a><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
+<div class="tsd-signature">draw<wbr/>Handler<span class="tsd-signature-symbol">:</span> <a href="SVGDrawHandler.html" class="tsd-signature-type" data-tsd-kind="Class">SVGDrawHandler</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/SVGRenderer.ts#L37">src/SVGRenderer.ts:37</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/SVGRenderer.ts#L45">SVGRenderer.ts:45</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="viewmap" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>viewmap</span><a href="#viewmap" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">viewmap<span class="tsd-signature-symbol">:</span> <a href="Viewmap.html" class="tsd-signature-type" data-tsd-kind="Class">Viewmap</a><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
+<div class="tsd-signature">viewmap<span class="tsd-signature-symbol">:</span> <a href="Viewmap.html" class="tsd-signature-type" data-tsd-kind="Class">Viewmap</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/SVGRenderer.ts#L36">src/SVGRenderer.ts:36</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/SVGRenderer.ts#L44">SVGRenderer.ts:44</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
-<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="addDrawPass" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>add<wbr/>Draw<wbr/>Pass</span><a href="#addDrawPass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="addPass" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>add<wbr/>Pass</span><a href="#addPass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="addDrawPass.addDrawPass-1">add<wbr/>Draw<wbr/>Pass<span class="tsd-signature-symbol">(</span>pass<span class="tsd-signature-symbol">: </span><a href="DrawPass.html" class="tsd-signature-type" data-tsd-kind="Class">DrawPass</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#addDrawPass.addDrawPass-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="addPass.addPass-1">add<wbr/>Pass<span class="tsd-signature-symbol">(</span>pass<span class="tsd-signature-symbol">: </span><a href="DrawPass.html" class="tsd-signature-type" data-tsd-kind="Class">DrawPass</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#addPass.addPass-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Adds a pass to the SVG rendering pipeline.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -76,19 +88,21 @@
 <h5>pass: <a href="DrawPass.html" class="tsd-signature-type" data-tsd-kind="Class">DrawPass</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/SVGRenderer.ts#L77">src/SVGRenderer.ts:77</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="clearDrawPasses" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>clear<wbr/>Draw<wbr/>Passes</span><a href="#clearDrawPasses" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/SVGRenderer.ts#L94">SVGRenderer.ts:94</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="clearPasses" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>clear<wbr/>Passes</span><a href="#clearPasses" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="clearDrawPasses.clearDrawPasses-1">clear<wbr/>Draw<wbr/>Passes<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#clearDrawPasses.clearDrawPasses-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="clearPasses.clearPasses-1">clear<wbr/>Passes<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#clearPasses.clearPasses-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Removes all the passes from the SVG rendering pipeline.</p>
+</div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/SVGRenderer.ts#L87">src/SVGRenderer.ts:87</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/SVGRenderer.ts#L111">SVGRenderer.ts:111</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="generateSVG" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>generateSVG</span><a href="#generateSVG" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="generateSVG.generateSVG-1">generateSVG<span class="tsd-signature-symbol">(</span>meshes<span class="tsd-signature-symbol">: </span><a href="SVGMesh.html" class="tsd-signature-type" data-tsd-kind="Class">SVGMesh</a><span class="tsd-signature-symbol">[]</span>, camera<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PerspectiveCamera</span>, size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>h<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>w<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/SVGRenderOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">SVGRenderOptions</a>, info<span class="tsd-signature-symbol">?: </span><a href="SVGRenderInfo.html" class="tsd-signature-type" data-tsd-kind="Class">SVGRenderInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Svg</span><span class="tsd-signature-symbol">&gt;</span><a href="#generateSVG.generateSVG-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="generateSVG.generateSVG-1">generateSVG<span class="tsd-signature-symbol">(</span>meshes<span class="tsd-signature-symbol">: </span><a href="SVGMesh.html" class="tsd-signature-type" data-tsd-kind="Class">SVGMesh</a><span class="tsd-signature-symbol">[]</span>, camera<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PerspectiveCamera</span>, size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>h<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>w<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span>, info<span class="tsd-signature-symbol">?: </span><a href="SVGRenderInfo.html" class="tsd-signature-type" data-tsd-kind="Class">SVGRenderInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Svg</span><span class="tsd-signature-symbol">&gt;</span><a href="#generateSVG.generateSVG-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Render a SVG file from the given meshes and returns it.</p>
 
@@ -115,21 +129,19 @@
 <li class="tsd-parameter">
 <h5>w<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5></li></ul></li>
 <li>
-<h5>options: <a href="../interfaces/SVGRenderOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">SVGRenderOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
-<div class="tsd-comment tsd-typography"><p>Options to customize the render</p>
-</div></li>
-<li>
 <h5>info: <a href="SVGRenderInfo.html" class="tsd-signature-type" data-tsd-kind="Class">SVGRenderInfo</a><span class="tsd-signature-symbol"> = ...</span></h5>
 <div class="tsd-comment tsd-typography"><p>Object containing info (e.g. times) on the rendering process</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Svg</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/SVGRenderer.ts#L48">src/SVGRenderer.ts:48</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="removeDrawPass" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>remove<wbr/>Draw<wbr/>Pass</span><a href="#removeDrawPass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/SVGRenderer.ts#L63">SVGRenderer.ts:63</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="removePass" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>remove<wbr/>Pass</span><a href="#removePass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="removeDrawPass.removeDrawPass-1">remove<wbr/>Draw<wbr/>Pass<span class="tsd-signature-symbol">(</span>pass<span class="tsd-signature-symbol">: </span><a href="DrawPass.html" class="tsd-signature-type" data-tsd-kind="Class">DrawPass</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#removeDrawPass.removeDrawPass-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="removePass.removePass-1">remove<wbr/>Pass<span class="tsd-signature-symbol">(</span>pass<span class="tsd-signature-symbol">: </span><a href="DrawPass.html" class="tsd-signature-type" data-tsd-kind="Class">DrawPass</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#removePass.removePass-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Removes a pass from the SVG rendering pipeline</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -137,7 +149,24 @@
 <h5>pass: <a href="DrawPass.html" class="tsd-signature-type" data-tsd-kind="Class">DrawPass</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1453817/src/SVGRenderer.ts#L83">src/SVGRenderer.ts:83</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/SVGRenderer.ts#L104">SVGRenderer.ts:104</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="exportSVG" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>exportSVG</span><a href="#exportSVG" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="exportSVG.exportSVG-1">exportSVG<span class="tsd-signature-symbol">(</span>svg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Svg</span>, filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ExportOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#exportSVG.exportSVG-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>svg: <span class="tsd-signature-type">Svg</span></h5></li>
+<li>
+<h5>filename: <span class="tsd-signature-type">string</span></h5></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> options: <span class="tsd-signature-type">ExportOptions</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/LokiResearch/three-svg-renderer/blob/1ca86b0/src/SVGRenderer.ts#L116">SVGRenderer.ts:116</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -157,7 +186,7 @@
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li><a href="../modules.html">three-<wbr/>svg-<wbr/>rendering</a>
+<li><a href="../modules.html">three-<wbr/>svg-<wbr/>renderer</a>
 <ul></ul></li></ul></div></details></nav>
 <nav class="tsd-navigation secondary menu-sticky">
 <ul>
@@ -166,10 +195,11 @@
 <li class="tsd-kind-constructor tsd-parent-kind-class"><a href="SVGRenderer.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-512-path"></use><use href="#icon-512-text"></use></svg>constructor</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class"><a href="SVGRenderer.html#drawHandler" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>draw<wbr/>Handler</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class"><a href="SVGRenderer.html#viewmap" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>viewmap</a></li>
-<li class="tsd-kind-method tsd-parent-kind-class"><a href="SVGRenderer.html#addDrawPass" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>add<wbr/>Draw<wbr/>Pass</a></li>
-<li class="tsd-kind-method tsd-parent-kind-class"><a href="SVGRenderer.html#clearDrawPasses" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>clear<wbr/>Draw<wbr/>Passes</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="SVGRenderer.html#addPass" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>add<wbr/>Pass</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="SVGRenderer.html#clearPasses" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>clear<wbr/>Passes</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="SVGRenderer.html#generateSVG" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>generateSVG</a></li>
-<li class="tsd-kind-method tsd-parent-kind-class"><a href="SVGRenderer.html#removeDrawPass" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>remove<wbr/>Draw<wbr/>Pass</a></li></ul></li></ul></nav></div></div>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="SVGRenderer.html#removePass" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>remove<wbr/>Pass</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="SVGRenderer.html#exportSVG" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>exportSVG</a></li></ul></li></ul></nav></div></div>
 <div class="container tsd-generator">
 <p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>
